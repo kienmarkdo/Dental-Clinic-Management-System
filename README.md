@@ -45,10 +45,10 @@ All components of this application are implemented from scratch which includes t
 - Treatment
   - Appropriate treatment is provided after a diagnosis by the dentist, and is based on the patient's condition.
   - Captured information include: appointment type, treatment type, medication, symptoms, tooth, comments, etc.
-- Fee Charge:
+- Fee Charge
   - Information displayed are the fee id, procecure id, fee code, charge.
   - Fees are chaged for all procedures provided at the clinics.
-- Invoices:
+- Invoices
   - Information include: patient id, date of issue, contact information, patient charge, insurance charge, total fee charge, discount, penalty, insurance claim id, etc.
   - An invoice can contain many appointments.
   - Fee charged for employee services are 50% of the professional fee.
