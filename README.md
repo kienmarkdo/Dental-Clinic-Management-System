@@ -67,8 +67,3 @@ All components of this application are implemented from scratch which includes t
   - Information that needs to be stored include professionalism of employees, communication, cleanliness and value.
 
 
-# Database Diagrams
-
-## ER Diagram
-![ERD](/Dental-Clinic-Management-System/Database_Diagrams/DCMS_ER_Diagram_Group_8.pdf "ERD")
-
