@@ -38,3 +38,23 @@ INSERT INTO Insurance_claim VALUES (
     666420,
     1
 );
+
+-- Review
+INSERT INTO Review VALUES (
+  123,
+  'John Doe',
+  5, -- constraint is checked with values -1 and 6 (https://onecompiler.com/postgresql/3xxy4xntj)
+  2,
+  4,
+  '2022-04-02',
+  1
+);
+
+-- Employee Info
+INSERT INTO Employee_info VALUES (
+  123456789,
+  'r', -- constraint checked with 'f' (https://onecompiler.com/postgresql/3xxy77n5g)
+  'Bob Marley',
+  '123 Postgres Street, Ottawa, ON, Canada',
+  60000.25123 -- tested - only shows 60000.25
+);
