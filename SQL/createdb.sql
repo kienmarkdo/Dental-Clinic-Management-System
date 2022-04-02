@@ -74,6 +74,71 @@ CREATE TABLE Insurance_claim (
         ON DELETE CASCADE
 );
 
+-- Appointment
+CREATE TABLE Appointment (
+    appointment_id INTEGER PRIMARY KEY,
+    patient_id INTEGER,
+    dentist_id INTEGER,
+    date_of_appointment DATE, -- update attribute name on schema diagram
+    start_time TIME,
+    end_time TIME,
+    appointment_type VARCHAR(255), -- update attribute name on schema diagram
+    appointment_status VARCHAR(255), -- update attribute name on schema diagram
+    room INTEGER,
+
+    CONSTRAINT FK_patient_id
+        FOREIGN KEY(patient_id)
+        REFERENCES Patient(patient_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+    
+    -- NOTE: CONSTRAINT FOREIGN KEY(dentist_id) REFERENCES Employee(employee_id) 
+    --      is added at the end of the file as ALTER TABLE
+    --      Must add constraint like this due to circular referencing problems in Postgres
+);
+
+-- Appointment Procedure
+CREATE TABLE Appointment_procedure (
+    procedure_id INTEGER PRIMARY KEY,
+    appointment_id INTEGER,
+    patient_id INTEGER,
+    date_of_procedure DATE, -- date is reserved, use date_of_procedure as attribute name (change on schema diagram)
+    invoice_id INTEGER,
+    procedure_code INTEGER,
+    procedure_type VARCHAR(255),
+    appointment_description VARCHAR(255), -- change attribute name on schema diagram - description is a keyword in SQL
+    tooth INTEGER,
+    amount_procedure NUMERIC(10, 2),
+    patient_charge NUMERIC(10, 2),
+    insurance_charge NUMERIC(10, 2),
+    total_charge NUMERIC(10, 2),
+    insurance_claim_id INTEGER,
+
+    CONSTRAINT FK_appointment_id
+        FOREIGN KEY(appointment_id)
+        REFERENCES Appointment(appointment_id) -- Appointment table not yet created
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_patient_id
+        FOREIGN KEY(patient_id)
+        REFERENCES Patient(patient_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_invoice_id
+        FOREIGN KEY(invoice_id)
+        REFERENCES Invoice(invoice_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    
+    CONSTRAINT FK_insurance_claim_id
+        FOREIGN KEY(insurance_claim_id)
+        REFERENCES Insurance_claim(claim_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
 -- Review
 CREATE TABLE Review (
     review_id INTEGER PRIMARY KEY,
@@ -82,14 +147,13 @@ CREATE TABLE Review (
     communication INTEGER CHECK(communication >= 0 AND communication <= 5), 
     cleanliness INTEGER CHECK(cleanliness >= 0 AND cleanliness <= 5),
     date_of_review DATE,
-    procedure_id INTEGER -- example IDs https://www.crescentdental.ca/10-most-common-dental-procedures-and-how-they-work/
-    -- don't forget to add a comma before here when uncommenting the next portion
+    procedure_id INTEGER, -- example IDs https://www.crescentdental.ca/10-most-common-dental-procedures-and-how-they-work/
     
-    -- CONSTRAINT FK_procedure_id 
-    --     FOREIGN KEY(procedure_id) 
-    --     REFERENCES Appointment_procedure(procedure_id)
-    --     ON UPDATE CASCADE
-    --     ON DELETE CASCADE
+    CONSTRAINT FK_procedure_id 
+        FOREIGN KEY(procedure_id) 
+        REFERENCES Appointment_procedure(procedure_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- Representative
@@ -185,12 +249,20 @@ CREATE TABLE Branch (
         ON DELETE CASCADE
 );
 
--- Add Branch FK to Employee Table 
--- NOTE: Need to add constraints here due to circular referencing errors in Postgres
+-- ================================  CONSTRAINTS ADDED USING ALTER TABLE  ================================ --
+-- NOTE: some constraints need to be added using ALTER TABLE due to circular referencing errors in Postgres
+
+-- Add Branch and Employee_info FK to Employee Table 
 ALTER TABLE Employee 
 ADD CONSTRAINT FK_branch_id
     FOREIGN KEY (branch_id) REFERENCES Branch(branch_id) 
     ON UPDATE CASCADE ON DELETE CASCADE,
 ADD CONSTRAINT FK_employee_sin
     FOREIGN KEY (employee_sin) REFERENCES Employee_info(employee_sin)
+    ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Add Employee FK to Appointment Table
+ALTER TABLE Appointment
+ADD CONSTRAINT FK_dentist_id
+    FOREIGN KEY(dentist_id) REFERENCES Employee(employee_id)
     ON UPDATE CASCADE ON DELETE CASCADE;
