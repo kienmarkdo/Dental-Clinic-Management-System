@@ -1,6 +1,6 @@
 -- Patient Info
 CREATE TABLE Patient_info (
-    patient_sin SERIAL PRIMARY KEY,
+    patient_sin INTEGER PRIMARY KEY,
     address VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     gender VARCHAR(1) NOT NULL,
@@ -206,7 +206,7 @@ CREATE TABLE User_account ( -- user is keyword, changed to User_account
 
 -- Employee Info
 CREATE TABLE Employee_info (
-    employee_sin SERIAL PRIMARY KEY,
+    employee_sin INTEGER PRIMARY KEY,
     employee_type VARCHAR(1) NOT NULL,
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
