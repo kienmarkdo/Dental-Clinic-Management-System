@@ -13,7 +13,7 @@ CREATE TABLE Patient_info (
 -- Patient
 CREATE TABLE Patient (
   patient_id INTEGER PRIMARY KEY,
-  sin_info INTEGER,
+  sin_info INTEGER NOT NULL,
   CONSTRAINT FK_patient_sin 
     FOREIGN KEY(sin_info) 
     REFERENCES Patient_info(patient_sin)
@@ -24,8 +24,8 @@ CREATE TABLE Patient (
 -- Patient Records
 CREATE TABLE Patient_records (
     record_id INTEGER PRIMARY KEY,
-    treatment_details TEXT, --likely that treatment_details exceeds 255 characters
-    patient_id INTEGER,
+    treatment_details TEXT NOT NULL, --likely that treatment_details exceeds 255 characters
+    patient_id INTEGER NOT NULL,
     CONSTRAINT FK_patient_id 
         FOREIGN KEY(patient_id) 
         REFERENCES Patient(patient_id)
@@ -36,13 +36,13 @@ CREATE TABLE Patient_records (
 -- Invoice
 CREATE TABLE Invoice (
     invoice_id INTEGER PRIMARY KEY,
-    date_of_issue DATE,
-    contact_info VARCHAR(255),
-    patient_charge NUMERIC(10,2),
-    insurance_charge NUMERIC(10,2),
-    discount NUMERIC(10,2),
-    penalty NUMERIC(10,2),
-    patient_id INTEGER,
+    date_of_issue DATE NOT NULL,
+    contact_info VARCHAR(255) NOT NULL,
+    patient_charge NUMERIC(10,2) NOT NULL,
+    insurance_charge NUMERIC(10,2) NOT NULL,
+    discount NUMERIC(10,2) NOT NULL,
+    penalty NUMERIC(10,2) NOT NULL,
+    patient_id INTEGER NOT NULL,
     
     CONSTRAINT FK_patient_id 
         FOREIGN KEY(patient_id) 
@@ -54,12 +54,12 @@ CREATE TABLE Invoice (
 -- Insurance Claim
 CREATE TABLE Insurance_claim (
     claim_id INTEGER PRIMARY KEY,
-    patient_sin INTEGER,
-    employer_name VARCHAR(255),
-    insurance_company VARCHAR(255),
-    plan_number INTEGER,
-    coverage NUMERIC(10,2),
-    invoice_id INTEGER,
+    patient_sin INTEGER NOT NULL,
+    employer_name VARCHAR(255) NOT NULL,
+    insurance_company VARCHAR(255) NOT NULL,
+    plan_number INTEGER NOT NULL,
+    coverage NUMERIC(10,2) NOT NULL,
+    invoice_id INTEGER NOT NULL,
     
     CONSTRAINT FK_patient_sin
         FOREIGN KEY(patient_sin) 
@@ -77,14 +77,14 @@ CREATE TABLE Insurance_claim (
 -- Appointment
 CREATE TABLE Appointment (
     appointment_id INTEGER PRIMARY KEY,
-    patient_id INTEGER,
-    dentist_id INTEGER,
-    date_of_appointment DATE, -- update attribute name on schema diagram
-    start_time TIME,
-    end_time TIME,
-    appointment_type VARCHAR(255), -- update attribute name on schema diagram
-    appointment_status VARCHAR(255), -- update attribute name on schema diagram
-    room INTEGER,
+    patient_id INTEGER NOT NULL,
+    dentist_id INTEGER NOT NULL,
+    date_of_appointment DATE NOT NULL, -- update attribute name on schema diagram
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    appointment_type VARCHAR(255) NOT NULL, -- update attribute name on schema diagram
+    appointment_status VARCHAR(255) NOT NULL, -- update attribute name on schema diagram
+    room INTEGER NOT NULL,
 
     CONSTRAINT FK_patient_id
         FOREIGN KEY(patient_id)
@@ -100,19 +100,19 @@ CREATE TABLE Appointment (
 -- Appointment Procedure
 CREATE TABLE Appointment_procedure (
     procedure_id INTEGER PRIMARY KEY,
-    appointment_id INTEGER,
-    patient_id INTEGER,
-    date_of_procedure DATE, -- date is reserved, use date_of_procedure as attribute name (change on schema diagram)
-    invoice_id INTEGER,
-    procedure_code INTEGER,
-    procedure_type VARCHAR(255),
-    appointment_description VARCHAR(255), -- change attribute name on schema diagram - description is a keyword in SQL
-    tooth INTEGER,
-    amount_procedure NUMERIC(10, 2),
-    patient_charge NUMERIC(10, 2),
-    insurance_charge NUMERIC(10, 2),
-    total_charge NUMERIC(10, 2),
-    insurance_claim_id INTEGER,
+    appointment_id INTEGER NOT NULL,
+    patient_id INTEGER NOT NULL,
+    date_of_procedure DATE NOT NULL, -- date is reserved, use date_of_procedure as attribute name (change on schema diagram)
+    invoice_id INTEGER NOT NULL,
+    procedure_code INTEGER NOT NULL,
+    procedure_type VARCHAR(255) NOT NULL,
+    appointment_description VARCHAR(255) NOT NULL, -- change attribute name on schema diagram - description is a keyword in SQL
+    tooth INTEGER NOT NULL,
+    amount_procedure NUMERIC(10, 2) NOT NULL,
+    patient_charge NUMERIC(10, 2) NOT NULL,
+    insurance_charge NUMERIC(10, 2) NOT NULL,
+    total_charge NUMERIC(10, 2) NOT NULL,
+    insurance_claim_id INTEGER NOT NULL,
 
     CONSTRAINT FK_appointment_id
         FOREIGN KEY(appointment_id)
@@ -142,12 +142,12 @@ CREATE TABLE Appointment_procedure (
 -- Review
 CREATE TABLE Review (
     review_id INTEGER PRIMARY KEY,
-    dentist_name VARCHAR(30), --not sure why this is VAR in the diagram
-    professionalism INTEGER CHECK(professionalism >= 0 AND professionalism <= 5),
-    communication INTEGER CHECK(communication >= 0 AND communication <= 5), 
-    cleanliness INTEGER CHECK(cleanliness >= 0 AND cleanliness <= 5),
-    date_of_review DATE,
-    procedure_id INTEGER, -- example IDs https://www.crescentdental.ca/10-most-common-dental-procedures-and-how-they-work/
+    dentist_name VARCHAR(30) NOT NULL, --not sure why this is VAR in the diagram
+    professionalism INTEGER CHECK(professionalism >= 0 AND professionalism <= 5) NOT NULL,
+    communication INTEGER CHECK(communication >= 0 AND communication <= 5) NOT NULL, 
+    cleanliness INTEGER CHECK(cleanliness >= 0 AND cleanliness <= 5) NOT NULL,
+    date_of_review DATE NOT NULL,
+    procedure_id INTEGER NOT NULL, -- example IDs https://www.crescentdental.ca/10-most-common-dental-procedures-and-how-they-work/
     
     CONSTRAINT FK_procedure_id 
         FOREIGN KEY(procedure_id) 
@@ -159,9 +159,9 @@ CREATE TABLE Review (
 -- Representative
 CREATE TABLE Representative (
     name VARCHAR(255) PRIMARY KEY,
-    patient_sin INTEGER,
-    phone INTEGER,
-    relationship VARCHAR(255), -- i.e.: mother, father, etc. Can be a textbox or selection menu
+    patient_sin INTEGER NOT NULL,
+    phone INTEGER NOT NULL,
+    relationship VARCHAR(255) NOT NULL, -- i.e.: mother, father, etc. Can be a textbox or selection menu
     
     CONSTRAINT FK_patient_sin 
         FOREIGN KEY(patient_sin) 
@@ -173,11 +173,11 @@ CREATE TABLE Representative (
 -- Patient Billing
 CREATE TABLE Patient_billing (
     bill_id INTEGER PRIMARY KEY,
-    patient_id INTEGER,
-    patient_amount NUMERIC(10, 2),
-    insurance_amount NUMERIC(10, 2),
-    total_amount NUMERIC(10, 2),
-    payment_type VARCHAR(255), -- constrain this? 
+    patient_id INTEGER NOT NULL,
+    patient_amount NUMERIC(10, 2) NOT NULL,
+    insurance_amount NUMERIC(10, 2) NOT NULL,
+    total_amount NUMERIC(10, 2) NOT NULL,
+    payment_type VARCHAR(255) NOT NULL, -- constrain this? 
                         -- nah, I wouldn't. We can just make a selection menu (VISA, Mastercard etc.) and check the input
                         -- in the backend before inserting it into the database - Kien
     
@@ -191,7 +191,7 @@ CREATE TABLE Patient_billing (
 -- User Account
 CREATE TABLE User_account ( -- user is keyword, changed to User_account 
     username VARCHAR(255) PRIMARY KEY,
-    password VARCHAR(255), -- encrypt this
+    password VARCHAR(255) NOT NULL, -- encrypt this
     type_id SMALLINT CHECK(type_id >= 0 AND type_id <= 2)
                     -- type_id 0 -> patient, 1 -> employee, 2 -> employee and patient
 );
@@ -199,10 +199,10 @@ CREATE TABLE User_account ( -- user is keyword, changed to User_account
 -- Employee Info
 CREATE TABLE Employee_info (
     employee_sin INTEGER PRIMARY KEY,
-    employee_type VARCHAR(1),
-    name VARCHAR(255),
-    address VARCHAR(255),
-    annual_salary NUMERIC(10, 2)
+    employee_type VARCHAR(1) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    annual_salary NUMERIC(10, 2) NOT NULL
 
     CONSTRAINT employee_type
     CHECK(employee_type IN ('r', 'd', 'h', 'b')) 
@@ -212,8 +212,8 @@ CREATE TABLE Employee_info (
 -- Employee
 CREATE TABLE Employee (
     employee_id INTEGER PRIMARY KEY,
-    employee_sin INTEGER, -- FOREIGN KEY - constraint added at the end as ALTER TABLE
-    branch_id INTEGER -- FOREIGN KEY - constraint added at the end as ALTER TABLE
+    employee_sin INTEGER NOT NULL, -- FOREIGN KEY - constraint added at the end as ALTER TABLE
+    branch_id INTEGER NOT NULL -- FOREIGN KEY - constraint added at the end as ALTER TABLE
 
     -- NOTE: employee_sin and branch_id are FOREIGN KEYS
     -- the constraints are added at the bottom of the file using ALTER TABLE because circular referencing 
@@ -225,9 +225,9 @@ CREATE TABLE Employee (
 -- Branch
 CREATE TABLE Branch (
     branch_id INTEGER PRIMARY KEY, -- in diagram is VARCHAR(255)
-    city VARCHAR(255),
-    manager_id INTEGER,
-    receptionist1_id INTEGER,
+    city VARCHAR(255) NOT NULL,
+    manager_id INTEGER NOT NULL,
+    receptionist1_id INTEGER NOT NULL,
     receptionist2_id INTEGER NULL,
     
     CONSTRAINT FK_manager_id 
@@ -277,9 +277,9 @@ CREATE TABLE Treatment (
 -- Fee Charge
 CREATE TABLE Fee_charge (
     fee_id INTEGER PRIMARY KEY,
-    procedure_id INTEGER,
-    fee_code INTEGER,
-    charge NUMERIC(10,2),
+    procedure_id INTEGER NOT NULL,
+    fee_code INTEGER NOT NULL,
+    charge NUMERIC(10,2) NOT NULL,
     
     CONSTRAINT FK_procedure_id 
         FOREIGN KEY(procedure_id) 
