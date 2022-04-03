@@ -1,6 +1,6 @@
 -- Patient Info
 CREATE TABLE Patient_info (
-    patient_sin INTEGER PRIMARY KEY,
+    patient_sin SERIAL PRIMARY KEY,
     address VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     gender VARCHAR(1) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE Patient_info (
 
 -- Patient
 CREATE TABLE Patient (
-  patient_id INTEGER PRIMARY KEY,
+  patient_id SERIAL PRIMARY KEY,
   sin_info INTEGER NOT NULL,
   CONSTRAINT FK_patient_sin 
     FOREIGN KEY(sin_info) 
@@ -25,7 +25,7 @@ CREATE TABLE Patient (
 
 -- Patient Records
 CREATE TABLE Patient_records (
-    record_id INTEGER PRIMARY KEY,
+    record_id SERIAL PRIMARY KEY,
     treatment_details TEXT NOT NULL, --likely that treatment_details exceeds 255 characters
     patient_id INTEGER NOT NULL,
     CONSTRAINT FK_patient_id 
@@ -37,7 +37,7 @@ CREATE TABLE Patient_records (
 
 -- Invoice
 CREATE TABLE Invoice (
-    invoice_id INTEGER PRIMARY KEY,
+    invoice_id SERIAL PRIMARY KEY,
     date_of_issue DATE NOT NULL,
     contact_info VARCHAR(255) NOT NULL,
     patient_charge NUMERIC(10,2) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE Invoice (
 
 -- Insurance Claim
 CREATE TABLE Insurance_claim (
-    claim_id INTEGER PRIMARY KEY,
+    claim_id SERIAL PRIMARY KEY,
     patient_sin INTEGER NOT NULL,
     employer_name VARCHAR(255) NOT NULL,
     insurance_company VARCHAR(255) NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE Insurance_claim (
 
 -- Appointment
 CREATE TABLE Appointment (
-    appointment_id INTEGER PRIMARY KEY,
+    appointment_id SERIAL PRIMARY KEY,
     patient_id INTEGER NOT NULL,
     dentist_id INTEGER NOT NULL,
     date_of_appointment DATE NOT NULL, 
@@ -101,7 +101,7 @@ CREATE TABLE Appointment (
 
 -- Appointment Procedure
 CREATE TABLE Appointment_procedure (
-    procedure_id INTEGER PRIMARY KEY,
+    procedure_id SERIAL PRIMARY KEY,
     appointment_id INTEGER NOT NULL,
     patient_id INTEGER NOT NULL,
     date_of_procedure DATE NOT NULL, 
@@ -143,7 +143,7 @@ CREATE TABLE Appointment_procedure (
 
 -- Review
 CREATE TABLE Review (
-    review_id INTEGER PRIMARY KEY,
+    review_id SERIAL PRIMARY KEY,
     dentist_name VARCHAR(30) NOT NULL,
     professionalism INTEGER CHECK(professionalism >= 0 AND professionalism <= 5) NOT NULL,
     communication INTEGER CHECK(communication >= 0 AND communication <= 5) NOT NULL, 
@@ -174,7 +174,7 @@ CREATE TABLE Representative (
 
 -- Patient Billing
 CREATE TABLE Patient_billing (
-    bill_id INTEGER PRIMARY KEY,
+    bill_id SERIAL PRIMARY KEY,
     patient_id INTEGER NOT NULL,
     patient_amount NUMERIC(10, 2) NOT NULL,
     insurance_amount NUMERIC(10, 2) NOT NULL,
@@ -206,7 +206,7 @@ CREATE TABLE User_account ( -- user is keyword, changed to User_account
 
 -- Employee Info
 CREATE TABLE Employee_info (
-    employee_sin INTEGER PRIMARY KEY,
+    employee_sin SERIAL PRIMARY KEY,
     employee_type VARCHAR(1) NOT NULL,
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
@@ -219,7 +219,7 @@ CREATE TABLE Employee_info (
 
 -- Employee
 CREATE TABLE Employee (
-    employee_id INTEGER PRIMARY KEY,
+    employee_id SERIAL PRIMARY KEY,
     employee_sin INTEGER NOT NULL, -- FOREIGN KEY - constraint added at the end as ALTER TABLE
     branch_id INTEGER NOT NULL -- FOREIGN KEY - constraint added at the end as ALTER TABLE
 
@@ -232,7 +232,7 @@ CREATE TABLE Employee (
 
 -- Branch
 CREATE TABLE Branch (
-    branch_id INTEGER PRIMARY KEY,
+    branch_id SERIAL PRIMARY KEY,
     city VARCHAR(255) NOT NULL,
     manager_id INTEGER NOT NULL,
     receptionist1_id INTEGER NOT NULL,
@@ -259,7 +259,7 @@ CREATE TABLE Branch (
 
 -- Treatment
 CREATE TABLE Treatment (
-    treatment_id INTEGER PRIMARY KEY,
+    treatment_id SERIAL PRIMARY KEY,
     treatment_type VARCHAR(255) NOT NULL,
     medication VARCHAR(255) NOT NULL,
     symptoms VARCHAR(255) NOT NULL,
@@ -284,7 +284,7 @@ CREATE TABLE Treatment (
 
 -- Fee Charge
 CREATE TABLE Fee_charge (
-    fee_id INTEGER PRIMARY KEY,
+    fee_id SERIAL PRIMARY KEY,
     procedure_id INTEGER NOT NULL,
     fee_code INTEGER NOT NULL,
     charge NUMERIC(10,2) NOT NULL,
