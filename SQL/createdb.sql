@@ -249,6 +249,45 @@ CREATE TABLE Branch (
         ON DELETE CASCADE
 );
 
+-- Treatment
+CREATE TABLE Treatment (
+    treatment_id INTEGER PRIMARY KEY,
+    treatment_type VARCHAR(255) NOT NULL,
+    medication VARCHAR(255) NOT NULL,
+    symptoms VARCHAR(255) NOT NULL,
+    tooth VARCHAR(255) NOT NULL,
+    comments VARCHAR(255) NOT NULL,
+    patient_id INTEGER NOT NULL,
+    appointment_id INTEGER NOT NULL,
+    
+    CONSTRAINT FK_patient_id 
+        FOREIGN KEY(patient_id) 
+        REFERENCES Patient(patient_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+        
+    CONSTRAINT FK_appointment_id 
+        FOREIGN KEY(appointment_id) 
+        REFERENCES Appointment(appointment_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+
+);
+
+-- Fee Charge
+CREATE TABLE Fee_charge (
+    fee_id INTEGER PRIMARY KEY,
+    procedure_id INTEGER,
+    fee_code INTEGER,
+    charge NUMERIC(10,2),
+    
+    CONSTRAINT FK_procedure_id 
+        FOREIGN KEY(procedure_id) 
+        REFERENCES Appointment_procedure(procedure_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+); 
+
 -- ================================  CONSTRAINTS ADDED USING ALTER TABLE  ================================ --
 -- NOTE: some constraints need to be added using ALTER TABLE due to circular referencing errors in Postgres
 
