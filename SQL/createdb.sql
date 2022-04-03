@@ -3,11 +3,13 @@ CREATE TABLE Patient_info (
     patient_sin INTEGER PRIMARY KEY,
     address VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    gender CHAR(1) NOT NULL,
+    gender VARCHAR(1) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    phone TEXT NOT NULL,
+    phone TEXT NOT NULL, -- type needs to be review with Representative
     date_of_birth DATE NOT NULL,
-    insurance VARCHAR(255) NULL
+    insurance VARCHAR(255) NULL,
+    CHECK (gender IN ('M','F','X'))
+    -- we need to add constraints about patient that has to be at least 15 years old (however the constrains in our report doesnt work)
 );
 
 -- Patient
@@ -79,11 +81,11 @@ CREATE TABLE Appointment (
     appointment_id INTEGER PRIMARY KEY,
     patient_id INTEGER NOT NULL,
     dentist_id INTEGER NOT NULL,
-    date_of_appointment DATE NOT NULL, -- update attribute name on schema diagram
+    date_of_appointment DATE NOT NULL, 
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
-    appointment_type VARCHAR(255) NOT NULL, -- update attribute name on schema diagram
-    appointment_status VARCHAR(255) NOT NULL, -- update attribute name on schema diagram
+    appointment_type VARCHAR(255) NOT NULL, 
+    appointment_status VARCHAR(255) NOT NULL, 
     room INTEGER NOT NULL,
 
     CONSTRAINT FK_patient_id
@@ -102,11 +104,11 @@ CREATE TABLE Appointment_procedure (
     procedure_id INTEGER PRIMARY KEY,
     appointment_id INTEGER NOT NULL,
     patient_id INTEGER NOT NULL,
-    date_of_procedure DATE NOT NULL, -- date is reserved, use date_of_procedure as attribute name (change on schema diagram)
+    date_of_procedure DATE NOT NULL, 
     invoice_id INTEGER NOT NULL,
     procedure_code INTEGER NOT NULL,
     procedure_type VARCHAR(255) NOT NULL,
-    appointment_description VARCHAR(255) NOT NULL, -- change attribute name on schema diagram - description is a keyword in SQL
+    appointment_description VARCHAR(255) NOT NULL,
     tooth INTEGER NOT NULL,
     amount_procedure NUMERIC(10, 2) NOT NULL,
     patient_charge NUMERIC(10, 2) NOT NULL,
@@ -116,7 +118,7 @@ CREATE TABLE Appointment_procedure (
 
     CONSTRAINT FK_appointment_id
         FOREIGN KEY(appointment_id)
-        REFERENCES Appointment(appointment_id) -- Appointment table not yet created
+        REFERENCES Appointment(appointment_id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
 
@@ -142,7 +144,7 @@ CREATE TABLE Appointment_procedure (
 -- Review
 CREATE TABLE Review (
     review_id INTEGER PRIMARY KEY,
-    dentist_name VARCHAR(30) NOT NULL, --not sure why this is VAR in the diagram
+    dentist_name VARCHAR(30) NOT NULL,
     professionalism INTEGER CHECK(professionalism >= 0 AND professionalism <= 5) NOT NULL,
     communication INTEGER CHECK(communication >= 0 AND communication <= 5) NOT NULL, 
     cleanliness INTEGER CHECK(cleanliness >= 0 AND cleanliness <= 5) NOT NULL,
@@ -160,7 +162,7 @@ CREATE TABLE Review (
 CREATE TABLE Representative (
     name VARCHAR(255) PRIMARY KEY,
     patient_sin INTEGER NOT NULL,
-    phone INTEGER NOT NULL,
+    phone INTEGER NOT NULL,  -- type needs to be review with Patient_info
     relationship VARCHAR(255) NOT NULL, -- i.e.: mother, father, etc. Can be a textbox or selection menu
     
     CONSTRAINT FK_patient_sin 
@@ -180,6 +182,11 @@ CREATE TABLE Patient_billing (
     payment_type VARCHAR(255) NOT NULL, -- constrain this? 
                         -- nah, I wouldn't. We can just make a selection menu (VISA, Mastercard etc.) and check the input
                         -- in the backend before inserting it into the database - Kien
+
+                        -- we added them as one of our constraints tho in deliverable 1
+                        -- it was CHECK(payment_type IN ('cash', 'debit card', 'Amex', 'Visa', 'Mastercard'))
+                        -- but it's true we can just do a dropdown menu - Céline
+
     
     CONSTRAINT FK_patient_id 
         FOREIGN KEY(patient_id) 
@@ -191,7 +198,8 @@ CREATE TABLE Patient_billing (
 -- User Account
 CREATE TABLE User_account ( -- user is keyword, changed to User_account 
     username VARCHAR(255) PRIMARY KEY,
-    password VARCHAR(255) NOT NULL, -- encrypt this
+    password VARCHAR(255) NOT NULL, -- encrypt this  
+                                    -- i dont think it's necessary to encryp this if it's too complicated -Céline
     type_id SMALLINT CHECK(type_id >= 0 AND type_id <= 2)
                     -- type_id 0 -> patient, 1 -> employee, 2 -> employee and patient
 );
@@ -202,7 +210,7 @@ CREATE TABLE Employee_info (
     employee_type VARCHAR(1) NOT NULL,
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    annual_salary NUMERIC(10, 2) NOT NULL
+    annual_salary NUMERIC(10, 2) NOT NULL,
 
     CONSTRAINT employee_type
     CHECK(employee_type IN ('r', 'd', 'h', 'b')) 
@@ -224,7 +232,7 @@ CREATE TABLE Employee (
 
 -- Branch
 CREATE TABLE Branch (
-    branch_id INTEGER PRIMARY KEY, -- in diagram is VARCHAR(255)
+    branch_id INTEGER PRIMARY KEY,
     city VARCHAR(255) NOT NULL,
     manager_id INTEGER NOT NULL,
     receptionist1_id INTEGER NOT NULL,
