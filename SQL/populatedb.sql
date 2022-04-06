@@ -10,18 +10,35 @@ INSERT INTO Patient_info VALUES (
     NULL
 ), 
 (515151547, '525 Elgin Street', 'Brooke Lay', 'F', 'brooke@gamil.com',3436589636,TO_DATE('2002-06-08', 'YYYYMMDD'),NULL);
+(388498874, '1225 Imaginary Street', 'John Li', 'F', 'john@gamil.com',3437826548,TO_DATE('2010-09-03', 'YYYYMMDD'),NULL);
 
 -- Patient
 INSERT INTO Patient VALUES 
-(DEFAULT,164645466),
-(DEFAULT,515151547);
+(1,164645466),
+(2,515151547),
+(3,388498874);
+
+-- Representative for patient under 15yo
+INSERT INTO Representative VALUES 
+('Jennie', 388498874, 3437826548, 'mother');
 
 -- Patient Records
-INSERT INTO Patient_records VALUES (1, '100 of Samy''s hugs', 1);
+INSERT INTO Patient_records VALUES (1, '100 of Samy''s hugs', 1),
+(2,'Removal of tooth 23 on John',3);
 
 -- Invoice
-INSERT INTO Invoice VALUES (
-    1,
+INSERT INTO Invoice VALUES
+(   1, 
+    TO_DATE('2022-04-06', 'YYYYMMDD'),
+    'Jeenie Lie, mother',
+    250.00,
+    250.75,
+    0,
+    0,
+    3
+),
+(
+    2,
     TO_DATE('2000-01-01', 'YYYYMMDD'),
     'Selin',
     820000,
@@ -31,16 +48,32 @@ INSERT INTO Invoice VALUES (
     1
 );
 
+-- Appointment
+INSERT INTO Appointment VALUES
+(1,3,2,TO_DATE('2022-04-06', 'YYYYMMDD'),'10:00:00','11:00:00','Extraction','completed',23);
+
+-- Appointment procedure
+INSERT INTO Appointment_procedure VALUES
+(
+  1,
+  1,
+  3,
+  TO_DATE('2022-04-06', 'YYYYMMDD'),
+  1,
+  3,
+  'Extraction',
+  'We need to remove a teeth of the patient',
+  23,
+  1,
+  250.00,
+  250.75,
+  500.75,
+  1
+  );
+
 -- Insurance Claim
-INSERT INTO Insurance_claim VALUES (
-    1,
-    1,
-    'Dorra',
-    'Insurance R'' Us',
-    1,
-    666420,
-    1
-);
+INSERT INTO Insurance_claim VALUES
+(2,388498874,'Tisham','SunLife',12938484,200.75,1);
 
 -- Review
 INSERT INTO Review VALUES (
@@ -52,6 +85,10 @@ INSERT INTO Review VALUES (
   '2022-04-02',
   1
 );
+
+-- Patient Billing
+INSERT INTO Patient_billing VALUES
+(1,3,250.00,250.75,500.75,'Visa');
 
 -- Employee Info 
 INSERT INTO Employee_info VALUES (
@@ -76,22 +113,22 @@ INSERT INTO Employee_info VALUES (
 
 -- Employee
 INSERT INTO Employee VALUES 
-(DEFAULT,123456789, 1), -- Employees in branch id 1
-(DEFAULT,141286236, 1),
-(DEFAULT,158453648, 1),
-(DEFAULT,198523644, 1),
-(DEFAULT,165984846, 1),
+(1,123456789, 1), -- Employees in branch id 1
+(2,141286236, 1),
+(3,158453648, 1),
+(4,198523644, 1),
+(5,165984846, 1),
 
-(DEFAULT,175256987, 2), -- Employees in branch id 2
-(DEFAULT,432364646, 2),
-(DEFAULT,665946369, 2),
-(DEFAULT,135941655, 2),
-(DEFAULT,256356565, 2),
-(DEFAULT,956233565, 2);
+(6,175256987, 2), -- Employees in branch id 2
+(7,432364646, 2),
+(8,665946369, 2),
+(9,135941655, 2),
+(10,256356565, 2),
+(11,956233565, 2);
 
 
 -- Branch (Not sure how we're supposed to initialise the manager and receptionist id
 -- i dont think hardcoding is the proper way) 
 INSERT INTO Branch VALUES 
-(DEFAULT,'Ottawa', 5, 1, DEFAULT),
-(DEFAULT,'Ottawa', 11, 8, 9);
+(1,'Ottawa', 5, 1, DEFAULT),
+(2,'Ottawa', 11, 8, 9);

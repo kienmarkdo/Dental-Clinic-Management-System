@@ -110,7 +110,7 @@ CREATE TABLE Appointment_procedure (
     procedure_type VARCHAR(255) NOT NULL,
     appointment_description VARCHAR(255) NOT NULL,
     tooth INTEGER NOT NULL,
-    amount_procedure NUMERIC(10, 2) NOT NULL,
+    amount_of_procedure INTEGER NOT NULL,
     patient_charge NUMERIC(10, 2) NOT NULL,
     insurance_charge NUMERIC(10, 2) NOT NULL,
     total_charge NUMERIC(10, 2) NOT NULL,
