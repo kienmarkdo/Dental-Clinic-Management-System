@@ -8,8 +8,12 @@ CREATE TABLE Patient_info (
     phone TEXT NOT NULL, -- type needs to be review with Representative
     date_of_birth DATE NOT NULL,
     insurance VARCHAR(255) NULL,
-    CHECK (gender IN ('M','F','X'))
-    -- we need to add constraints about patient that has to be at least 15 years old (however the constrains in our report doesnt work)
+    
+    -- constraints
+    CHECK (gender IN ('M','F','X')), -- gender must be M, F or X
+    CHECK (date_of_birth <= (CURRENT_DATE - '15 years'::interval)::date) -- age must be 15 or higher
+    -- https://stackoverflow.com/questions/59975034 select-all-participants-under-the-age-of-18-using-the-current-date-in-postgresql
+    -- Link to test: https://onecompiler.com/postgresql/3xyfnb8ju
 );
 
 -- Patient

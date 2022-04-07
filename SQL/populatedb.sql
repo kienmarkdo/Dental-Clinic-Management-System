@@ -6,7 +6,7 @@ INSERT INTO Patient_info VALUES (
     'M', 
     'elmo@elmail.com', 
     '6664206969', 
-    TO_DATE('2000-01-01', 'YYYYMMDD'), 
+    TO_DATE('2000-01-01', 'YYYYMMDD'), -- constrained checked with '2008-01-01' https://onecompiler.com/postgresql/3xyfnb8ju
     NULL
 ), 
 (515151547, '525 Elgin Street', 'Brooke Lay', 'F', 'brooke@gamil.com',3436589636,TO_DATE('2002-06-08', 'YYYYMMDD'),NULL);
