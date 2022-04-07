@@ -5,7 +5,7 @@ CREATE TABLE Patient_info (
     name VARCHAR(255) NOT NULL,
     gender VARCHAR(1) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    phone TEXT NOT NULL, -- type needs to be review with Representative
+    phone INTEGER NOT NULL, -- type needs to be review with Representative
     date_of_birth DATE NOT NULL,
     insurance VARCHAR(255) NULL,
     
