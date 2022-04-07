@@ -5,7 +5,7 @@ CREATE TABLE Patient_info (
     name VARCHAR(255) NOT NULL,
     gender VARCHAR(1) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    phone INTEGER NOT NULL, -- type needs to be review with Representative
+    phone VARCHAR(20) NOT NULL, -- type needs to be review with Representative
     date_of_birth DATE NOT NULL,
     insurance VARCHAR(255) NULL,
     
@@ -166,7 +166,7 @@ CREATE TABLE Review (
 CREATE TABLE Representative (
     name VARCHAR(255) PRIMARY KEY,
     patient_sin INTEGER NOT NULL,
-    phone INTEGER NOT NULL,  -- type needs to be review with Patient_info
+    phone VARCHAR(20) NOT NULL,  -- type needs to be review with Patient_info
     relationship VARCHAR(255) NOT NULL, -- i.e.: mother, father, etc. Can be a textbox or selection menu
     
     CONSTRAINT FK_patient_sin 

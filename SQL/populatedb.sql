@@ -5,12 +5,12 @@ INSERT INTO Patient_info VALUES (
     'Elmo', 
     'M', 
     'elmo@elmail.com', 
-    '6664206969', 
+    '(666) 420-6969', 
     TO_DATE('2000-01-01', 'YYYYMMDD'), -- constrained checked with '2008-01-01' https://onecompiler.com/postgresql/3xyfnb8ju
     NULL
 ), 
-(515151547, '525 Elgin Street', 'Brooke Lay', 'F', 'brooke@gamil.com',3436589636,TO_DATE('2002-06-08', 'YYYYMMDD'),NULL);
-(388498874, '1225 Imaginary Street', 'John Li', 'F', 'john@gamil.com',3437826548,TO_DATE('2010-09-03', 'YYYYMMDD'),NULL);
+(515151547, '525 Elgin Street', 'Brooke Lay', 'F', 'brooke@gamil.com','3436589636',TO_DATE('2002-06-08', 'YYYYMMDD'),NULL),
+(388498874, '1225 Imaginary Street', 'John Li', 'F', 'john@gamil.com','3437826548',TO_DATE('2010-09-03', 'YYYYMMDD'),NULL);
 
 -- Patient
 INSERT INTO Patient VALUES 
