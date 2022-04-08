@@ -317,3 +317,40 @@ ALTER TABLE Appointment
 ADD CONSTRAINT FK_dentist_id
     FOREIGN KEY(dentist_id) REFERENCES Employee(employee_id)
     ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+-- SAMY PROPOSITION FOR REPRESENTATIVE *******************************************************************************************
+
+-- Patient Info
+CREATE TABLE Patient_info_ALT (
+    patient_sin INTEGER PRIMARY KEY,
+    address VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    gender VARCHAR(1) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL, -- type needs to be the same as in Representative
+    date_of_birth DATE NOT NULL,
+    insurance VARCHAR(255) NULL,
+    representative_sin INTEGER NOT NULL, --sin will be 0 of there is no representative
+    -- constraints
+    CHECK (gender IN ('M','F','X')), -- gender must be M, F or X
+    CHECK (date_of_birth <= (CURRENT_DATE - '15 years'::interval)::date OR representative_sin <> 0), -- age must be 15 or higher
+    -- https://stackoverflow.com/questions/59975034 select-all-participants-under-the-age-of-18-using-the-current-date-in-postgresql
+    -- Link to test: https://onecompiler.com/postgresql/3xyfnb8ju
+    FOREIGN KEY(representative_sin) REFERENCES Representative(representative_sin) ON UPDATE CASCASE ON DELETE CASCADE
+);
+
+-- Representative
+CREATE TABLE Representative_ALT (
+    representative_sin INTEGER PRIMARY KEY,
+    name VARCHAR(255) PRIMARY KEY,
+    patient_sin INTEGER NOT NULL,
+    phone VARCHAR(20) NOT NULL,  -- type needs to be the same as in Patient_info
+    relationship VARCHAR(255) NOT NULL, -- i.e.: mother, father, etc. Can be a textbox or selection menu
+    
+    CONSTRAINT FK_patient_sin 
+        FOREIGN KEY(patient_sin) 
+        REFERENCES Patient_info(patient_sin)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
