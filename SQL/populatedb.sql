@@ -21,13 +21,68 @@ TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.',ROW('Random McR
 
 -- Patient
 INSERT INTO Patient VALUES 
-(1,164645466),
-(2,515151547),
-(3,388498874);
+(DEFAULT,164645466),
+(DEFAULT,111111111),
+(DEFAULT,111111112),
+(DEFAULT,515151547),
+(DEFAULT,388498874);
 
--- Representative for patient under 15yo
-INSERT INTO Representative VALUES 
-('Jennie', 388498874, 3437826548, 'mother');
+-- Employee Info 
+INSERT INTO Employee_info VALUES (
+  123456789,
+  'r', -- constraint checked with 'f' (https://onecompiler.com/postgresql/3xxy77n5g)
+  'Bob Marley',
+  '123 Postgres Street, Ottawa, ON, Canada',
+  60000.25123 -- tested - only shows 60000.25
+), -- branch id has 1 receptionist
+(141286236,'d','Tisham Islam', '123 Postgres Street, Ottawa, ON, Canada', 75000.50), -- dentist at branch id 1
+(158453648,'d','Céline Wan', '123 Postgres Street, Ottawa, ON, Canada', 75000.50), -- dentist at branch id 1
+(198523644,'h','Amy Kkiti', '123 Postgres Street, Ottawa, ON, Canada', 65000.50), -- hygenist at branch id 1
+(165984846,'b','Bruno Bale', '523 Sesame Street, Ottawa, ON, Canada', 83000.50), -- manager at branch id 1
+
+(175256987,'d','Sarah Lee', '523 Sesame Street, Ottawa, ON, Canada', 70000.50), -- dentist at branch id 2
+(432364646,'d','Samy Touabi', '523 Sesame Street, Ottawa, ON, Canada', 70000.50), -- dentist at branch id 2
+(665946369,'r','Oliva Mars', '523 Sesame Street, Ottawa, ON, Canada', 55000.50), -- receptionist at branch id 2
+(135941655,'r','Christopher Castillo', '523 Sesame Street, Ottawa, ON, Canada', 55000.50), -- receptionist at branch id 2
+(256356565,'h','Nakul Lover', '523 Sesame Street, Ottawa, ON, Canada', 60000.50), -- hygienist at branch id 2
+(956233565,'b','Kien Do', '523 Sesame Street, Ottawa, ON, Canada', 83000.50); -- manager at branch id 2
+
+-- Branch
+INSERT INTO Branch VALUES 
+(1,'Ottawa', NULL, NULL, NULL),
+(2,'Toronto', NULL, NULL, NULL);
+
+-- Employee
+INSERT INTO Employee VALUES 
+ -- Employees in branch id 1; 
+(1,123456789, 1), -- this is a receptionist at branch 1
+(2,141286236, 1),
+(3,158453648, 1),
+(4,198523644, 1),
+(5,165984846, 1), -- this is a manager at branch 1
+ -- Employees in branch id 2
+(6,175256987, 2),
+(7,432364646, 2),
+(8,665946369, 2), -- receptionist 1 at branch 2
+(9,135941655, 2), -- receptionist 2 at branch 2
+(10,256356565, 2),
+(11,956233565, 2); -- this is a manager at branch 2
+-- don't modify the insertions above to DEFAULT, just make the next insertions DEFAULT
+
+-- Add managers and receptionists to the existing branches
+UPDATE Branch
+SET manager_id = 5,
+receptionist1_id = 1
+WHERE (city = 'Ottawa');
+
+UPDATE Branch
+SET manager_id = 11,
+receptionist1_id = 8,
+receptionist2_id = 9
+WHERE (city = 'Toronto');
+
+
+
 
 -- Patient Records
 INSERT INTO Patient_records VALUES (1, '100 of Samy''s hugs', 1),
@@ -97,45 +152,3 @@ INSERT INTO Review VALUES (
 INSERT INTO Patient_billing VALUES
 (1,3,250.00,250.75,500.75,'Visa');
 
--- Employee Info 
-INSERT INTO Employee_info VALUES (
-  123456789,
-  'r', -- constraint checked with 'f' (https://onecompiler.com/postgresql/3xxy77n5g)
-  'Bob Marley',
-  '123 Postgres Street, Ottawa, ON, Canada',
-  60000.25123 -- tested - only shows 60000.25
-), -- branch id has 1 receptionist
-(141286236,'d','Tisham Islam', '123 Postgres Street, Ottawa, ON, Canada', 75000.50), -- dentist at branch id 1
-(158453648,'d','Céline Wan', '123 Postgres Street, Ottawa, ON, Canada', 75000.50), -- dentist at branch id 1
-(198523644,'h','Amy Kkiti', '123 Postgres Street, Ottawa, ON, Canada', 65000.50), -- hygenist at branch id 1
-(165984846,'b','Bruno Bale', '523 Sesame Street, Ottawa, ON, Canada', 83000.50), -- manager at branch id 1
-
-(175256987,'d','Sarah Lee', '523 Sesame Street, Ottawa, ON, Canada', 70000.50), -- dentist at branch id 2
-(432364646,'d','Samy Touabi', '523 Sesame Street, Ottawa, ON, Canada', 70000.50), -- dentist at branch id 2
-(665946369,'r','Oliva Mars', '523 Sesame Street, Ottawa, ON, Canada', 55000.50), -- receptionist at branch id 2
-(135941655,'r','Christopher Castillo', '523 Sesame Street, Ottawa, ON, Canada', 55000.50), -- receptionist at branch id 2
-(256356565,'h','Nakul Lover', '523 Sesame Street, Ottawa, ON, Canada', 60000.50), -- hygienist at branch id 2
-(956233565,'b','Kien Do', '523 Sesame Street, Ottawa, ON, Canada', 83000.50); -- manager at branch id 2
-
-
--- Employee
-INSERT INTO Employee VALUES 
-(1,123456789, 1), -- Employees in branch id 1
-(2,141286236, 1),
-(3,158453648, 1),
-(4,198523644, 1),
-(5,165984846, 1),
-
-(6,175256987, 2), -- Employees in branch id 2
-(7,432364646, 2),
-(8,665946369, 2),
-(9,135941655, 2),
-(10,256356565, 2),
-(11,956233565, 2);
-
-
--- Branch (Not sure how we're supposed to initialise the manager and receptionist id
--- i dont think hardcoding is the proper way) 
-INSERT INTO Branch VALUES 
-(1,'Ottawa', 5, 1, DEFAULT),
-(2,'Ottawa', 11, 8, 9);

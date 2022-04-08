@@ -240,8 +240,8 @@ CREATE TABLE Employee (
 CREATE TABLE Branch (
     branch_id SERIAL PRIMARY KEY,
     city VARCHAR(255) NOT NULL,
-    manager_id INTEGER NOT NULL,
-    receptionist1_id INTEGER NOT NULL,
+    manager_id INTEGER NULL,
+    receptionist1_id INTEGER NULL,
     receptionist2_id INTEGER NULL,
     
     CONSTRAINT FK_manager_id 
