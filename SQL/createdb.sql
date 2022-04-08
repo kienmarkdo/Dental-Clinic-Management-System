@@ -16,8 +16,7 @@ CREATE TABLE Patient_info (
     phone VARCHAR(20) NOT NULL,
     date_of_birth DATE NOT NULL,
     insurance VARCHAR(255) NULL,
-    rep1 REPRESENTATIVE NULL, -- Representative type (name, phone, email, relationship)
-    rep2 REPRESENTATIVE NULL -- patient can have 0, 1 or 2 Representatives
+    rep REPRESENTATIVE NULL, -- Representative type (name, phone, email, relationship); patient can have 0, 1 or 2 Representatives
     
     -- constraints
     CONSTRAINT Gender_check
@@ -25,7 +24,7 @@ CREATE TABLE Patient_info (
     CONSTRAINT Age_and_representative_check
         CHECK(
         date_of_birth <= (CURRENT_DATE - '15 years'::interval)::date  -- age must be 15 or higher
-        OR (date_of_birth > (CURRENT_DATE - '15 years'::interval)::date AND (rep1 IS NOT NULL OR rep2 IS NOT NULL)) -- age lower than 15 must have Representative)
+        OR (date_of_birth > (CURRENT_DATE - '15 years'::interval)::date AND (rep IS NOT NULL)) -- age lower than 15 must have Representative)
     )
 
     -- Composite type PostgreSQL documentation: https://www.postgresql.org/docs/current/rowtypes.html

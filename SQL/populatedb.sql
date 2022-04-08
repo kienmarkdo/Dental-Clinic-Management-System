@@ -8,17 +8,16 @@ INSERT INTO Patient_info VALUES (
     '6664206969', 
     TO_DATE('2000-01-01', 'YYYYMMDD'), -- constrained checked with '2008-01-01' https://onecompiler.com/postgresql/3xyjc6nst
     NULL,
-    NULL,
     NULL
 ),
-(111111111,'529 Random Road','Random McRandom','M','random@gmail.com','1231231234',TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.', ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad'),NULL),
-(111111112,'529 Random Road','Randomee McRandomee','F','randomee@gmail.com','5551231234',TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.',NULL,ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
+(111111111,'529 Random Road','Random McRandom','M','random@gmail.com','1231231234',TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
+(111111112,'529 Random Road','Randomee McRandomee','F','randomee@gmail.com','5551231234',
+TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
 --(111111112,'529 Random Road','Random McRandom','F','random@gmail.com','1231231234',
 --TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.',
---NULL,
---NULL), -- this will not work because both rep1 and rep2 attributes are NULL, yet the age < 15
-(515151547, '525 Elgin Street', 'Brooke Lay', 'F', 'brooke@gamil.com','3436589636',TO_DATE('2002-06-08', 'YYYYMMDD'),NULL,NULL,NULL),
-(388498874, '1225 Imaginary Street', 'John Li', 'F', 'john@gamil.com','3437826548',TO_DATE('2000-09-03', 'YYYYMMDD'),NULL,NULL,NULL);
+--NULL), -- this will not work because rep is NULL, yet the age < 15
+(515151547, '525 Elgin Street', 'Brooke Lay', 'F', 'brooke@gamil.com','3436589636',TO_DATE('2002-06-08', 'YYYYMMDD'),NULL,NULL),
+(388498874, '1225 Imaginary Street', 'John Li', 'F', 'john@gamil.com','3437826548',TO_DATE('2000-09-03', 'YYYYMMDD'),NULL,NULL);
 
 -- Patient
 INSERT INTO Patient VALUES 
