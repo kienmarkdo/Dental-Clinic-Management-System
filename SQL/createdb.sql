@@ -105,7 +105,7 @@ CREATE TABLE Appointment (
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     appointment_type VARCHAR(255) NOT NULL, 
-    appointment_status VARCHAR(255) NOT NULL, 
+    appointment_status VARCHAR(255) NOT NULL, -- no show, cancelled, completed, unscheduled, booked
     room INTEGER NOT NULL,
 
     CONSTRAINT FK_patient_id
@@ -119,14 +119,16 @@ CREATE TABLE Appointment (
     --      Must add constraint like this due to circular referencing problems in Postgres
 );
 
+-- TODO: Add a table for procedure codes (1: Teeth Cleanings, 2: Teeth Whitening, 3: Extractions, 4: Veneers, 5: Fillings, 6: Crowns, 7: Root Canal, 8: Braces/Invisalign, 9: Bonding, 10: Dentures)
+
 -- Appointment Procedure
 CREATE TABLE Appointment_procedure (
     procedure_id SERIAL PRIMARY KEY,
     appointment_id INTEGER NOT NULL,
     patient_id INTEGER NOT NULL,
-    date_of_procedure DATE NOT NULL, 
-    invoice_id INTEGER NOT NULL,
-    procedure_code INTEGER NOT NULL,
+    date_of_procedure DATE NOT NULL, -- should be the same date as Appointment; can be auto-populated in the backend
+    invoice_id INTEGER NULL,
+    procedure_code INTEGER NOT NULL, -- 1: Teeth Cleanings, 2: Teeth Whitening, 3: Extractions, 4: Veneers, 5: Fillings, 6: Crowns, 7: Root Canal, 8: Braces/Invisalign, 9: Bonding, 10: Dentures
     procedure_type VARCHAR(255) NOT NULL,
     appointment_description VARCHAR(255) NOT NULL,
     tooth INTEGER NOT NULL,
