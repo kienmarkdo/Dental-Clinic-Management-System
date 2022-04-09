@@ -46,7 +46,7 @@ CREATE TABLE Patient (
 -- Patient Records
 CREATE TABLE Patient_records (
     record_id SERIAL PRIMARY KEY,
-    treatment_details TEXT NOT NULL, --likely that treatment_details exceeds 255 characters
+    patient_details TEXT NOT NULL, -- details on the state of the patient
     patient_id INTEGER NOT NULL,
     CONSTRAINT FK_patient_id 
         FOREIGN KEY(patient_id) 

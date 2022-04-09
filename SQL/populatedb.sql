@@ -27,6 +27,17 @@ INSERT INTO Patient VALUES
 (DEFAULT,515151547),
 (DEFAULT,388498874);
 
+
+-- Patient records
+INSERT INTO Patient_records VALUES
+(1, 'Patient is going lose their teeth in 2 years if they do not book another appt with us.', 1),
+(2,'Random current has healthy teeth. Only requires annual cleaning.', 2),
+(3,'Random Sr. needs dentures ASAP. He has no teeth.', 3),
+(4,'Brooke needs invisalign because her teeth is crooked.',4),
+(5,'John needs extractions on her teeth.',5)
+;
+
+
 -- Employee Info 
 INSERT INTO Employee_info VALUES (
   123456789,
@@ -137,60 +148,61 @@ INSERT INTO Appointment_procedure VALUES
   );
 
 
--- ========================================================================================================
-
-
-
--- Patient Records
-INSERT INTO Patient_records VALUES (1, '100 of Samy''s hugs', 1),
-(2,'Removal of tooth 23 on John',3);
-
--- Invoice
+-- Invoice (update Appointment_procedure depending on the values of Invoice)
 INSERT INTO Invoice VALUES
-(   1, 
-    TO_DATE('2022-04-06', 'YYYYMMDD'),
-    'Jeenie Lie, mother',
-    250.00,
-    250.75,
-    0,
-    0,
-    3
+(
+  -- Elmo's invoice
+  1,
+  TO_DATE('2022-04-05', 'YYYYMMDD'),
+  'The Downtown Dental Clinic
+  Ottawa ON K1P 6L7
+  (613) 234-0792
+  ',
+  300,
+  200,
+  0,
+  0,
+  1  
 ),
 (
-    2,
-    TO_DATE('2000-01-01', 'YYYYMMDD'),
-    'Selin',
-    820000,
-    960000,
-    40000,
-    -30000,
-    1
+  --Random's invoice
+  2,
+  TO_DATE('2022-04-14', 'YYYYMMDD'),
+  'The Downtown Dental Clinic
+  Ottawa ON K1P 6L7
+  (613) 234-0792
+  ',
+  60,
+  0,
+  0,
+  0,
+  2
 );
 
+-- Insurance_claim
+INSERT INTO Insurance_claim VALUES
+(1,164645466,'Elmo Inc.','SunLife Insurance','91833',200,1)
+;
 
 
 -- Appointment procedure
-INSERT INTO Appointment_procedure VALUES
-(
-  1,
-  1,
-  3,
-  TO_DATE('2022-04-06', 'YYYYMMDD'),
-  1,
-  3,
-  'Extraction',
-  'We need to remove a teeth of the patient',
-  23,
-  1,
-  250.00,
-  250.75,
-  500.75,
-  1
-  );
+UPDATE Appointment_procedure -- Elmo has insurance
+SET 
+invoice_id = 1,
+insurance_charge = 200,
+patient_charge = 300,
+insurance_claim_id = 1
+WHERE (procedure_id = 1);
 
--- Insurance Claim
-INSERT INTO Insurance_claim VALUES
-(2,388498874,'Tisham','SunLife',12938484,200.75,1);
+UPDATE Appointment_procedure -- Random doesn't have insurance
+SET 
+invoice_id = 2,
+patient_charge = 60
+WHERE (procedure_id = 2);
+
+-- ========================================================================================================
+
+
 
 -- Review
 INSERT INTO Review VALUES (
