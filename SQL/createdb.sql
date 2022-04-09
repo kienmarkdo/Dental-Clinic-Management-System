@@ -123,8 +123,11 @@ CREATE TABLE Appointment (
 -- (1: Teeth Cleanings, 2: Teeth Whitening, 3: Extractions, 4: Veneers, 5: Fillings, 6: Crowns, 7: Root Canal, 8: Braces/Invisalign, 9: Bonding, 10: Dentures) 
 CREATE TABLE Procedure_codes (
     procedure_code INTEGER PRIMARY KEY,
-    procedure_name VARCHAR(255)
-)
+    procedure_name VARCHAR(255),
+
+    CONSTRAINT procedure_code_check
+        CHECK(procedure_code >= 1 AND procedure_code <= 10)
+);
 
 -- Appointment Procedure
 CREATE TABLE Appointment_procedure (
@@ -134,14 +137,14 @@ CREATE TABLE Appointment_procedure (
     date_of_procedure DATE NOT NULL, -- should be the same date as Appointment; can be auto-populated in the backend
     invoice_id INTEGER NULL,
     procedure_code INTEGER NOT NULL, -- 1: Teeth Cleanings, 2: Teeth Whitening, 3: Extractions, 4: Veneers, 5: Fillings, 6: Crowns, 7: Root Canal, 8: Braces/Invisalign, 9: Bonding, 10: Dentures
-    procedure_type VARCHAR(255) NOT NULL,
     appointment_description VARCHAR(255) NOT NULL,
-    tooth INTEGER NOT NULL,
+    tooth INTEGER NOT NULL, -- Canadian tooth numbering system: https://www.summerleadental.com/all-about-the-tooth-numbers/
     amount_of_procedure INTEGER NOT NULL,
-    patient_charge NUMERIC(10, 2) NOT NULL,
-    insurance_charge NUMERIC(10, 2) NOT NULL,
-    total_charge NUMERIC(10, 2) NOT NULL,
-    insurance_claim_id INTEGER NOT NULL,
+    patient_charge NUMERIC(10, 2) NULL,
+    insurance_charge NUMERIC(10, 2) NULL,
+    total_charge NUMERIC(10, 2) NOT NULL, -- total_charge should be known
+    insurance_claim_id INTEGER NULL,
+    -- NOTE: We update the invoice_id, insurance_charge, patient_charge, insurance_claim_id AFTER the invoice is made
 
     CONSTRAINT FK_appointment_id
         FOREIGN KEY(appointment_id)
@@ -161,6 +164,12 @@ CREATE TABLE Appointment_procedure (
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     
+    CONSTRAINT FK_procedure_code
+        FOREIGN KEY(procedure_code)
+        REFERENCES Procedure_codes(procedure_code)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
     CONSTRAINT FK_insurance_claim_id
         FOREIGN KEY(insurance_claim_id)
         REFERENCES Insurance_claim(claim_id)

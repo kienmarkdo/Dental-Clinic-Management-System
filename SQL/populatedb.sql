@@ -81,17 +81,8 @@ receptionist1_id = 8,
 receptionist2_id = 9
 WHERE (city = 'Toronto');
 
--- ========================================================================================================
-
--- Appointment
--- We could make a list/drop menu of dentists where the person who's doing 
--- the appt booking can choose a dentist
-INSERT INTO Appointment VALUES
-(1,2,2,TO_DATE('2022-04-05', 'YYYYMMDD'),'10:00:00','11:00:00',3,'Completed',23),
-(2,3,3,TO_DATE('2022-04-14', 'YYYYMMDD'),'10:00:00','11:00:00',2,'Booked',5); -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
-
 -- Procedure codes
-INSERT INTO Procedure_codes (
+INSERT INTO Procedure_codes VALUES
   (1, 'Teeth Cleanings'),
   (2, 'Teeth Whitening'),
   (3, 'Extractions'),
@@ -101,8 +92,16 @@ INSERT INTO Procedure_codes (
   (7, 'Root Canal'),
   (8, 'Braces/invisalign'),
   (9, 'Bonding'),
-  (10,'Dentures'),
-);
+  (10,'Dentures')
+;
+
+-- Appointment
+-- We could make a list/drop menu of dentists where the person who's doing 
+-- the appt booking can choose a dentist
+INSERT INTO Appointment VALUES
+(1,2,2,TO_DATE('2022-04-05', 'YYYYMMDD'),'10:00:00','11:00:00',3,'Completed',23),
+(2,3,3,TO_DATE('2022-04-14', 'YYYYMMDD'),'10:00:00','11:00:00',2,'Booked',5); -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
+
 
 -- Appointment Procedure
 INSERT INTO Appointment_procedure VALUES
@@ -113,18 +112,32 @@ INSERT INTO Appointment_procedure VALUES
   TO_DATE('2022-04-05', 'YYYYMMDD'),
   NULL,
   3,
-  'Extractions',
-  'We need to remove a teeth of the patient',
-  23,
-  1,
-  250.00,
-  250.75,
-  500.75,
-  1
+  'We need to remove the bottom left tooth of the patient',
+  23, -- this means quadrant 2, tooth #3 https://www.summerleadental.com/all-about-the-tooth-numbers/
+  1, -- this means, remove 1 tooth
+  NULL,
+  NULL,
+  500.00,
+  NULL
+  ),
+  (
+    2,
+    2,
+    3,
+    TO_DATE('2022-04-14', 'YYYYMMDD'),
+    NULL,
+    2,
+    'Annual patient dental cleaning',
+    999, -- code for operation that involves every tooth
+    0, -- it's a cleaning, so it's 0
+    NULL,
+    NULL,
+    60.00,
+    NULL
   );
 
 
-
+-- ========================================================================================================
 
 
 
