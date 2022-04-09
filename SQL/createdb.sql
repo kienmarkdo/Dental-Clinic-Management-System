@@ -119,7 +119,12 @@ CREATE TABLE Appointment (
     --      Must add constraint like this due to circular referencing problems in Postgres
 );
 
--- TODO: Add a table for procedure codes (1: Teeth Cleanings, 2: Teeth Whitening, 3: Extractions, 4: Veneers, 5: Fillings, 6: Crowns, 7: Root Canal, 8: Braces/Invisalign, 9: Bonding, 10: Dentures)
+-- Procedure codes
+-- (1: Teeth Cleanings, 2: Teeth Whitening, 3: Extractions, 4: Veneers, 5: Fillings, 6: Crowns, 7: Root Canal, 8: Braces/Invisalign, 9: Bonding, 10: Dentures) 
+CREATE TABLE Procedure_codes (
+    procedure_code INTEGER PRIMARY KEY,
+    procedure_name VARCHAR(255)
+)
 
 -- Appointment Procedure
 CREATE TABLE Appointment_procedure (
