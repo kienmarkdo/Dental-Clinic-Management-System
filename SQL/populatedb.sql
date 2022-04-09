@@ -106,6 +106,10 @@ INSERT INTO Procedure_codes VALUES
   (10,'Dentures')
 ;
 
+-- First the patient books an appointment (into a future date)
+-- The patient is diagnosed in Treatment
+-- Once the Treatment is prescribed, we then create a Appointment_procedure
+
 -- Appointment
 -- We could make a list/drop menu of dentists where the person who's doing 
 -- the appt booking can choose a dentist
@@ -113,6 +117,11 @@ INSERT INTO Appointment VALUES
 (1,2,2,TO_DATE('2022-04-05', 'YYYYMMDD'),'10:00:00','11:00:00',3,'Completed',23),
 (2,3,3,TO_DATE('2022-04-14', 'YYYYMMDD'),'10:00:00','11:00:00',2,'Booked',5); -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
 
+-- Treatment
+INSERT INTO Treatment VALUES
+(1,'Tooth removal','Midazolam','Tooth ache','Do not eat food 24 hours before the procedure',23,1,1),
+(2,'Tooth cleaning','No medications administered','no symptoms','',999,2,2)
+;
 
 -- Appointment Procedure
 INSERT INTO Appointment_procedure VALUES
@@ -130,22 +139,30 @@ INSERT INTO Appointment_procedure VALUES
   NULL,
   500.00,
   NULL
-  ),
-  (
-    2,
-    2,
-    3,
-    TO_DATE('2022-04-14', 'YYYYMMDD'),
-    NULL,
-    2,
-    'Annual patient dental cleaning',
-    999, -- code for operation that involves every tooth
-    0, -- it's a cleaning, so it's 0
-    NULL,
-    NULL,
-    60.00,
-    NULL
-  );
+),
+(
+  2,
+  2,
+  3,
+  TO_DATE('2022-04-14', 'YYYYMMDD'),
+  NULL,
+  2,
+  'Annual patient dental cleaning',
+  999, -- code for operation that involves every tooth
+  0, -- it's a cleaning, so it's 0
+  NULL,
+  NULL,
+  60.00,
+  NULL
+);
+
+
+-- Fee charge
+INSERT INTO Fee_charge VALUES
+(1, 1, 123,400), -- 123 is a random fee code for extractions
+(2, 1, 124,100), -- 124 is a random fee code for medications
+(3, 2, 100,60) -- 100 is a random fee code for teeth cleaning
+;
 
 
 -- Invoice (update Appointment_procedure depending on the values of Invoice)
@@ -202,6 +219,9 @@ WHERE (procedure_id = 2);
 
 -- ========================================================================================================
 
+-- Patient Billing
+INSERT INTO Patient_billing VALUES
+(1,3,250.00,250.75,500.75,'Visa');
 
 
 -- Review
@@ -215,7 +235,4 @@ INSERT INTO Review VALUES (
   1
 );
 
--- Patient Billing
-INSERT INTO Patient_billing VALUES
-(1,3,250.00,250.75,500.75,'Visa');
 
