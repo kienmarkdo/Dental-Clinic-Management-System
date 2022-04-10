@@ -1,5 +1,7 @@
+-- adds a new patient
+
 INSERT INTO Patient_info (patient_sin, address, name, gender, email, phone, date_of_birth, insurance) 
-    VALUES (123321123, 'some address', 'First Last', 'X', 'fl@mail.com', '1472583690', TO_DATE('2000-01-01','YYYYMMDD'), 'Insured Company');
+    VALUES (123321123, 'some address', 'First Last', 'X', 'fl@mail.com', '1472583690', TO_DATE('2000 01 01','YYYY MM DD'), 'Insured Company');
 WITH P AS (
         INSERT INTO Patient (sin_info) 
         VALUES (123321123) RETURNING patient_id
