@@ -21,21 +21,20 @@ TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.',ROW('Random McR
 
 -- Patient
 INSERT INTO Patient VALUES 
-(1,164645466),
-(2,111111111),
-(3,111111112),
-(4,515151547),
-(5,388498874);
+(DEFAULT,164645466), -- should be 1,2,3,4,5
+(DEFAULT,111111111),
+(DEFAULT,111111112),
+(DEFAULT,515151547),
+(DEFAULT,388498874);
 
 
 -- Patient records
 INSERT INTO Patient_records VALUES
-(1, 'Patient is going lose their teeth in 2 years if they do not book another appt with us.', 1),
-(2,'Random current has healthy teeth. Only requires annual cleaning.', 2),
-(3,'Random Sr. needs dentures ASAP. He has no teeth.', 3),
-(4,'Brooke needs invisalign because her teeth is crooked.',4),
-(5,'John needs extractions on her teeth.',5)
-;
+(DEFAULT, 'Patient is going lose their teeth in 2 years if they do not book another appt with us.', 1),
+(DEFAULT,'Random current has healthy teeth. Only requires annual cleaning.', 2),
+(DEFAULT,'Random Sr. needs dentures ASAP. He has no teeth.', 3),
+(DEFAULT,'Brooke needs invisalign because her teeth is crooked.',4),
+(DEFAULT,'John needs extractions on her teeth.',5);
 
 
 -- Employee Info 
@@ -60,24 +59,24 @@ INSERT INTO Employee_info VALUES (
 
 -- Branch
 INSERT INTO Branch VALUES 
-(1,'Ottawa', NULL, NULL, NULL),
-(2,'Toronto', NULL, NULL, NULL);
+(DEFAULT,'Ottawa', NULL, NULL, NULL),
+(DEFAULT,'Toronto', NULL, NULL, NULL);
 
 -- Employee
 INSERT INTO Employee VALUES 
  -- Employees in branch id 1; 
-(1,123456789, 1), -- this is a receptionist at branch 1
-(2,141286236, 1),
-(3,158453648, 1),
-(4,198523644, 1),
-(5,165984846, 1), -- this is a manager at branch 1
+(DEFAULT,123456789, 1), -- this is a receptionist at branch 1
+(DEFAULT,141286236, 1),
+(DEFAULT,158453648, 1),
+(DEFAULT,198523644, 1),
+(DEFAULT,165984846, 1), -- this is a manager at branch 1
  -- Employees in branch id 2
-(6,388498874, 2),
-(7,432364646, 2),
-(8,665946369, 2), -- receptionist 1 at branch 2
-(9,135941655, 2), -- receptionist 2 at branch 2
-(10,256356565, 2),
-(11,956233565, 2); -- this is a manager at branch 2
+(DEFAULT,388498874, 2),
+(DEFAULT,432364646, 2),
+(DEFAULT,665946369, 2), -- receptionist 1 at branch 2
+(DEFAULT,135941655, 2), -- receptionist 2 at branch 2
+(DEFAULT,256356565, 2),
+(DEFAULT,956233565, 2); -- this is a manager at branch 2
 -- don't modify the insertions above to DEFAULT, just make the next insertions DEFAULT
 
 -- Add managers and receptionists to the existing branches
@@ -114,19 +113,18 @@ INSERT INTO Procedure_codes VALUES
 -- We could make a list/drop menu of dentists where the person who's doing 
 -- the appt booking can choose a dentist
 INSERT INTO Appointment VALUES
-(1,2,2,TO_DATE('2022-04-05', 'YYYYMMDD'),'10:00:00','11:00:00',3,'Completed',23),
-(2,3,3,TO_DATE('2022-04-14', 'YYYYMMDD'),'10:00:00','11:00:00',2,'Booked',5); -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
+(DEFAULT,2,2,TO_DATE('2022-04-05', 'YYYYMMDD'),'10:00:00','11:00:00',3,'Completed',23),
+(DEFAULT,3,3,TO_DATE('2022-04-14', 'YYYYMMDD'),'10:00:00','11:00:00',2,'Booked',5); -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
 
 -- Treatment
 INSERT INTO Treatment VALUES
-(1,'Tooth removal','Midazolam','Tooth ache','Do not eat food 24 hours before the procedure',23,1,1),
-(2,'Tooth cleaning','No medications administered','no symptoms','',999,2,2)
+(DEFAULT,'Tooth removal','Midazolam','Tooth ache','Do not eat food 24 hours before the procedure',23,1,1),
+(DEFAULT,'Tooth cleaning','No medications administered','no symptoms','',999,2,2)
 ;
 
 -- Appointment Procedure
-INSERT INTO Appointment_procedure VALUES
-(
-  1,
+INSERT INTO Appointment_procedure VALUES (
+  DEFAULT,
   1,
   3,
   TO_DATE('2022-04-05', 'YYYYMMDD'),
@@ -141,7 +139,7 @@ INSERT INTO Appointment_procedure VALUES
   NULL
 ),
 (
-  2,
+  DEFAULT,
   2,
   3,
   TO_DATE('2022-04-14', 'YYYYMMDD'),
@@ -159,9 +157,9 @@ INSERT INTO Appointment_procedure VALUES
 
 -- Fee charge
 INSERT INTO Fee_charge VALUES
-(1, 1, 123,400), -- 123 is a random fee code for extractions
-(2, 1, 124,100), -- 124 is a random fee code for medications
-(3, 2, 100,60) -- 100 is a random fee code for teeth cleaning
+(DEFAULT, 1, 123,400), -- 123 is a random fee code for extractions
+(DEFAULT, 1, 124,100), -- 124 is a random fee code for medications
+(DEFAULT, 2, 100,60) -- 100 is a random fee code for teeth cleaning
 ;
 
 
@@ -169,7 +167,7 @@ INSERT INTO Fee_charge VALUES
 INSERT INTO Invoice VALUES
 (
   -- Elmo's invoice
-  1,
+  DEFAULT,
   TO_DATE('2022-04-05', 'YYYYMMDD'),
   'The Downtown Dental Clinic
   Ottawa ON K1P 6L7
@@ -183,7 +181,7 @@ INSERT INTO Invoice VALUES
 ),
 (
   --Random's invoice
-  2,
+  DEFAULT,
   TO_DATE('2022-04-14', 'YYYYMMDD'),
   'The Downtown Dental Clinic
   Ottawa ON K1P 6L7
@@ -198,8 +196,7 @@ INSERT INTO Invoice VALUES
 
 -- Insurance_claim
 INSERT INTO Insurance_claim VALUES
-(1,164645466,'Elmo Inc.','SunLife Insurance','91833',200,1)
-;
+(DEFAULT,164645466,'Elmo Inc.','SunLife Insurance','91833',200,1);
 
 
 -- Appointment procedure
@@ -220,8 +217,8 @@ WHERE (procedure_id = 2);
 
 -- Patient Billing
 INSERT INTO Patient_billing VALUES
-(1,1,300,200,500,'Visa'),
-(2,2,60,0,60,'Mastercard');
+(DEFAULT,1,300,200,500,'Visa'),
+(DEFAULT,2,60,0,60,'Mastercard');
 
 
 -- User Accounts
@@ -238,7 +235,7 @@ INSERT INTO user_account VALUES ('johnli255', 'ASDFGHJKL:123456', 2, 5, 6);
 
 -- Review
 INSERT INTO Review VALUES (
-  1,
+  DEFAULT,
   'Tisham Islam',
   5, -- constraint is checked with values -1 and 6 (https://onecompiler.com/postgresql/3xxy4xntj)
   2,
@@ -247,7 +244,7 @@ INSERT INTO Review VALUES (
   1
 ),
 (
-  2,
+  DEFAULT,
   'Céline Wan',
   1,
   1,
@@ -255,5 +252,3 @@ INSERT INTO Review VALUES (
   '2022-04-10',
   2
 );
-
-
