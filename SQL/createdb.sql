@@ -201,14 +201,7 @@ CREATE TABLE Patient_billing (
     patient_amount NUMERIC(10, 2) NOT NULL,
     insurance_amount NUMERIC(10, 2) NOT NULL,
     total_amount NUMERIC(10, 2) NOT NULL,
-    payment_type VARCHAR(255) NOT NULL, -- constrain this? 
-                        -- nah, I wouldn't. We can just make a selection menu (VISA, Mastercard etc.) and check the input
-                        -- in the backend before inserting it into the database - Kien
-
-                        -- we added them as one of our constraints tho in deliverable 1
-                        -- it was CHECK(payment_type IN ('cash', 'debit card', 'Amex', 'Visa', 'Mastercard'))
-                        -- but it's true we can just do a dropdown menu - Céline
-
+    payment_type VARCHAR(255) NOT NULL, -- added payment_type contraint in ALTER TABLE (line 332)
     
     CONSTRAINT FK_patient_id 
         FOREIGN KEY(patient_id) 
