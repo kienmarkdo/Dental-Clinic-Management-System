@@ -210,29 +210,6 @@ CREATE TABLE Patient_billing (
         ON DELETE CASCADE
 );
 
--- User Account
-CREATE TABLE User_account ( -- user is keyword, changed to User_account 
-    username VARCHAR(255) PRIMARY KEY,
-    password VARCHAR(255) NOT NULL, -- encrypt this  
-                                    -- i dont think it's necessary to encryp this if it's too complicated -Céline
-    type_id SMALLINT CHECK(type_id >= 0 AND type_id <= 2),
-                    -- type_id 0 -> patient, 1 -> employee, 2 -> employee and patient
-    patient_id INTEGER NULL,
-    employee_id INTEGER NULL,
-
-    CONSTRAINT FK_patient_id 
-        FOREIGN KEY(patient_id) 
-        REFERENCES Patient(patient_id)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-
-    CONSTRAINT FK_employee_id 
-        FOREIGN KEY(employee_id) 
-        REFERENCES Employee(employee_id)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-);
-
 -- Employee Info
 CREATE TABLE Employee_info (
     employee_sin INTEGER PRIMARY KEY,
@@ -324,6 +301,30 @@ CREATE TABLE Fee_charge (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ); 
+
+
+-- User Account
+CREATE TABLE User_account ( -- user is keyword, changed to User_account 
+    username VARCHAR(255) PRIMARY KEY,
+    password VARCHAR(255) NOT NULL, -- encrypt this  
+                                    -- i dont think it's necessary to encryp this if it's too complicated -Céline
+    type_id SMALLINT CHECK(type_id >= 0 AND type_id <= 2),
+                    -- type_id 0 -> patient, 1 -> employee, 2 -> employee and patient
+    patient_id INTEGER NULL,
+    employee_id INTEGER NULL,
+
+    CONSTRAINT FK_patient_id 
+        FOREIGN KEY(patient_id) 
+        REFERENCES Patient(patient_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_employee_id 
+        FOREIGN KEY(employee_id) 
+        REFERENCES Employee(employee_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
 
 -- ================================  CONSTRAINTS ADDED USING ALTER TABLE  ================================ --
 -- NOTE: some constraints need to be added using ALTER TABLE due to circular referencing errors in Postgres
