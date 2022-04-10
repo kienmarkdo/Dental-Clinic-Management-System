@@ -6,18 +6,18 @@ INSERT INTO Patient_info VALUES (
     'M', 
     'elmo@elmail.com', 
     '6664206969', 
-    TO_DATE('2000-01-01', 'YYYYMMDD'), -- constrained checked with '2008-01-01' https://onecompiler.com/postgresql/3xyjc6nst
+    TO_DATE('2000 01 01', 'YYYY MM DD'), -- constrained checked with '2008-01-01' https://onecompiler.com/postgresql/3xyjc6nst
     NULL,
     NULL
 ),
-(111111111,'529 Random Road','Random McRandom','M','random@gmail.com','1231231234',TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
+(111111111,'529 Random Road','Random McRandom','M','random@gmail.com','1231231234',TO_DATE('2020 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
 (111111112,'529 Random Road','Randomee McRandomee','F','randomee@gmail.com','5551231234',
-TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
+TO_DATE('2020 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
 --(111111112,'529 Random Road','Random McRandom','F','random@gmail.com','1231231234',
---TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.',
+--TO_DATE('2020 01 01','YYYY MM DD'),'Random Insurance Company Inc.',
 --NULL), -- this will not work because rep is NULL, yet the age < 15
-(515151547, '525 Elgin Street', 'Brooke Lay', 'F', 'brooke@gamil.com','3436589636',TO_DATE('2002-06-08', 'YYYYMMDD'),NULL,NULL),
-(388498874, '1225 Imaginary Street, Toronto, ON, Canada', 'John Li', 'F', 'john@gamil.com','3437826548',TO_DATE('2000-09-03', 'YYYYMMDD'),NULL,NULL);
+(515151547, '525 Elgin Street', 'Brooke Lay', 'F', 'brooke@gamil.com','3436589636',TO_DATE('2002 06 08', 'YYYY MM DD'),NULL,NULL),
+(388498874, '1225 Imaginary Street, Toronto, ON, Canada', 'John Li', 'F', 'john@gamil.com','3437826548',TO_DATE('2000 09 03', 'YYYY MM DD'),NULL,NULL);
 
 -- Patient
 INSERT INTO Patient VALUES 
@@ -113,8 +113,8 @@ INSERT INTO Procedure_codes VALUES
 -- We could make a list/drop menu of dentists where the person who's doing 
 -- the appt booking can choose a dentist
 INSERT INTO Appointment VALUES
-(DEFAULT,2,2,TO_DATE('2022-04-05', 'YYYYMMDD'),'10:00:00','11:00:00',3,'Completed',23),
-(DEFAULT,3,3,TO_DATE('2022-04-14', 'YYYYMMDD'),'10:00:00','11:00:00',2,'Booked',5); -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
+(DEFAULT,2,2,TO_DATE('2022 04 05', 'YYYY MM DD'),'10:00:00','11:00:00',3,'Completed',23),
+(DEFAULT,3,3,TO_DATE('2022 04 14', 'YYYY MM DD'),'10:00:00','11:00:00',2,'Booked',5); -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
 
 -- Treatment
 INSERT INTO Treatment VALUES
@@ -126,7 +126,7 @@ INSERT INTO Appointment_procedure VALUES (
   DEFAULT,
   1,
   3,
-  TO_DATE('2022-04-05', 'YYYYMMDD'),
+  TO_DATE('2022 04 05', 'YYYY MM DD'),
   NULL,
   3,
   'We need to remove the bottom left tooth of the patient',
@@ -141,7 +141,7 @@ INSERT INTO Appointment_procedure VALUES (
   DEFAULT,
   2,
   3,
-  TO_DATE('2022-04-14', 'YYYYMMDD'),
+  TO_DATE('2022 04 14', 'YYYY MM DD'),
   NULL,
   2,
   'Annual patient dental cleaning',
@@ -167,7 +167,7 @@ INSERT INTO Invoice VALUES
 (
   -- Elmo's invoice
   DEFAULT,
-  TO_DATE('2022-04-05', 'YYYYMMDD'),
+  TO_DATE('2022 04 05', 'YYYY MM DD'),
   'The Downtown Dental Clinic
   Ottawa ON K1P 6L7
   (613) 234-0792
@@ -181,7 +181,7 @@ INSERT INTO Invoice VALUES
 (
   --Random's invoice
   DEFAULT,
-  TO_DATE('2022-04-14', 'YYYYMMDD'),
+  TO_DATE('2022 04 14', 'YYYY MM DD'),
   'The Downtown Dental Clinic
   Ottawa ON K1P 6L7
   (613) 234-0792
@@ -239,7 +239,7 @@ INSERT INTO Review VALUES (
   5, -- constraint is checked with values -1 and 6 (https://onecompiler.com/postgresql/3xxy4xntj)
   2,
   4,
-  '2022-04-09',
+  TO_DATE('2022 04 09', 'YYYY MM DD'),
   1
 ),
 (
@@ -248,6 +248,6 @@ INSERT INTO Review VALUES (
   1,
   1,
   1,
-  '2022-04-10',
+  TO_DATE('2022 04 10', 'YYYY MM DD'),
   2
 );
