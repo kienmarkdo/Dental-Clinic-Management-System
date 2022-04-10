@@ -118,9 +118,8 @@ INSERT INTO Appointment VALUES
 
 -- Treatment
 INSERT INTO Treatment VALUES
-(DEFAULT,'Tooth removal','Midazolam','Tooth ache','Do not eat food 24 hours before the procedure',23,1,1),
-(DEFAULT,'Tooth cleaning','No medications administered','no symptoms','',999,2,2)
-;
+(DEFAULT, 'Tooth removal', 'Midazolam', 'Tooth ache', 23, 'Do not eat food 24 hours before the procedure', 1, 1),
+(DEFAULT, 'Tooth cleaning', 'No medications administered', 'no symptoms', 999, 'No comments', 2, 2);
 
 -- Appointment Procedure
 INSERT INTO Appointment_procedure VALUES (

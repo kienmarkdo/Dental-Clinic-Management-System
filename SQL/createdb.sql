@@ -269,7 +269,7 @@ CREATE TABLE Treatment (
     treatment_type VARCHAR(255) NOT NULL,
     medication VARCHAR(255) NOT NULL,
     symptoms VARCHAR(255) NOT NULL,
-    tooth VARCHAR(255) NOT NULL,
+    tooth INTEGER NOT NULL,
     comments VARCHAR(255) NOT NULL,
     patient_id INTEGER NOT NULL,
     appointment_id INTEGER NOT NULL,
