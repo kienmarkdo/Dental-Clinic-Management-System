@@ -17,15 +17,15 @@ TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.',ROW('Random McR
 --TO_DATE('2020-01-01','YYYYMMDD'),'Random Insurance Company Inc.',
 --NULL), -- this will not work because rep is NULL, yet the age < 15
 (515151547, '525 Elgin Street', 'Brooke Lay', 'F', 'brooke@gamil.com','3436589636',TO_DATE('2002-06-08', 'YYYYMMDD'),NULL,NULL),
-(388498874, '1225 Imaginary Street', 'John Li', 'F', 'john@gamil.com','3437826548',TO_DATE('2000-09-03', 'YYYYMMDD'),NULL,NULL);
+(388498874, '1225 Imaginary Street, Toronto, ON, Canada', 'John Li', 'F', 'john@gamil.com','3437826548',TO_DATE('2000-09-03', 'YYYYMMDD'),NULL,NULL);
 
 -- Patient
 INSERT INTO Patient VALUES 
-(DEFAULT,164645466),
-(DEFAULT,111111111),
-(DEFAULT,111111112),
-(DEFAULT,515151547),
-(DEFAULT,388498874);
+(1,164645466),
+(2,111111111),
+(3,111111112),
+(4,515151547),
+(5,388498874);
 
 
 -- Patient records
@@ -51,12 +51,12 @@ INSERT INTO Employee_info VALUES (
 (198523644,'h','Amy Kkiti', '123 Postgres Street, Ottawa, ON, Canada', 65000.50), -- hygenist at branch id 1
 (165984846,'b','Bruno Bale', '523 Sesame Street, Ottawa, ON, Canada', 83000.50), -- manager at branch id 1
 
-(175256987,'d','Sarah Lee', '523 Sesame Street, Ottawa, ON, Canada', 70000.50), -- dentist at branch id 2
-(432364646,'d','Samy Touabi', '523 Sesame Street, Ottawa, ON, Canada', 70000.50), -- dentist at branch id 2
-(665946369,'r','Oliva Mars', '523 Sesame Street, Ottawa, ON, Canada', 55000.50), -- receptionist at branch id 2
-(135941655,'r','Christopher Castillo', '523 Sesame Street, Ottawa, ON, Canada', 55000.50), -- receptionist at branch id 2
-(256356565,'h','Nakul Lover', '523 Sesame Street, Ottawa, ON, Canada', 60000.50), -- hygienist at branch id 2
-(956233565,'b','Kien Do', '523 Sesame Street, Ottawa, ON, Canada', 83000.50); -- manager at branch id 2
+(388498874,'d','John Li', '1225 Imaginary Street, Toronto, ON, Canada', 70000.50), -- dentist at branch id 2, ALSO A PATIENT
+(432364646,'d','Samy Touabi', '5346 Postgres Avenue, Toronto, ON, Canada', 70000.50), -- dentist at branch id 2
+(665946369,'r','Oliva Mars', '355 MySQL Road, Toronto, ON, Canada', 55000.50), -- receptionist at branch id 2
+(135941655,'r','Christopher Castillo', '885 NoSQL Drive, Toronto, ON, Canada', 55000.50), -- receptionist at branch id 2
+(256356565,'h','Nakul Lover', '5243 MariaDB Crossing, Toronto, ON, Canada', 60000.50), -- hygienist at branch id 2
+(956233565,'b','Kien Do', '420 Oracle Street, Toronto, ON, Canada', 83000.50); -- manager at branch id 2
 
 -- Branch
 INSERT INTO Branch VALUES 
@@ -72,7 +72,7 @@ INSERT INTO Employee VALUES
 (4,198523644, 1),
 (5,165984846, 1), -- this is a manager at branch 1
  -- Employees in branch id 2
-(6,175256987, 2),
+(6,388498874, 2),
 (7,432364646, 2),
 (8,665946369, 2), -- receptionist 1 at branch 2
 (9,135941655, 2), -- receptionist 2 at branch 2
@@ -223,6 +223,18 @@ INSERT INTO Patient_billing VALUES
 (1,1,300,200,500,'Visa'),
 (2,2,60,0,60,'Mastercard');
 
+
+-- User Accounts
+INSERT INTO user_account VALUES ('elmurder666', 'ASDFGHJKL:123456', 0, 1, NULL);
+INSERT INTO user_account VALUES ('randommd5', 'ASDFGHJKL:123456', 0, 2, NULL);
+INSERT INTO user_account VALUES ('randomeemd6', 'ASDFGHJKL:123456', 0, 3, NULL);
+INSERT INTO user_account VALUES ('xXx_blayde_xXx', 'ASDFGHJKL:123456', 0, 4, NULL);
+INSERT INTO user_account VALUES ('tisla2714', 'ASDFGHJKL:123456', 1, NULL, 2);
+INSERT INTO user_account VALUES ('cwmk3565', 'ASDFGHJKL:123456', 1, NULL, 3);
+INSERT INTO user_account VALUES ('akiti7935', 'ASDFGHJKL:123456', 1, NULL, 4);
+INSERT INTO user_account VALUES ('stoua0809', 'ASDFGHJKL:123456', 1, NULL, 7);
+INSERT INTO user_account VALUES ('kdo2342', 'ASDFGHJKL:123456', 1, NULL, 11);
+INSERT INTO user_account VALUES ('johnli255', 'ASDFGHJKL:123456', 2, 5, 6);
 
 -- Review
 INSERT INTO Review VALUES (
