@@ -335,3 +335,8 @@ ALTER TABLE Appointment
 ADD CONSTRAINT FK_dentist_id
     FOREIGN KEY(dentist_id) REFERENCES Employee(employee_id)
     ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Add payment type constraint to Patient_billing table
+ALTER TABLE Patient_billing
+ADD CONSTRAINT Payment_type_check
+    CHECK(payment_type IN ('Cash', 'Debit Card', 'Amex', 'Visa', 'Mastercard', 'American Express'))

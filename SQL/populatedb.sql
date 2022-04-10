@@ -217,22 +217,31 @@ invoice_id = 2,
 patient_charge = 60
 WHERE (procedure_id = 2);
 
--- ========================================================================================================
 
 -- Patient Billing
 INSERT INTO Patient_billing VALUES
-(1,3,250.00,250.75,500.75,'Visa');
+(1,1,300,200,500,'Visa'),
+(2,2,60,0,60,'Mastercard');
 
 
 -- Review
 INSERT INTO Review VALUES (
-  123,
-  'John Doe',
+  1,
+  'Tisham Islam',
   5, -- constraint is checked with values -1 and 6 (https://onecompiler.com/postgresql/3xxy4xntj)
   2,
   4,
-  '2022-04-02',
+  '2022-04-09',
   1
+),
+(
+  2,
+  'Céline Wan',
+  1,
+  1,
+  1,
+  '2022-04-10',
+  2
 );
 
 
