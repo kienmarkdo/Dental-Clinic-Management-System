@@ -1,32 +1,46 @@
-<?php
+<?php //This page allows the user to login as an employee or a patient.
 
 ob_start();
 session_start();
 
-include 'functions.php';
-
-$dbconn=pg_connect("host=localhost port=5432 dbname=dcms user=dcms password=password");
+include_once 'functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
+
     $username = check_empty_input($_POST["username"]);
     $password = check_empty_input($_POST["password"]);
+    $login_type = $_POST['login_type'];
     
     if ($username != -1 && $password != -1) {
+        include_once 'db.php';
         $result = pg_query($dbconn, "SELECT password, patient_id, employee_id FROM user_account WHERE username = '$username';");
         $hashedPass = pg_fetch_row($result);
-        if (!$hashedPass) {
-            //query failed to return something, do error handling here
+        if (!$dbconn) {
+            $err = "Something went wrong in the database. If this error persists, please try again at another time.";
+        } else if (!$hashedPass) {
+            $err = "The entered username does not match anything existing in our records. Please verify and/or register the entered username.";
         }
         else if (password_verify($password, $hashedPass[0])) {
             
             $_SESSION['valid']=true;
             $_SESSION['timeout']=time();
-            echo "<h1> $username has logged in as " . $_POST['login_type'] . "! </h1>";
+            if ($hashedPass[1] == null && $login_type == "Patient") {
+                $err = "Your login credentials are correct, but there is no Patient info associated with this account. Please register as a patient.";
+            } else if ($hashedPass[2] == null && $login_type == "Employee") {
+                $err = "Your login credentials are correct, but there is no Employee info associated with this account. Please contact your branch's IT department.";
+            } else {
+                echo "<h1> $username has logged in as " . $login_type . "! This will redirect you in a future update. </h1>";
+
+                if ($login_type == 'Employee') {
+                    //redirect to employee page
+                } else {
+                    //redirect to patient page
+                }
+            }
         }
         else {
             //password failed to verify, do something
-            echo "<h1> Pass failed to verify? </h1>";
-            echo $password . " " . $hashedPass[0];
+            $err = "The password you entered for this account is incorrect. Debug: " . $password . " " . $hashedPass[0];
         }
     }
     

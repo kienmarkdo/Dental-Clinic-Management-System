@@ -6,7 +6,7 @@ include 'functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     
-    $dbconn = pg_connect("host=localhost port=5432 dbname=dcms user=dcms password=password");
+    include_once 'db.php';
     
     //check_empty_input returns -1 on empty
     //user account fields
