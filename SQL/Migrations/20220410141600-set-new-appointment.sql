@@ -1,7 +1,6 @@
 -- Set a new appointment for patient id 2 
 
--- not sure if we just need to add a new value in the table 
--- OR update the values of the existing row of the patient 
+-- add a new row in the table Appointment and Appointment_procedure, representing a new appointment for patient id 2
 
 -- FIRST OPTION
 WITH App AS (
