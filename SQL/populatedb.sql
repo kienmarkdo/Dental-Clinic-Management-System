@@ -221,16 +221,17 @@ INSERT INTO Patient_billing VALUES
 
 
 -- User Accounts
-INSERT INTO user_account VALUES ('elmurder666', 'ASDFGHJKL:123456', 0, 1, NULL);
-INSERT INTO user_account VALUES ('randommd5', 'ASDFGHJKL:123456', 0, 2, NULL);
-INSERT INTO user_account VALUES ('randomeemd6', 'ASDFGHJKL:123456', 0, 3, NULL);
-INSERT INTO user_account VALUES ('xXx_blayde_xXx', 'ASDFGHJKL:123456', 0, 4, NULL);
-INSERT INTO user_account VALUES ('tisla2714', 'ASDFGHJKL:123456', 1, NULL, 2);
-INSERT INTO user_account VALUES ('cwmk3565', 'ASDFGHJKL:123456', 1, NULL, 3);
-INSERT INTO user_account VALUES ('akiti7935', 'ASDFGHJKL:123456', 1, NULL, 4);
-INSERT INTO user_account VALUES ('stoua0809', 'ASDFGHJKL:123456', 1, NULL, 7);
-INSERT INTO user_account VALUES ('kdo2342', 'ASDFGHJKL:123456', 1, NULL, 11);
-INSERT INTO user_account VALUES ('johnli255', 'ASDFGHJKL:123456', 2, 5, 6);
+-- password is 'ASDFGHJKL:123456', entered value are hashed values
+INSERT INTO user_account VALUES ('elmurder666', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 0, 1, NULL);
+INSERT INTO user_account VALUES ('randommd5', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 0, 2, NULL);
+INSERT INTO user_account VALUES ('randomeemd6', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 0, 3, NULL);
+INSERT INTO user_account VALUES ('xXx_blayde_xXx', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 0, 4, NULL);
+INSERT INTO user_account VALUES ('tisla2714', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 2);
+INSERT INTO user_account VALUES ('cwmk3565', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 3);
+INSERT INTO user_account VALUES ('akiti7935', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 4);
+INSERT INTO user_account VALUES ('stoua0809', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 7);
+INSERT INTO user_account VALUES ('kdo2342', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 11);
+INSERT INTO user_account VALUES ('johnli255', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 2, 5, 6);
 
 -- Review
 INSERT INTO Review VALUES (
