@@ -4,6 +4,7 @@ ob_start();
 session_start();
 
 include_once 'functions.php';
+error_reporting(0);
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
@@ -29,12 +30,16 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             } else if ($hashedPass[2] == null && $login_type == "Employee") {
                 $err = "Your login credentials are correct, but there is no Employee info associated with this account. Please contact your branch's IT department.";
             } else {
-                echo "<h1> $username has logged in as " . $login_type . "! This will redirect you in a future update. </h1>";
+                echo "<h1> $username has logged in as " . $login_type . "! </h1>";
 
                 if ($login_type == 'Employee') {
                     //redirect to employee page
+                    header("Location: employee_landing.php");
+                    exit();
                 } else {
                     //redirect to patient page
+                    header("Location: patient_landing.php");
+                    exit();
                 }
             }
         }
@@ -55,7 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCMS - Login</title>
-    <link rel="stylesheet" href="CSS/main.css">
+    <!-- <link rel="stylesheet" href="CSS/main.css"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </head>
 <body>
     <h1>DCMS - Login page</h1>
