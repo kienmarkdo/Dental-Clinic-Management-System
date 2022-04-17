@@ -1,10 +1,5 @@
 <?php
 
-/*
-TODO : This must be a receptionist or dentist landing page.
-To change query in index so it redirects to an appropriate page
-*/
-
 ob_start();
 session_start();
 
@@ -12,8 +7,10 @@ include 'functions.php';
 include_once 'db.php';
 error_reporting(0);
 
+
 //get variable from previous page
-$empUsername = $_SESSION['empUsername'];
+$eID = $_SESSION['empID'];
+$eUsername = $_SESSION['empUName'];
 
 
 ?>
@@ -29,7 +26,7 @@ $empUsername = $_SESSION['empUsername'];
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>DCMS - Employee <?php echo $empUsername ?> homepage</h1>
+    <h1>DCMS - Dentist <?php echo $eUsername ?> homepage</h1>
 
     </div>
 </body>

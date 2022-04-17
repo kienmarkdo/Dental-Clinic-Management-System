@@ -4,10 +4,8 @@ ob_start();
 session_start();
 
 include 'functions.php';
+include_once 'db.php';
 error_reporting(0);
-
-//replace this with your credentials!
-$dbconn=pg_connect("host=localhost port=5432 dbname=DCMS user=postgres password=INSERTHERE!");
 
 //get variable from previous page
 $patientUsername = $_SESSION['patientUsername'];

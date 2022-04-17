@@ -4,10 +4,8 @@ ob_start();
 session_start();
 
 include_once 'functions.php';
+include_once 'db.php';
 error_reporting(0);
-
-//replace this with your credentials!
-$dbconn=pg_connect("host=localhost port=5432 dbname=DCMS user=postgres password=INSERTHERE!");
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
@@ -36,10 +34,33 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 echo "<h1> $username has logged in as " . $login_type . "! This will redirect you in a future update. </h1>";
 
                 if ($login_type == 'Employee') {
-                    //redirect to employee page
 
-                    $_SESSION['empUsername'] = $username; //send username via session
-                    header('Location:employee_landing.php');
+                    //verify type of employee
+                    $eID = pg_fetch_row(pg_query($dbconn, "SELECT employee_id FROM user_account WHERE username = '$username';"));
+
+                    $eSIN = pg_fetch_row(pg_query($dbconn, "SELECT employee_sin FROM Employee WHERE employee_id = '$eID[0]';"));
+
+                    $eType = pg_fetch_row(pg_query($dbconn, "SELECT employee_type FROM Employee_info WHERE employee_sin = '$eSIN[0]';"));
+
+                    $eType = $eType[0]; // eType is 'd'= dentist or 'r' = receptionist or 'h' = hygieniest
+                   
+                   //send employee_id and username via session
+                    $_SESSION['empID'] = $eID[0]; 
+                    $_SESSION['empUName'] = $username;
+
+                    if ($eType== 'd' || $eType == 'r'){
+                        //redirect to dentist/hygienist page
+                        //do we have a separate page for them both?
+
+                        header('Location:dentist_landing.php');
+                    }
+
+                    elseif ($eType == 'r') {
+                        //redirect to receptionist page
+                    
+                        header('Location:receptionist_landing.php');
+                    }
+    
                     
                 } else {
                     //redirect to patient page
