@@ -1,40 +1,25 @@
 <?php
 
-/*
-TODO / DISCLAIMER:
-
-THE CODE IN THIS PAGE DOESN'T WORK.
-
-Goal: Take $username from index.php, use that to get the patient's info.
-Currently trying to just display something like "Welcome Bob!" where Bob is the name
-that is associated with the username/account that was entered in index.php's login form.
-
-*/
-
 ob_start();
 session_start();
 
 include 'functions.php';
-include_once 'index.php';
 error_reporting(0);
 
-echo "aasadsoifahsof";
+//replace this with your credentials!
+$dbconn=pg_connect("host=localhost port=5432 dbname=DCMS user=postgres password=INSERTHERE!");
 
-include_once 'db.php';
-    
-// fetch patient data into variables
-$username = $_POST['username'];
-$patient_id = pg_query($dbconn, "SELECT patient_id FROM User_account WHERE username = '$username';");
-$patient_sin = pg_query($dbconn, "SELECT sin_info FROM Patient WHERE patient_id = '$patient_id';");
-$patient_name = pg_query($dbconn, "SELECT name FROM Patient_info WHERE patient_sin='$patient_sin';");
+//get variable from previous page
+$patientUsername = $_SESSION['patientUsername'];
 
-echo "aasadsoifahsof";
-echo $username;
-echo $patient_id;
-echo $patient_sin;
-echo $patient_name;
+//get the patient ID, SIN and Name
+$pID = pg_fetch_row(pg_query($dbconn, "SELECT patient_id FROM user_account WHERE username = '$patientUsername';"));
+$pSin = pg_fetch_row(pg_query($dbconn, "SELECT sin_info FROM Patient WHERE patient_id = '$pID[0]';"));
+$pName = pg_fetch_row(pg_query($dbconn, "SELECT name FROM Patient_info WHERE patient_sin='$pSin[0]';"));
 
-// search for patient_id's
+echo nl2br("Patient ID : $pID[0]\n");
+echo nl2br("Patient SIN : $pSin[0]\n");
+echo nl2br("Patient Name : $pName[0]\n");
 
 
 ?>
@@ -50,7 +35,7 @@ echo $patient_name;
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>DCMS - Patient's <?php $patient_name ?> homepage</h1>
+    <h1>DCMS - Patient <?php echo $patientUsername ?> homepage</h1>
 
     </div>
 </body>

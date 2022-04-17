@@ -6,6 +6,9 @@ session_start();
 include_once 'functions.php';
 error_reporting(0);
 
+//replace this with your credentials!
+$dbconn=pg_connect("host=localhost port=5432 dbname=DCMS user=postgres password=INSERTHERE!");
+
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     $username = check_empty_input($_POST["username"]);
@@ -30,16 +33,19 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             } else if ($hashedPass[2] == null && $login_type == "Employee") {
                 $err = "Your login credentials are correct, but there is no Employee info associated with this account. Please contact your branch's IT department.";
             } else {
-                echo "<h1> $username has logged in as " . $login_type . "! </h1>";
+                echo "<h1> $username has logged in as " . $login_type . "! This will redirect you in a future update. </h1>";
 
                 if ($login_type == 'Employee') {
                     //redirect to employee page
-                    header("Location: employee_landing.php");
-                    exit();
+
+                    $_SESSION['empUsername'] = $username; //send username via session
+                    header('Location:employee_landing.php');
+                    
                 } else {
                     //redirect to patient page
-                    header("Location: patient_landing.php");
-                    exit();
+                    $_SESSION['patientUsername'] = $username; //send username via session
+                    header('Location:patient_landing.php');
+
                 }
             }
         }
