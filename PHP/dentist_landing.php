@@ -17,6 +17,9 @@ $dSin = pg_fetch_row(pg_query($dbconn, "SELECT employee_sin FROM employee WHERE 
 $dName = pg_fetch_row(pg_query($dbconn, "SELECT name FROM employee_info WHERE employee_sin='$dSin[0]';"));
 $dWorkLocation = pg_fetch_row(pg_query($dbconn, "SELECT address FROM employee_info WHERE employee_sin='$dSin[0]';"));
 $dSalary = pg_fetch_row(pg_query($dbconn, "SELECT annual_salary FROM employee_info WHERE employee_sin='$dSin[0]';"));
+
+//  info about upcoming appointment (this should be in like an if statement cause when there's no upcoming appointments, some
+// queries will called with null values therefore making the page not work)
 $appointID = pg_fetch_row(pg_query($dbconn, "SELECT appointment_id FROM appointment WHERE dentist_id=$eID AND appointment_status='Booked';"));
 $upcomingInfo = pg_fetch_row(pg_query($dbconn, "SELECT date_of_appointment, start_time, end_time FROM appointment WHERE dentist_id=$eID AND appointment_status='Booked';"));
 $appointType = pg_fetch_row(pg_query($dbconn, "SELECT appointment_type FROM appointment WHERE dentist_id=$eID AND appointment_status='Booked';"));
