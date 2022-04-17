@@ -102,27 +102,50 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCMS - Register</title>
+    <link rel="icon" type="image/x-icon" href="images/register.png">
     <!-- <link rel="stylesheet" href="CSS/main.css"> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/excite-bike/jquery-ui.css" rel="stylesheet"
+        type="text/css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- Your own script -->
+    <script src="scripts/dbms.js"></script>
+
+    <!-- JQuery time picker plugin -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+
+    <!-- Your own additional style sheet -->
 </head>
 <body>
-    <h1>DCMS - Registration page</h1>
-    <h2>Enter Registration Details</h2>
-    <h3 class="error"><?php echo $err ?></h3>
-    <span class="error"> * indicates a field is required </span> 
+  
 
     <div class="container">
+
+        <h1 style="text-align:center">DCMS - Registration page</h1>
+        <h2>Enter Registration Details</h2>
+        <h3 class="error"><?php echo $err ?></h3>
+        <span class="error"> * indicates a field is required </span> 
         
         <form class="form-signin" role="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
             <h3>Login Information</h3>
+            
+            <label for="uname">Username:</label> <!-- the "for" attribute is supposed to math the id of the input type, if there is one -->
             <input type="text" class="form-control" value="<?php echo ($username == -1 ? "" : $username) ?>"
-                name="username" placeholder="username = firstlast123" required> 
+                name="username" placeholder="ex: firstlast123" required> 
                 <span class="error"> * <?php echo $username == -1 ? 'Username is required!' : '' ?> </span><br>
+            
+            <label for="pword1">Password:</label>
             <input type="password" class="form-control"
-                name="password" placeholder="password = 1234" required>
+                name="password" placeholder="ex: 1234" value="" required>
                 <span class="error"> * <?php echo $password == -1 ? 'Password is required!' : '' ?> </span><br>
+            
+            <label for="pword2">Verify Password:</label>
             <input type="password" class="form-control"
-                name="password_verify" placeholder="password = 1234" required>
+                name="password_verify" placeholder="enter the same password" required>
                 <span class="error"> * <?php echo $password_verify == -1 ? 'Must enter password twice!' : '' ?> </span><br>
             
             <br><br>
@@ -154,9 +177,42 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             ?>
             <br> 
+            
+            <!-- SAMY ORIGINAL CODE -->
+            <h1 style="text-align:center">SAMY CODE</h1>
+            <label for="patient_sin">Social Insurance Number:</label>
+            <input type="text" class="form-control" id="sinfield" name="patient_sin" placeholder="ex: 123 456 789" onkeyup="return validateSIN(this.value);" title="16 digits" required>
+            <span class="error"> * <?php echo $patient_fields["patient_sin"] == -1 ? "patient_sin is required!" : '' ?> </span><br>
+
+            <label for="address">Address:</label>
+            <input type="text" class="form-control" id="addressfield" name="address" placeholder="ex: 123 Sesame Street" onkeyup="return validateAddress(this.value);" required>
+            <span class="error"> * <?php echo $patient_fields["address"] == -1 ? "patient_sin is required!" : '' ?> </span><br>
+
+            <label for="fullname">Full Name:</label>
+            <input type="text" class="form-control" id="namefield" name="fullname" placeholder="ex: Evan Marth" onkeyup="return validateName(this.value);" required>
+            <span class="error"> * <?php echo $patient_fields["name"] == -1 ? "name is required!" : '' ?> </span><br>
+
+            <label for="email">Email Address:</label>
+            <input type="email" class="form-control" id="emailfield" name="email" placeholder="ex: evan.marth@gmail.com" onkeyup="return validateEmail(this.value);" required>
+            <span class="error"> * <?php echo $patient_fields["email"] == -1 ? "email is required!" : '' ?> </span><br>
+
+            <label for="phone">Phone number:</label>
+            <input type="tel" class="form-control" id="phonefield" name="phone" placeholder="ex: 6134083244" onkeyup="return validatePhone(this.value);" required>
+            <span class="error"> * <?php echo $patient_fields["phone"] == -1 ? "phone is required!" : '' ?> </span><br>
+
+            <label for="dateTimeInput">Date of Birth:</label>
+            <input type="date" class="form-control" id="dobfield" value="" name="date_of_birth" placeholder="ex: 2002-05-22" onkeyup="return validateDOB(this.value);" onchange="return validateDOB(this.value);" required>
+            <span class="error"> * <?php echo $patient_fields["date_of_birth"] == -1 ? "date_of_birth is required!" : '' ?> </span><br>
+
+            <label for="insurance">Insurance:</label>
+            <input type="text" class="form-control" id="insurancefield" name="insurance" placeholder="ex: Insurance Inc." onkeyup="return validateInsurance(this.value);" required>
+
+            <br>
             <button class="btn btn-lg btn-primary btn-block" type="submit" 
                 name="login">Register</button>
         </form>
+
+        <br> <br>
 
     </div>
 </body>

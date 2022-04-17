@@ -87,16 +87,18 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCMS - Login</title>
+    <link rel="icon" type="image/x-icon" href="images/toothmap.png">
     <!-- <link rel="stylesheet" href="CSS/main.css"> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>DCMS - Login page</h1>
+      
+    <div class="container">
+
+    <h1 style="text-align:center">DCMS - Login page</h1>
     <h2>Enter Login Details</h2>
     <h3 class="error"><?php echo $err ?></h3>
     <span class="error"> * indicates a field is required </span> 
-      
-    <div class="container">
       
         <form class="form-signin" role="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
             <h4 class="form-signin-heading"><?php echo $msg; ?></h4>
@@ -119,8 +121,10 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 name="login">Login</button>
         </form>
 
+        <h2> No Account? Register <a href="register.php"> here! </a> </h2>
+
     </div>
         
-    <h2> No Account? Register <a href="register.php"> here! </a> </h2>
+    
 </body>
 </html>
