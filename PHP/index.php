@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             } else if ($hashedPass[2] == null && $login_type == "Employee") {
                 $err = "Your login credentials are correct, but there is no Employee info associated with this account. Please contact your branch's IT department.";
             } else {
-                echo "<h1> $username has logged in as " . $login_type . "! This will redirect you in a future update. </h1>";
+                echo "<h1> $username has logged in as " . $login_type . "!</h1>";
 
                 if ($login_type == 'Employee') {
 
