@@ -23,158 +23,668 @@ $pInsurance = pg_fetch_row(pg_query($dbconn, "SELECT insurance FROM Patient_info
 $pRepresentative = pg_fetch_row(pg_query($dbconn, "SELECT rep FROM Patient_info WHERE patient_sin='$pSin[0]';"));
 
 // Patient records details
-$recordID = pg_fetch_row(pg_query($dbconn, "SELECT record_id FROM Patient_records WHERE patient_id='$pID[0]';"));
-$recordDetails = pg_fetch_row(pg_query($dbconn, "SELECT patient_details FROM Patient_records WHERE patient_id='$pID[0]';"));
+$patientRecords = pg_fetch_all(pg_query($dbconn, "SELECT record_id, patient_details FROM Patient_records WHERE patient_id='$pID[0]';"));
 
 // Patient appointment details
 // TODO: Not sure if the queries are working or not. Not sure how to print all the fetched apptIDs etc.
-$apptID = pg_query($dbconn, "SELECT apptID FROM Appointment WHERE patient_id='$pID[0]';");
-$apptDentistID = pg_query($dbconn, "SELECT dentist_id FROM Appointment WHERE patient_id='$pID[0]';");
-$apptDateOfAppointment = pg_query($dbconn, "SELECT date_of_appointment FROM Appointment WHERE patient_id='$pID[0]';");
-$apptStartTime = pg_query($dbconn, "SELECT start_time FROM Appointment WHERE patient_id='$pID[0]';");
-$apptEndTime = pg_query($dbconn, "SELECT end_time FROM Appointment WHERE patient_id='$pID[0]';");
-$apptType = pg_query($dbconn, "SELECT appointment_type FROM Appointment WHERE patient_id='$pID[0]';");
-$apptStatus = pg_query($dbconn, "SELECT appointment_status FROM Appointment WHERE patient_id='$pID[0]';");
-$apptRoom = pg_query($dbconn, "SELECT room FROM Appointment WHERE patient_id='$pID[0]';");
+$patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]';"));
 
-// // Patient appointment procedure details
-// TODO: Correct the queries.
-// $proID = pg_fetch_row(pg_query($dbconn, "SELECT procedure_id FROM Appointment_procedure WHERE patient_id='$pID[0]';"));
-// $proInvoiceID = pg_fetch_row(pg_query($dbconn, "SELECT invoice_id FROM Appointment_procedure WHERE patient_id='$pID[0]';"));
-// $proDateOfProcedure = pg_fetch_row(pg_query($dbconn, "SELECT date_of_procedure FROM Appointment_procedure WHERE patient_id='$pID[0]';"));
-// $proCode = pg_fetch_row(pg_query($dbconn, "SELECT procedure_code FROM Appointment_procedure WHERE patient_id='$pID[0]';"));
-// $proDescription = pg_fetch_row(pg_query($dbconn, "SELECT appointment_description FROM Appointment_procedure WHERE patient_id='$pID[0]';"));
-// $proTooth = pg_fetch_row(pg_query($dbconn, "SELECT tooth FROM Appointment_procedure WHERE patient_id='$pID[0]';"));
-// $proAmount = pg_fetch_row(pg_query($dbconn, "SELECT amount_of_procedure FROM Appointment_procedure WHERE patient_id='$pID[0]';"));
-// $proPatientCharge = pg_fetch_row(pg_query($dbconn, "SELECT patient_charge FROM Appointment_procedure WHERE patient_id='$pID[0]';"));
-// $progInsuranceCharge = pg_fetch_row(pg_query($dbconn, "SELECT insurance_charge FROM Appointment_procedure WHERE patient_id='$pID[0]';"));
-// $proTotalCharge = pg_fetch_row(pg_query($dbconn, "SELECT total_charge FROM Appointment_procedure WHERE patient_id='$pID[0]';"));
-// $proInsuranceClaimID = pg_fetch_row(pg_query($dbconn, "SELECT insurance_claim_id FROM Appointment_procedure WHERE patient_id='$pID[0]';"));
 
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>DCMS - Patient Homepage</title>
-      <link rel="stylesheet" href="CSS/main.css">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-   </head>
-   <body>
-      <h1>Hello, <?php echo $pName[0] ?>!</h1>
-      <br/>
-      <!-- Start of patient information -->
-      <div class="container">
-         <div class="main-body">
-            <div class="row gutters-sm">
-               <div class="col-md-4 mb-3">
-                  <div class="card">
-                     <div class="card-body">
-                        <div class="d-flex flex-column align-items-center text-center">
-                           <div class="mt-3">
-                              <!-- <h4></h4>
-                                 <p class="text-secondary mb-1">Patient Information</p> -->
-                              <h2>Patient Information</h2>
-                           </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>DCMS - Patient Homepage</title>
+        <!-- <link rel="stylesheet" href="main.css" /> -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="patient_landing_style.css" />
+    </head>
+    <body>
+        <!-- CSS container START https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
+        <div class="container bootstrap snippets bootdey">
+            <div class="row">
+                <div class="profile-nav col-md-3">
+                    <div class="panel">
+                        <div class="user-heading round">
+                            <h1>Welcome,</h1>
+                            <h2><?php echo $pName[0] ?></h2>
                         </div>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-md-8">
-                  <div class="card mb-3">
-                     <div class="card-body">
-                        <div class="row">
-                           <div class="col-sm-3">
-                              <h6 class="mb-0">Full Name</h6>
-                           </div>
-                           <div class="col-sm-9 text-secondary">
-                              <?php echo $pName[0] ?>
-                           </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                           <div class="col-sm-3">
-                              <h6 class="mb-0">SIN</h6>
-                           </div>
-                           <div class="col-sm-9 text-secondary">
-                              <?php echo $pSin[0] ?>
-                           </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                           <div class="col-sm-3">
-                              <h6 class="mb-0">Address</h6>
-                           </div>
-                           <div class="col-sm-9 text-secondary">
-                              <?php echo $pAddress[0] ?>
-                           </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                           <div class="col-sm-3">
-                              <h6 class="mb-0">Gender</h6>
-                           </div>
-                           <div class="col-sm-9 text-secondary">
-                              <?php echo $pGender[0] ?>
-                           </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                           <div class="col-sm-3">
-                              <h6 class="mb-0">Email</h6>
-                           </div>
-                           <div class="col-sm-9 text-secondary">
-                              <?php echo $pEmail[0] ?>
-                           </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                           <div class="col-sm-3">
-                              <h6 class="mb-0">Phone</h6>
-                           </div>
-                           <div class="col-sm-9 text-secondary">
-                              <?php echo $pPhone[0] ?>
-                           </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                           <div class="col-sm-3">
-                              <h6 class="mb-0">Date of birth</h6>
-                           </div>
-                           <div class="col-sm-9 text-secondary">
-                              <?php echo $pDateOfBirth[0] ?>
-                           </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                           <div class="col-sm-3">
-                              <h6 class="mb-0">Insurance</h6>
-                           </div>
-                           <div class="col-sm-9 text-secondary">
-                              <?php echo $pInsurance[0] ?>
-                           </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                           <div class="col-sm-3">
-                              <h6 class="mb-0">Representative</h6>
-                           </div>
-                           <div class="col-sm-9 text-secondary">
-                              <?php echo $pRepresentative[0] ?>
-                           </div>
-                        </div>
-                        <hr>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-      <!-- End of patient information -->
 
-   </body>
+                        <ul class="nav nav-pills nav-stacked">
+                            <li class="active">
+                                <a href="#patient_info"> <i class="fa fa-user"></i> Patient Information</a>
+                            </li>
+                            <li>
+                                <a href="#patient_records"> <i class="fa fa-heart"></i> Medical Records</a>
+                            </li>
+                            <li>
+                                <a href="#patient_appointments"> <i class="fa fa-calendar"></i> Appointments</a>
+                            </li>
+                            <li>
+                                <a href="#patient_appointment_procedures"> <i class="fa fa-book"></i> Appointment Procedures</a>
+                            </li>
+                            <li>
+                                <a href="#patient_invoices"> <i class="fa fa-credit-card"></i> Invoices</a>
+                            </li>
+                            <li>
+                                <a href="#patient_reviews"> <i class="fa fa-comments-o"></i> My Reviews</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Page Column START -->
+                <div class="profile-info col-md-9">
+                    <!-- Patient Information START -->
+                    <div class="panel" id="patient_info">
+                        <div class="bio-graph-heading">
+                            <h3>Patient Information</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <h1>
+                                Patient ID -
+                                <?php echo $pID[0] ?>
+                            </h1>
+                            <div class="row">
+                                <!-- <div class="bio-row">
+                                    <p><span>Patient ID </span><?php echo $pName[0] ?></p>
+                                </div> -->
+                                <div class="bio-row">
+                                    <p>
+                                        <span>Full Name </span>
+                                        <?php echo $pName[0] ?>
+                                    </p>
+                                </div>
+                                <div class="bio-row">
+                                    <p>
+                                        <span>SIN </span>
+                                        <?php echo $pSin[0] ?>
+                                    </p>
+                                </div>
+                                <div class="bio-row">
+                                    <p>
+                                        <span>Date Of Birth</span>
+                                        <?php echo $pDateOfBirth[0] ?>
+                                    </p>
+                                </div>
+                                <div class="bio-row">
+                                    <p>
+                                        <span>Phone Number </span>
+                                        <?php echo $pPhone[0] ?>
+                                    </p>
+                                </div>
+                                <div class="bio-row">
+                                    <p>
+                                        <span>Email </span>
+                                        <?php echo $pEmail[0] ?>
+                                    </p>
+                                </div>
+                                <div class="bio-row">
+                                    <p>
+                                        <span>Address </span>
+                                        <?php echo $pAddress[0] ?>
+                                    </p>
+                                </div>
+                                <div class="bio-row">
+                                    <p>
+                                        <span>Insurance </span>
+                                        <?php echo $pInsurance[0] ?>
+                                    </p>
+                                </div>
+                                <div class="bio-row">
+                                    <p>
+                                        <span>Representative </span>
+                                        <?php echo $pRepresentative[0] ?>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ==================================================================== -->
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="bio-chart">
+                                        <div style="display: inline; width: 100px; height: 100px;">
+                                            <canvas width="100" height="100px"></canvas>
+                                            <input
+                                                class="knob"
+                                                data-width="100"
+                                                data-height="100"
+                                                data-displayprevious="true"
+                                                data-thickness=".2"
+                                                value="35"
+                                                data-fgcolor="#e06b7d"
+                                                data-bgcolor="#e8e8e8"
+                                                style="
+                                                    width: 54px;
+                                                    height: 33px;
+                                                    position: absolute;
+                                                    vertical-align: middle;
+                                                    margin-top: 33px;
+                                                    margin-left: -77px;
+                                                    border: 0px;
+                                                    font-weight: bold;
+                                                    font-style: normal;
+                                                    font-variant: normal;
+                                                    font-stretch: normal;
+                                                    font-size: 20px;
+                                                    line-height: normal;
+                                                    font-family: Arial;
+                                                    text-align: center;
+                                                    color: rgb(224, 107, 125);
+                                                    padding: 0px;
+                                                    -webkit-appearance: none;
+                                                    background: none;
+                                                "
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="bio-desk">
+                                        <h4 class="red">Envato Website</h4>
+                                        <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="bio-chart">
+                                        <div style="display: inline; width: 100px; height: 100px;">
+                                            <canvas width="100" height="100px"></canvas>
+                                            <input
+                                                class="knob"
+                                                data-width="100"
+                                                data-height="100"
+                                                data-displayprevious="true"
+                                                data-thickness=".2"
+                                                value="63"
+                                                data-fgcolor="#4CC5CD"
+                                                data-bgcolor="#e8e8e8"
+                                                style="
+                                                    width: 54px;
+                                                    height: 33px;
+                                                    position: absolute;
+                                                    vertical-align: middle;
+                                                    margin-top: 33px;
+                                                    margin-left: -77px;
+                                                    border: 0px;
+                                                    font-weight: bold;
+                                                    font-style: normal;
+                                                    font-variant: normal;
+                                                    font-stretch: normal;
+                                                    font-size: 20px;
+                                                    line-height: normal;
+                                                    font-family: Arial;
+                                                    text-align: center;
+                                                    color: rgb(76, 197, 205);
+                                                    padding: 0px;
+                                                    -webkit-appearance: none;
+                                                    background: none;
+                                                "
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="bio-desk">
+                                        <h4 class="terques">ThemeForest CMS</h4>
+                                        <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="bio-chart">
+                                        <div style="display: inline; width: 100px; height: 100px;">
+                                            <canvas width="100" height="100px"></canvas>
+                                            <input
+                                                class="knob"
+                                                data-width="100"
+                                                data-height="100"
+                                                data-displayprevious="true"
+                                                data-thickness=".2"
+                                                value="75"
+                                                data-fgcolor="#96be4b"
+                                                data-bgcolor="#e8e8e8"
+                                                style="
+                                                    width: 54px;
+                                                    height: 33px;
+                                                    position: absolute;
+                                                    vertical-align: middle;
+                                                    margin-top: 33px;
+                                                    margin-left: -77px;
+                                                    border: 0px;
+                                                    font-weight: bold;
+                                                    font-style: normal;
+                                                    font-variant: normal;
+                                                    font-stretch: normal;
+                                                    font-size: 20px;
+                                                    line-height: normal;
+                                                    font-family: Arial;
+                                                    text-align: center;
+                                                    color: rgb(150, 190, 75);
+                                                    padding: 0px;
+                                                    -webkit-appearance: none;
+                                                    background: none;
+                                                "
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="bio-desk">
+                                        <h4 class="green">VectorLab Portfolio</h4>
+                                        <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="bio-chart">
+                                        <div style="display: inline; width: 100px; height: 100px;">
+                                            <canvas width="100" height="100px"></canvas>
+                                            <input
+                                                class="knob"
+                                                data-width="100"
+                                                data-height="100"
+                                                data-displayprevious="true"
+                                                data-thickness=".2"
+                                                value="50"
+                                                data-fgcolor="#cba4db"
+                                                data-bgcolor="#e8e8e8"
+                                                style="
+                                                    width: 54px;
+                                                    height: 33px;
+                                                    position: absolute;
+                                                    vertical-align: middle;
+                                                    margin-top: 33px;
+                                                    margin-left: -77px;
+                                                    border: 0px;
+                                                    font-weight: bold;
+                                                    font-style: normal;
+                                                    font-variant: normal;
+                                                    font-stretch: normal;
+                                                    font-size: 20px;
+                                                    line-height: normal;
+                                                    font-family: Arial;
+                                                    text-align: center;
+                                                    color: rgb(203, 164, 219);
+                                                    padding: 0px;
+                                                    -webkit-appearance: none;
+                                                    background: none;
+                                                "
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="bio-desk">
+                                        <h4 class="purple">Adobe Muse Template</h4>
+                                        <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patient Information END -->
+                    <!-- ==================================================================== -->
+                    <!-- Patient Records START -->
+
+                    <div class="panel" id="patient_records">
+                        <div class="bio-graph-heading">
+                            <h3>Patient Medical Records</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <!-- List Patient Records here -->
+                            <!-- Record ID | Patient details -->
+                            <table id="records_grid" class="table" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Record ID</th>
+                                        <th>Medical Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($patientRecords as $patientRecord =>
+                                    $patientRecords) :?>
+                                    <tr>
+                                        <td><?php echo $patientRecords['record_id'] ?></td>
+                                        <td><?php echo $patientRecords['patient_details'] ?></td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Patient Records END -->
+                    <!-- ==================================================================== -->
+                    <!-- Patient Appointments START -->
+
+                    <div class="panel" id="patient_appointments">
+                        <div class="bio-graph-heading">
+                            <h3>Patient Appointments</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <!-- List Patient Records here -->
+                            <!-- Record ID | Patient details -->
+                            <table id="appointments_grid" class="table" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Appointment ID</th>
+                                        <th>Dentist ID</th>
+                                        <th>Date</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Room</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($patientAppointments as $patientAppointment =>
+                                    $patientAppointments) :?>
+                                    <tr>
+                                        <td><?php echo $patientAppointments['appointment_id'] ?></td>
+                                        <td><?php echo $patientAppointments['employee_id'] ?></td>
+                                        <!-- <td><?php //echo pg_fetch_result(pg_query($dbconn, "SELECT e_info.name FROM Employee_info AS e_info WHERE e_info.employee_sin in (SELECT e.employee_sin FROM Employee AS e WHERE e.employee_id='$patientAppointments['employee_id']');")); ?></td> -->
+                                        <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
+                                        <td><?php echo $patientAppointments['start_time'] ?></td>
+                                        <td><?php echo $patientAppointments['end_time'] ?></td>
+                                        <td><?php echo $patientAppointments['appointment_type'] ?></td>
+                                        <td><?php echo $patientAppointments['appointment_status'] ?></td>
+                                        <td><?php echo $patientAppointments['room'] ?></td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Patient Appointments END -->
+                    <!-- ==================================================================== -->
+                    <!-- Patient Appointment Prcocedure START -->
+
+                    <div class="panel" id="patient_appointment_procedures">
+                        <div class="bio-graph-heading">
+                            <h3>Appointment Procedures</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <!-- List Patient Records here -->
+                            <!-- Record ID | Patient details -->
+                            <table id="appointments_grid" class="table" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Appointment ID</th>
+                                        <th>Dentist ID</th>
+                                        <th>Date</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Room</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($patientAppointments as $patientAppointment =>
+                                    $patientAppointments) :?>
+                                    <tr>
+                                        <td><?php echo $patientAppointments['appointment_id'] ?></td>
+                                        <td><?php echo $patientAppointments['employee_id'] ?></td>
+                                        <!-- <td><?php //echo pg_fetch_result(pg_query($dbconn, "SELECT e_info.name FROM Employee_info AS e_info WHERE e_info.employee_sin in (SELECT e.employee_sin FROM Employee AS e WHERE e.employee_id='$patientAppointments['employee_id']');")); ?></td> -->
+                                        <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
+                                        <td><?php echo $patientAppointments['start_time'] ?></td>
+                                        <td><?php echo $patientAppointments['end_time'] ?></td>
+                                        <td><?php echo $patientAppointments['appointment_type'] ?></td>
+                                        <td><?php echo $patientAppointments['appointment_status'] ?></td>
+                                        <td><?php echo $patientAppointments['room'] ?></td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Patient Appointment Procedures END -->
+
+                    <!-- ==================================================================== -->
+                    <!-- Patient Reviews START -->
+
+                    <!-- Review Input Box -->
+                    <div class="panel" id="patient_reviews">
+                        <form>
+                            <textarea placeholder="Whats in your mind today?" rows="2" class="form-control input-lg p-text-area"></textarea>
+                        </form>
+                        <footer class="panel-footer">
+                            <button class="btn btn-warning pull-right">Post</button>
+                            <ul class="nav nav-pills">
+                                <li>
+                                    <a href="#"><i class="fa fa-map-marker"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#"><i class="fa fa-camera"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#"><i class="fa fa-film"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#"><i class="fa fa-microphone"></i></a>
+                                </li>
+                            </ul>
+                        </footer>
+                    </div>
+
+                    <!-- Review Cards -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="bio-chart">
+                                        <div style="display: inline; width: 100px; height: 100px;">
+                                            <canvas width="100" height="100px"></canvas>
+                                            <input
+                                                class="knob"
+                                                data-width="100"
+                                                data-height="100"
+                                                data-displayprevious="true"
+                                                data-thickness=".2"
+                                                value="35"
+                                                data-fgcolor="#e06b7d"
+                                                data-bgcolor="#e8e8e8"
+                                                style="
+                                                    width: 54px;
+                                                    height: 33px;
+                                                    position: absolute;
+                                                    vertical-align: middle;
+                                                    margin-top: 33px;
+                                                    margin-left: -77px;
+                                                    border: 0px;
+                                                    font-weight: bold;
+                                                    font-style: normal;
+                                                    font-variant: normal;
+                                                    font-stretch: normal;
+                                                    font-size: 20px;
+                                                    line-height: normal;
+                                                    font-family: Arial;
+                                                    text-align: center;
+                                                    color: rgb(224, 107, 125);
+                                                    padding: 0px;
+                                                    -webkit-appearance: none;
+                                                    background: none;
+                                                "
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="bio-desk">
+                                        <h4 class="red">Envato Website</h4>
+                                        <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="bio-chart">
+                                        <div style="display: inline; width: 100px; height: 100px;">
+                                            <canvas width="100" height="100px"></canvas>
+                                            <input
+                                                class="knob"
+                                                data-width="100"
+                                                data-height="100"
+                                                data-displayprevious="true"
+                                                data-thickness=".2"
+                                                value="63"
+                                                data-fgcolor="#4CC5CD"
+                                                data-bgcolor="#e8e8e8"
+                                                style="
+                                                    width: 54px;
+                                                    height: 33px;
+                                                    position: absolute;
+                                                    vertical-align: middle;
+                                                    margin-top: 33px;
+                                                    margin-left: -77px;
+                                                    border: 0px;
+                                                    font-weight: bold;
+                                                    font-style: normal;
+                                                    font-variant: normal;
+                                                    font-stretch: normal;
+                                                    font-size: 20px;
+                                                    line-height: normal;
+                                                    font-family: Arial;
+                                                    text-align: center;
+                                                    color: rgb(76, 197, 205);
+                                                    padding: 0px;
+                                                    -webkit-appearance: none;
+                                                    background: none;
+                                                "
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="bio-desk">
+                                        <h4 class="terques">ThemeForest CMS</h4>
+                                        <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="bio-chart">
+                                        <div style="display: inline; width: 100px; height: 100px;">
+                                            <canvas width="100" height="100px"></canvas>
+                                            <input
+                                                class="knob"
+                                                data-width="100"
+                                                data-height="100"
+                                                data-displayprevious="true"
+                                                data-thickness=".2"
+                                                value="75"
+                                                data-fgcolor="#96be4b"
+                                                data-bgcolor="#e8e8e8"
+                                                style="
+                                                    width: 54px;
+                                                    height: 33px;
+                                                    position: absolute;
+                                                    vertical-align: middle;
+                                                    margin-top: 33px;
+                                                    margin-left: -77px;
+                                                    border: 0px;
+                                                    font-weight: bold;
+                                                    font-style: normal;
+                                                    font-variant: normal;
+                                                    font-stretch: normal;
+                                                    font-size: 20px;
+                                                    line-height: normal;
+                                                    font-family: Arial;
+                                                    text-align: center;
+                                                    color: rgb(150, 190, 75);
+                                                    padding: 0px;
+                                                    -webkit-appearance: none;
+                                                    background: none;
+                                                "
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="bio-desk">
+                                        <h4 class="green">VectorLab Portfolio</h4>
+                                        <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="bio-chart">
+                                        <div style="display: inline; width: 100px; height: 100px;">
+                                            <canvas width="100" height="100px"></canvas>
+                                            <input
+                                                class="knob"
+                                                data-width="100"
+                                                data-height="100"
+                                                data-displayprevious="true"
+                                                data-thickness=".2"
+                                                value="50"
+                                                data-fgcolor="#cba4db"
+                                                data-bgcolor="#e8e8e8"
+                                                style="
+                                                    width: 54px;
+                                                    height: 33px;
+                                                    position: absolute;
+                                                    vertical-align: middle;
+                                                    margin-top: 33px;
+                                                    margin-left: -77px;
+                                                    border: 0px;
+                                                    font-weight: bold;
+                                                    font-style: normal;
+                                                    font-variant: normal;
+                                                    font-stretch: normal;
+                                                    font-size: 20px;
+                                                    line-height: normal;
+                                                    font-family: Arial;
+                                                    text-align: center;
+                                                    color: rgb(203, 164, 219);
+                                                    padding: 0px;
+                                                    -webkit-appearance: none;
+                                                    background: none;
+                                                "
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="bio-desk">
+                                        <h4 class="purple">Adobe Muse Template</h4>
+                                        <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patient Reviews END -->
+                </div>
+                <!-- Page Column END -->
+
+
+
+            </div>
+            <!-- Inner container -->
+        </div>
+        <!-- CSS container END https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
+        
+    </body>
 </html>
