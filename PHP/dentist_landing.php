@@ -18,6 +18,15 @@ $dName = pg_fetch_row(pg_query($dbconn, "SELECT name FROM employee_info WHERE em
 $dWorkLocation = pg_fetch_row(pg_query($dbconn, "SELECT address FROM employee_info WHERE employee_sin='$dSin[0]';"));
 $dSalary = pg_fetch_row(pg_query($dbconn, "SELECT annual_salary FROM employee_info WHERE employee_sin='$dSin[0]';"));
 
+//get type - dentist/hygienist
+$type = pg_fetch_row(pg_query($dbconn, "SELECT employee_type FROM Employee_info WHERE employee_sin = '$dSin[0]';"));
+if ($type[0] == 'h'){
+	$type = "Hygienist";
+}elseif ($type[0] == 'd'){
+	$type = "Dentist";
+}
+
+
 //  info about upcoming appointment if the dentist has any
 $appointID = pg_fetch_row(pg_query($dbconn, "SELECT appointment_id FROM appointment WHERE dentist_id=$eID AND appointment_status='Booked';"));
 if ($appointID != null) {
@@ -38,7 +47,7 @@ if ($appointID != null) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCMS - Dentist Homepage</title>
+    <title>DCMS - <?php echo $type ?> Homepage</title>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css'>
     <link rel='stylesheet' href='main.css' type="text/css">
 </head>
@@ -56,7 +65,7 @@ if ($appointID != null) {
                 <div class="h-100">
                     <div class="boxInfo">
                         <div class="text-muted">Employee position</div>
-                        <div class="h3">Dentist</div>
+                        <div class="h3"><?php echo $type ?></div>
                     </div> 
                 </div>
             </div>
