@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     $_SESSION['empID'] = $eID[0]; 
                     $_SESSION['empUName'] = $username;
 
-                    if ($eType== 'd' || $eType == 'r' || $eType == 'h'){
+                    if ($eType== 'd' || $eType == 'h'){
                         //redirect to dentist/hygienist page
 
                         header('Location:dentist_landing.php');
