@@ -2,12 +2,32 @@
     color: #ff0000;
 }
 
-/* Styling used in dentist landing page */
-.header {
-    text-decoration: underline;
+/* Logout button */
+.logout-btn {
+    background-color: #1254be;
+    width: fit-content;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    float: right;
 }
 
-.boxInfo{
+.logout-btn:hover {
+    background-color: #104291;
+}
+
+.logout-btn-text {
+    color:aliceblue
+}
+
+.logout-btn-text:hover {
+    color:aliceblue;
+    text-decoration: none;
+}
+
+
+/* Styling used in dentist landing page */
+.boxInfo {
     background-color: beige;
     margin-left: 5px;
     margin-right: 5px;
