@@ -105,8 +105,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <link rel="icon" type="image/x-icon" href="images/register.png">
     <!-- <link rel="stylesheet" href="CSS/main.css"> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/excite-bike/jquery-ui.css" rel="stylesheet"
-        type="text/css">
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/excite-bike/jquery-ui.css" rel="stylesheet" type="text/css">
+    <link rel='stylesheet' href='main.css' type="text/css">
+
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
@@ -124,8 +125,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   
 
     <div class="container">
+        <div class="logout-btn">
+            <a href="logout.php" class="logout-btn-text">Return</a>
+        </div>
 
-        <h1 style="text-align:center">DCMS - Registration page</h1>
+        <h1 style="text-align:center">DCMS - Registration Page</h1>
         <h2>Enter Registration Details</h2>
         <h3 class="error"><?php echo $err ?></h3>
         <span class="error"> * indicates a field is required </span> 
@@ -154,9 +158,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <h3>Patient Details</h3>
             <fieldset>
             <legend>What's your gender?</legend>
-                <input type="radio" name="gender" value="X" checked>Other/Prefer not to say<br>
                 <input type="radio" name="gender" value="M">Male<br>
                 <input type="radio" name="gender" value="F">Female<br>
+                <input type="radio" name="gender" value="X" checked>Other/Prefer not to say<br>
             </fieldset> <br>
             <?php
                 $fields = array();
