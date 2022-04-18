@@ -77,7 +77,6 @@ CREATE TABLE Invoice (
 CREATE TABLE Insurance_claim (
     claim_id SERIAL PRIMARY KEY,
     patient_sin INTEGER NOT NULL,
-    employer_name VARCHAR(255) NOT NULL,
     insurance_company VARCHAR(255) NOT NULL,
     plan_number INTEGER NOT NULL,
     coverage NUMERIC(10,2) NOT NULL,
