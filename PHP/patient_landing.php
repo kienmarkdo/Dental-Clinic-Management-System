@@ -63,6 +63,9 @@ dinfo.employee_sin IN (
 // }
 // echo '</table>';
 
+// Treatment query
+$patientTreatments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Treatment WHERE patient_id='$pID[0]' ORDER BY appointment_id DESC;"));
+
 // Appointment_Procedure query
 $apptProcedures = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment_procedure WHERE patient_id='$pID[0]' ORDER BY date_of_procedure DESC;"));
 
@@ -94,7 +97,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
             </div>
         </div>
         <!-- Logout Button END -->
-        
+
         <!-- CSS container START https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
         <div class="container bootstrap snippets bootdey">
             <div class="row">
@@ -114,6 +117,9 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                             </li>
                             <li>
                                 <a href="#patient_appointments"> <i class="fa fa-calendar"></i> Appointments</a>
+                            </li>
+                            <li>
+                                <a href="#patient_treatments"> <i class="fa fa-flag"></i> Treatments</a>
                             </li>
                             <li>
                                 <a href="#patient_appointment_procedures"> <i class="fa fa-book"></i> Appointment Procedures</a>
@@ -457,6 +463,43 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                         </div>
                     </div>
                     <!-- Patient Appointments END -->
+                    <!-- ==================================================================== -->
+                    <!-- Patient Treatments START -->
+
+                    <div class="panel" id="patient_treatments">
+                        <div class="bio-graph-heading">
+                            <h3>Patient Treatments</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <table id="appointments_grid" class="table" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Treatment ID</th>
+                                        <th>Treatment Type</th>
+                                        <th>Medication</th>
+                                        <th>Symptoms</th>
+                                        <th>Tooth</th>
+                                        <th>Comments</th>
+                                        <th>Appointment ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($patientTreatments as $patientTreatment => $patientTreatments) :?>
+                                    <tr>
+                                        <td><?php echo $patientTreatments['treatment_id'] ?></td>
+                                        <td><?php echo $patientTreatments['treatment_type'] ?></td>
+                                        <td><?php echo $patientTreatments['medication'] ?></td>
+                                        <td><?php echo $patientTreatments['symptoms'] ?></td>
+                                        <td><?php echo $patientTreatments['tooth'] ?></td>
+                                        <td><?php echo $patientTreatments['comments'] ?></td>
+                                        <td><?php echo $patientTreatments['appointment_id'] ?></td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Patient Treatments END -->
                     <!-- ==================================================================== -->
                     <!-- Patient Appointment Procedures START -->
 
