@@ -109,6 +109,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                         </div>
 
                         <ul class="nav nav-pills nav-stacked">
+                            <!-- Font awesome fonts version 4: https://fontawesome.com/v4/icons/ -->
                             <li class="active">
                                 <a href="#patient_info"> <i class="fa fa-user"></i> Patient Information</a>
                             </li>
