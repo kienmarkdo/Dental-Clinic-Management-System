@@ -26,10 +26,51 @@ $pRepresentative = pg_fetch_row(pg_query($dbconn, "SELECT rep FROM Patient_info 
 $patientRecords = pg_fetch_all(pg_query($dbconn, "SELECT record_id, patient_details FROM Patient_records WHERE patient_id='$pID[0]';"));
 
 // Patient appointment details
-// TODO: Not sure if the queries are working or not. Not sure how to print all the fetched apptIDs etc.
-$patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]';"));
+$patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY date_of_appointment DESC;"));
+// TODO: apptDentistNames is stores the names of all the dentists who served this patient
+$apptDentistNames = pg_fetch_all(pg_query($dbconn, "
+-- query to display all names of DENTISTS WHO SERVE PATIENT WITH ID $pID[0] in Appointments
+SELECT dinfo.name FROM Employee_info AS dinfo WHERE 
+dinfo.employee_sin IN (
+	SELECT d.employee_sin FROM Employee AS d WHERE d.employee_id IN (
+		SELECT dentist_id FROM Appointment WHERE patient_id='$pID[0]'
+	)
+);
+"));
 
+// TODO: All of this code below is me trying to print $apptDentistNames, one name at a time...
+// print_r($apptDentistNames);
 
+// for ($x = 0; $x <= sizeof($apptDentistNames); $x++) {
+//     echo json_encode($apptDentistNames[$x]);
+// }
+
+// foreach($apptDentistNames as $dentistName)
+// {
+//     echo $dentistName['name'] . "<br/>";
+// }
+
+// echo '<table>
+//         <tr>
+//          <td>Dentist Name</td>
+//         </tr>';
+
+// foreach($apptDentistNames as $dentistName)
+// {
+//     echo '<tr>
+//             <td>'. $dentistName.'</td>
+//           </tr>';
+// }
+// echo '</table>';
+
+// Appointment_Procedure query
+$apptProcedures = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment_procedure WHERE patient_id='$pID[0]' ORDER BY date_of_procedure DESC;"));
+
+// Invoice query - all of patient's invoice
+$patientInvoice = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Invoice WHERE patient_id='$pID[0]' ORDER BY date_of_issue DESC;"));
+
+// Review query (all reviews on the website)
+$reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of_review DESC;"));
 
 ?>
 
@@ -40,12 +81,20 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>DCMS - Patient Homepage</title>
-        <!-- <link rel="stylesheet" href="main.css" /> -->
+        <link rel="stylesheet" href="main.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="patient_landing_style.css" />
     </head>
     <body>
+        <!-- Logout Button START -->
+        <div class="container">
+            <div class="logout-btn">
+                <a href="logout.php" class="logout-btn-text">Logout</a>
+            </div>
+        </div>
+        <!-- Logout Button END -->
+        
         <!-- CSS container START https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
         <div class="container bootstrap snippets bootdey">
             <div class="row">
@@ -73,7 +122,7 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
                                 <a href="#patient_invoices"> <i class="fa fa-credit-card"></i> Invoices</a>
                             </li>
                             <li>
-                                <a href="#patient_reviews"> <i class="fa fa-comments-o"></i> My Reviews</a>
+                                <a href="#patient_reviews"> <i class="fa fa-comments-o"></i> Reviews</a>
                             </li>
                         </ul>
                     </div>
@@ -357,8 +406,7 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach($patientRecords as $patientRecord =>
-                                    $patientRecords) :?>
+                                    <?php foreach($patientRecords as $patientRecord => $patientRecords) :?>
                                     <tr>
                                         <td><?php echo $patientRecords['record_id'] ?></td>
                                         <td><?php echo $patientRecords['patient_details'] ?></td>
@@ -377,8 +425,6 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
                             <h3>Patient Appointments</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
-                            <!-- List Patient Records here -->
-                            <!-- Record ID | Patient details -->
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
@@ -393,51 +439,7 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach($patientAppointments as $patientAppointment =>
-                                    $patientAppointments) :?>
-                                    <tr>
-                                        <td><?php echo $patientAppointments['appointment_id'] ?></td>
-                                        <td><?php echo $patientAppointments['employee_id'] ?></td>
-                                        <!-- <td><?php //echo pg_fetch_result(pg_query($dbconn, "SELECT e_info.name FROM Employee_info AS e_info WHERE e_info.employee_sin in (SELECT e.employee_sin FROM Employee AS e WHERE e.employee_id='$patientAppointments['employee_id']');")); ?></td> -->
-                                        <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
-                                        <td><?php echo $patientAppointments['start_time'] ?></td>
-                                        <td><?php echo $patientAppointments['end_time'] ?></td>
-                                        <td><?php echo $patientAppointments['appointment_type'] ?></td>
-                                        <td><?php echo $patientAppointments['appointment_status'] ?></td>
-                                        <td><?php echo $patientAppointments['room'] ?></td>
-                                    </tr>
-                                    <?php endforeach;?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- Patient Appointments END -->
-                    <!-- ==================================================================== -->
-                    <!-- Patient Appointment Prcocedure START -->
-
-                    <div class="panel" id="patient_appointment_procedures">
-                        <div class="bio-graph-heading">
-                            <h3>Appointment Procedures</h3>
-                        </div>
-                        <div class="panel-body bio-graph-info">
-                            <!-- List Patient Records here -->
-                            <!-- Record ID | Patient details -->
-                            <table id="appointments_grid" class="table" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>Appointment ID</th>
-                                        <th>Dentist ID</th>
-                                        <th>Date</th>
-                                        <th>Start Time</th>
-                                        <th>End Time</th>
-                                        <th>Type</th>
-                                        <th>Status</th>
-                                        <th>Room</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach($patientAppointments as $patientAppointment =>
-                                    $patientAppointments) :?>
+                                    <?php foreach($patientAppointments as $patientAppointment => $patientAppointments) :?>
                                     <tr>
                                         <td><?php echo $patientAppointments['appointment_id'] ?></td>
                                         <td><?php echo $patientAppointments['dentist_id'] ?></td>
@@ -454,20 +456,135 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
                             </table>
                         </div>
                     </div>
+                    <!-- Patient Appointments END -->
+                    <!-- ==================================================================== -->
+                    <!-- Patient Appointment Procedures START -->
+
+                    <div class="panel" id="patient_appointment_procedures">
+                        <div class="bio-graph-heading">
+                            <h3>Appointment Procedures</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <table id="appointments_grid" class="table" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Procedure ID</th>
+                                        <th>Appointment ID</th>
+                                        <th>Date</th>
+                                        <th>Invoice ID</th>
+                                        <th>Code</th>
+                                        <th>Description</th>
+                                        <th>Tooth</th>
+                                        <th><abbr title="This is actually the Procedure Code (1: Teeth Cleanings, 2: Teeth Whitening, 3: Extractions, 4: Veneers, 5: Fillings, 6: Crowns, 7: Root Canal, 8: Braces/Invisalign, 9: Bonding, 10: Dentures)">Amount</abbr></th>
+                                        <th>Total Charge</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($apptProcedures as $apptProcedure => $apptProcedures) :?>
+                                    <tr>
+                                        <td><?php echo $apptProcedures['procedure_id'] ?></td>
+                                        <td><?php echo $apptProcedures['appointment_id'] ?></td>
+                                        <td><?php echo $apptProcedures['date_of_procedure'] ?></td>
+                                        <td><?php echo $apptProcedures['invoice_id'] ?></td>
+                                        <td><?php echo $apptProcedures['procedure_code'] ?></td>
+                                        <td><?php echo $apptProcedures['appointment_description'] ?></td>
+                                        <td><?php echo $apptProcedures['tooth'] ?></td>
+                                        <td><?php echo $apptProcedures['amount_of_procedure'] ?></abbr></td>
+                                        <td><?php echo $apptProcedures['total_charge'] ?></td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     <!-- Patient Appointment Procedures END -->
+                    <!-- ==================================================================== -->
+                    <!-- Patient Invoice START -->
+
+                    <div class="panel" id="patient_invoices">
+                        <div class="bio-graph-heading">
+                            <h3>Invoices</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <table id="appointments_grid" class="table" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice ID</th>
+                                        <th>Date Of Issue</th>
+                                        <th>Contact Info</th>
+                                        <th>Patient Charge</th>
+                                        <th>Insurance Charge</th>
+                                        <th>Discount</th>
+                                        <th>Penalty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($patientInvoice as $invoice => $patientInvoice) :?>
+                                    <tr>
+                                        <td><?php echo $patientInvoice['invoice_id'] ?></td>
+                                        <td><?php echo $patientInvoice['date_of_issue'] ?></td>
+                                        <td><?php echo $patientInvoice['contact_info'] ?></td>
+                                        <td><?php echo $patientInvoice['patient_charge'] ?></td>
+                                        <td><?php echo $patientInvoice['insurance_charge'] ?></td>
+                                        <td><?php echo $patientInvoice['discount'] ?></td>
+                                        <td><?php echo $patientInvoice['penalty'] ?></td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Patient Invoice END -->
 
                     <!-- ==================================================================== -->
                     <!-- Patient Reviews START -->
+                    
+                    <!-- Patient Review VIEW ALL EXISTING REVIEWS START -->
+
+                    <div class="panel" id="patient_reviews">
+                        <div class="bio-graph-heading">
+                            <h3>Reviews</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <table id="appointments_grid" class="table" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Review ID</th>
+                                        <th>Dentist Name</th>
+                                        <th>Professionalism</th>
+                                        <th>Communication</th>
+                                        <th>Cleanliness</th>
+                                        <th>Date Of Review</th>
+                                        <th>Procedure ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($reviews as $review => $reviews) :?>
+                                    <tr>
+                                        <td><?php echo $reviews['review_id'] ?></td>
+                                        <td><?php echo $reviews['dentist_name'] ?></td>
+                                        <td><?php echo $reviews['professionalism'] ?></td>
+                                        <td><?php echo $reviews['communication'] ?></td>
+                                        <td><?php echo $reviews['cleanliness'] ?></td>
+                                        <td><?php echo $reviews['date_of_review'] ?></td>
+                                        <td><?php echo $reviews['procedure_id'] ?></td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Patient Review VIEW ALL EXISTING REVIEWS END -->
 
                     <!-- Review Input Box -->
                     <div class="panel" id="patient_reviews">
                         <form>
-                            <textarea placeholder="Whats in your mind today?" rows="2" class="form-control input-lg p-text-area"></textarea>
+                            <textarea placeholder="Leave us an anonymous review!" rows="2" class="form-control input-lg p-text-area"></textarea>
                         </form>
                         <footer class="panel-footer">
-                            <button class="btn btn-warning pull-right">Post</button>
+                            <button class="btn btn-warning pull-right">Submit</button>
                             <ul class="nav nav-pills">
-                                <li>
+                                <!-- <li>
                                     <a href="#"><i class="fa fa-map-marker"></i></a>
                                 </li>
                                 <li>
@@ -478,7 +595,7 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
                                 </li>
                                 <li>
                                     <a href="#"><i class="fa fa-microphone"></i></a>
-                                </li>
+                                </li> -->
                             </ul>
                         </footer>
                     </div>
@@ -525,9 +642,9 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
                                         </div>
                                     </div>
                                     <div class="bio-desk">
-                                        <h4 class="red">Envato Website</h4>
-                                        <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p>
+                                        <h4 class="red">Dentist Name</h4>
+                                        <!-- <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p> -->
                                     </div>
                                 </div>
                             </div>
@@ -572,9 +689,9 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
                                         </div>
                                     </div>
                                     <div class="bio-desk">
-                                        <h4 class="terques">ThemeForest CMS</h4>
-                                        <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p>
+                                        <h4 class="terques">Professionalism</h4>
+                                        <!-- <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p> -->
                                     </div>
                                 </div>
                             </div>
@@ -619,9 +736,9 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
                                         </div>
                                     </div>
                                     <div class="bio-desk">
-                                        <h4 class="green">VectorLab Portfolio</h4>
-                                        <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p>
+                                        <h4 class="green">Communication</h4>
+                                        <!-- <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p> -->
                                     </div>
                                 </div>
                             </div>
@@ -666,9 +783,9 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
                                         </div>
                                     </div>
                                     <div class="bio-desk">
-                                        <h4 class="purple">Adobe Muse Template</h4>
-                                        <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p>
+                                        <h4 class="purple">Cleanliness</h4>
+                                        <!-- <p>Started : 15 July</p>
+                                        <p>Deadline : 15 August</p> -->
                                     </div>
                                 </div>
                             </div>
