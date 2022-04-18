@@ -232,6 +232,9 @@ INSERT INTO user_account VALUES ('akiti7935', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2o
 INSERT INTO user_account VALUES ('stoua0809', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 7);
 INSERT INTO user_account VALUES ('kdo2342', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 11);
 INSERT INTO user_account VALUES ('johnli255', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 2, 5, 6);
+INSERT INTO user_account VALUES ('bobmley1', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 1); --receptionist
+INSERT INTO user_account VALUES ('olvMar8', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 8); --receptionist
+INSERT INTO user_account VALUES ('CrsClo9', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 9); --receptionist
 
 -- Review
 INSERT INTO Review VALUES (
