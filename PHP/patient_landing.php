@@ -440,7 +440,7 @@ $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment
                                     $patientAppointments) :?>
                                     <tr>
                                         <td><?php echo $patientAppointments['appointment_id'] ?></td>
-                                        <td><?php echo $patientAppointments['employee_id'] ?></td>
+                                        <td><?php echo $patientAppointments['dentist_id'] ?></td>
                                         <!-- <td><?php //echo pg_fetch_result(pg_query($dbconn, "SELECT e_info.name FROM Employee_info AS e_info WHERE e_info.employee_sin in (SELECT e.employee_sin FROM Employee AS e WHERE e.employee_id='$patientAppointments['employee_id']');")); ?></td> -->
                                         <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
                                         <td><?php echo $patientAppointments['start_time'] ?></td>
