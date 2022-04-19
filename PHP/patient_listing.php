@@ -191,7 +191,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                         if ($pInsurance[0] == null) {
                                         echo "None";
                                         } else {
-                                        echo $pAddress[0];
+                                        echo $pInsurance[0];
                                         }
                                         ?>
 
