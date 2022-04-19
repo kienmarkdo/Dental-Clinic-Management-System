@@ -26,7 +26,7 @@ $pRepresentative = pg_fetch_row(pg_query($dbconn, "SELECT rep FROM Patient_info 
 $patientRecords = pg_fetch_all(pg_query($dbconn, "SELECT record_id, patient_details FROM Patient_records WHERE patient_id='$pID[0]';"));
 
 // Patient appointment details
-$patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY date_of_appointment;"));
+$patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY appointment_id DESC;")); // assume that latest appointment_id means latest date_of_appointment
 // apptDentistNames stores the names of all the dentists who served this patient
 $apptDentistNames = pg_fetch_all(pg_query($dbconn, "
 -- query to display all names of DENTISTS WHO SERVE PATIENT WITH ID $pID[0] in Appointments
@@ -39,45 +39,16 @@ dinfo.employee_sin IN (
 "));
 
 // Treatment query
-$patientTreatments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Treatment WHERE patient_id='$pID[0]' ORDER BY appointment_id;"));
+$patientTreatments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Treatment WHERE patient_id='$pID[0]' ORDER BY appointment_id DESC;"));
 
 // Appointment_Procedure query
-$apptProcedures = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment_procedure WHERE patient_id='$pID[0]' ORDER BY date_of_procedure;"));
+$apptProcedures = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment_procedure WHERE patient_id='$pID[0]' ORDER BY procedure_id DESC;")); // assume that latest procedure_id means latest date_of_procedure
 
 // Invoice query - all of patient's invoice
-$patientInvoice = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Invoice WHERE patient_id='$pID[0]' ORDER BY date_of_issue;"));
+$patientInvoice = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Invoice WHERE patient_id='$pID[0]' ORDER BY invoice_id DESC;")); // assume that latest review ID means latest date_of_issue
 
 // Review query (all reviews on the website)
-$reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of_review DESC;"));
-
-// insert patient review into Postgres
-// if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    
-//     //check_empty_input returns -1 on empty
-//     $dentistNameInput = check_empty_input($_POST["dentistName"]);
-//     $professionalismInput = check_empty_input($_POST["professionalism"]);
-//     $communicationInput = check_empty_input($_POST["communication"]);
-//     $cleanlinessInput = check_empty_input($_POST["cleanliness"]);
-//     date_default_timezone_set("America/New_York");
-//     $reviewDate = date("Y-m-d"); // YYYY-MM-DD format
-//     $procedureIDInput = check_empty_input($_POST["procedure_id"]);
-
-//     echo "Adding Review <br/>";
-
-//     pg_query($dbconn, 'BEGIN'); // begins transaction
-//     $reviewResult = pg_query_params($dbconn, 
-//         "INSERT INTO Review (dentist_name, professionalism, communication, cleanliness, date_of_review, procedure_id) 
-//         VALUES ($1, $2, $3, $4, $5, $6);",
-//         array(
-//             $dentistNameInput, //1
-//             $professionalismInput, //2
-//             $communicationInput, //3
-//             $cleanlinessInput, //4
-//             $reviewDate, //5
-//             $procedureIDInput, //6
-//         )
-//     );
-// }
+$reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_id DESC;"));
 
 ?>
 
@@ -144,7 +115,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                     <!-- Patient Information START -->
                     <div class="panel" id="patient_info">
                         <div class="bio-graph-heading">
-                            <h3>Patient Information</h3>
+                            <h3><i class="fa fa-user"></i> Patient Information</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
                             <h1>
@@ -152,13 +123,16 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                 <?php echo $pID[0] ?>
                             </h1>
                             <div class="row">
-                                <!-- <div class="bio-row">
-                                    <p><span>Patient ID </span><?php echo $pName[0] ?></p>
-                                </div> -->
                                 <div class="bio-row">
                                     <p>
                                         <span>Full Name </span>
                                         <?php echo $pName[0] ?>
+                                    </p>
+                                </div>
+                                <div class="bio-row">
+                                    <p>
+                                        <span>Gender </span>
+                                        <?php echo $pGender[0] ?>
                                     </p>
                                 </div>
                                 <div class="bio-row">
@@ -200,7 +174,21 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                 <div class="bio-row">
                                     <p>
                                         <span>Representative </span>
-                                        <?php echo $pRepresentative[0] ?>
+                                        <br>
+                                        <?php
+                                        // pRepresentative[0] itself is a horrible string. These 4 lines of code below cleans the string and splits the parameters (name, phone, email, relationship) into an array
+                                        $pRepresentative[0] = str_replace("(","",$pRepresentative[0]);
+                                        $pRepresentative[0] = str_replace(")","",$pRepresentative[0]);
+                                        $pRepresentative[0] = str_replace('"',"",$pRepresentative[0]);
+                                        $pRepresentativeArr = preg_split ("/\,/", $pRepresentative[0]);
+                                        echo "<ul>";
+                                        echo "<li>Name: " . $pRepresentativeArr[0] . "</li>";
+                                        echo "<li>Phone: " . $pRepresentativeArr[1] . "</li>";
+                                        echo "<li>Email: " . $pRepresentativeArr[2] . "</li>";
+                                        echo "<li>Relationship: " . $pRepresentativeArr[3] . "</li>";
+                                        echo "</ul>";
+                                        ?>
+                                        
                                     </p>
                                 </div>
                             </div>
@@ -212,7 +200,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 
                     <div class="panel" id="patient_records">
                         <div class="bio-graph-heading">
-                            <h3>Patient Medical Records</h3>
+                            <h3><i class="fa fa-heart"></i> Patient Medical Records</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
                             <!-- List Patient Records here -->
@@ -225,6 +213,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <!-- Populate table with patient records data from Postgres -->
                                     <?php foreach($patientRecords as $patientRecord => $patientRecords) :?>
                                     <tr>
                                         <td><?php echo $patientRecords['record_id'] ?></td>
@@ -241,7 +230,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 
                     <div class="panel" id="patient_appointments">
                         <div class="bio-graph-heading">
-                            <h3>Patient Appointments</h3>
+                            <h3><i class="fa fa-calendar"></i> Patient Appointments</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
@@ -258,11 +247,12 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <!-- Populate table with patient appointments data from Postgres -->
                                     <?php foreach($patientAppointments as $patientAppointment => $patientAppointments) :?>
                                     <tr>
                                         <td><?php echo $patientAppointments['appointment_id'] ?></td>
+                                        <!-- Change this line below to dentist name instead of dentist_id if possible -->
                                         <td><?php echo $patientAppointments['dentist_id'] ?></td>
-                                        <!-- <td><?php //echo pg_fetch_result(pg_query($dbconn, "SELECT e_info.name FROM Employee_info AS e_info WHERE e_info.employee_sin in (SELECT e.employee_sin FROM Employee AS e WHERE e.employee_id='$patientAppointments['employee_id']');")); ?></td> -->
                                         <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
                                         <td><?php echo $patientAppointments['start_time'] ?></td>
                                         <td><?php echo $patientAppointments['end_time'] ?></td>
@@ -281,7 +271,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 
                     <div class="panel" id="patient_treatments">
                         <div class="bio-graph-heading">
-                            <h3>Patient Treatments</h3>
+                            <h3><i class="fa fa-flag"></i> Patient Treatments</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
@@ -318,7 +308,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 
                     <div class="panel" id="patient_appointment_procedures">
                         <div class="bio-graph-heading">
-                            <h3>Appointment Procedures</h3>
+                            <h3><i class="fa fa-book"></i> Appointment Procedures</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
@@ -359,7 +349,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 
                     <div class="panel" id="patient_invoices">
                         <div class="bio-graph-heading">
-                            <h3>Invoices</h3>
+                            <h3><i class="fa fa-credit-card"></i> Invoices</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
@@ -399,7 +389,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 
                     <div class="panel" id="patient_reviews">
                         <div class="bio-graph-heading">
-                            <h3>Reviews</h3>
+                            <h3><i class="fa fa-comments-o"></i> Reviews</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
@@ -407,7 +397,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                     <tr>
                                         <th>Review ID</th>
                                         <th>Dentist Name</th>
-                                        <!-- <th>Description</th> -->
+                                        <th>Description</th>
                                         <th>Professionalism</th>
                                         <th>Communication</th>
                                         <th>Cleanliness</th>
@@ -416,11 +406,12 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <!-- Populate table with patient reviews data from Postgres -->
                                     <?php foreach($reviews as $review => $reviews) :?>
                                     <tr>
                                         <td><?php echo $reviews['review_id'] ?></td>
                                         <td><?php echo $reviews['dentist_name'] ?></td>
-                                        <!-- <td><?php echo $reviews['review_description'] ?></td> -->
+                                        <td><?php echo $reviews['review_description'] ?></td>
                                         <td><?php echo $reviews['professionalism'] ?></td>
                                         <td><?php echo $reviews['communication'] ?></td>
                                         <td><?php echo $reviews['cleanliness'] ?></td>
@@ -436,26 +427,30 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 
                     <!-- Review Input Box -->
                     <?php
+                    // This PHP block error checks the user inputs
+
                     // define variables and set to empty values
                     $professionalismErr = $communicationErr = $cleanlinessErr = $dentistNameErr = $procedureIDErr = "";
                     $comment = "";
 
                     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+                        // checks whether all mandatory fields are filled out or not
+
                         if (empty($_POST["dentistName"])) {
-                            $dentistNameErr = "";
+                            $dentistNameErr = "Required";
                         }
                         if (empty($_POST["professionalism"])) {
-                            $professionalismErr = "";
+                            $professionalismErr = "Required";
                         }
                         if (empty($_POST["communication"])) {
-                            $communicationErr = "";
+                            $communicationErr = "Required";
                         }
                         if (empty($_POST["cleanliness"])) {
-                            $cleanlinessErr = "";
+                            $cleanlinessErr = "Required";
                         }
                         if (empty($_POST["procedure_id"])) {
-                            $procedureIDErr = "";
+                            $procedureIDErr = "Required";
                         }
 
                         if (empty($_POST["comment"])) {
@@ -469,6 +464,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                     {
                         $data = trim($data);
                         $data = stripslashes($data);
+                        $data = str_replace("\\", "", $data);
                         $data = htmlspecialchars($data);
                         return $data;
                     }
@@ -478,7 +474,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                     
                     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                         <div class="panel" id="patient_reviews">
-                            <!-- Comment -->
+                            <!-- Comment box -->
                             <textarea name="comment" placeholder="Leave us an anonymous review! (Max. 255 characters)" rows="4" class="form-control input-lg p-text-area" maxlength="255"><?php echo $comment;?></textarea>
                             
                             <footer class="panel-footer">
@@ -491,6 +487,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                         <label for="dentistName">Dentist:<span class="error">* <?php echo $dentistNameErr;?></span></label>
                                         <select name="dentistName" id="dentistName">
                                             <option value="">-</option>
+                                            <!-- Populate dropdown menu with DENTIST NAMES WHO ARE IN THE PATIENT'S APPOINTMENT TABLE from Postgres -->
                                             <?php foreach($apptDentistNames as $dentistName => $apptDentistNames) :?>
                                             <option value="<?php echo $apptDentistNames['name'];?>"><?php echo $apptDentistNames['name'];?></option>
                                             <?php endforeach; ?>
@@ -558,6 +555,9 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                     
                     <?php
                     
+                    // this PHP block processes the Review input after the response was submitted successfully
+
+                    // if response was submitted successfully
                     if (!(empty($_POST["dentistName"]) || 
                         empty($_POST["professionalism"]) || 
                         empty($_POST["communication"]) || 
@@ -582,7 +582,43 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                         if(isset($_POST['procedure_id'])) {
                             echo "Procedure ID: ".htmlspecialchars($_POST['procedure_id'])."<br>";
                         }
-                    }
+
+                        echo "<br>";
+                        echo "Your response was submitted on " . date("Y-m-d",time()) . "<br><br>";
+
+                        // insert data into Review table in Postgres
+                        // insert patient review into Postgres
+                        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                            
+                            // move the $_POST userinputs into PHP variables for cleaner code
+                            $dentistNameInput = $_POST["dentistName"];
+                            $professionalismInput = $_POST["professionalism"];
+                            $comment = str_replace("'", "''", $comment); // replace ' with '' for Postgres insertion
+                            $communicationInput = $_POST["communication"];
+                            $cleanlinessInput = $_POST["cleanliness"];
+                            $reviewDate = date("Y-m-d",time()); // YYYY-MM-DD format
+                            $procedureIDInput = $_POST["procedure_id"];
+
+                            echo "Adding Review <br/>";
+
+                            echo "ahhhhhhhhhh ". $comment;
+
+                            $reviewQuery = "INSERT INTO Review (dentist_name, review_description, professionalism, communication, cleanliness, date_of_review, procedure_id) VALUES ('$dentistNameInput','$comment','$professionalismInput','$communicationInput','$cleanlinessInput','$reviewDate','$procedureIDInput');";
+
+                            // $dbconn is the db connection in db.php
+                            $insertReviewResult = pg_query($dbconn, $reviewQuery); // insert data into database
+
+                            if (!$insertReviewResult) {
+                                echo pg_last_error($dbconn);
+                            } else {
+                                echo "<br>Review Added Successfully!<br><br><br>";
+                            }
+
+
+                        } // end if ($_SERVER['REQUEST_METHOD'] === "POST")
+
+                    } // end if (if response was submitted successfully)
+                    
                         
                     ?>
 
@@ -600,5 +636,14 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
         <!-- CSS container END https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
         <br>
         <br>
+        <br>
+        <br>
     </body>
+    <script>
+        // this if statement turns off the "Confirm Form Resubmission" and prevents multiple Review submissions
+        //  after a successful Review submission
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
 </html>
