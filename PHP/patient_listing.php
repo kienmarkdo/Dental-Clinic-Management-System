@@ -78,7 +78,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth;">
     <head>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -187,13 +187,27 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                 <div class="bio-row">
                                     <p>
                                         <span>Insurance </span>
-                                        <?php echo $pInsurance[0] ?>
+                                        <?php
+                                        if ($pInsurance[0] == null) {
+                                        echo "None";
+                                        } else {
+                                        echo $pAddress[0];
+                                        }
+                                        ?>
+
                                     </p>
                                 </div>
                                 <div class="bio-row">
                                     <p>
                                         <span>Representative </span>
-                                        <?php echo $pRepresentative[0] ?>
+                                        
+                                        <?php
+                                        if ($pRepresentative[0] == null) {
+                                        echo "None";
+                                        } else {
+                                        echo $pRepresentative[0];
+                                        }
+                                        ?>
                                     </p>
                                 </div>
                             </div>
