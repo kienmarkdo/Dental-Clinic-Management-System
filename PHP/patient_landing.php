@@ -27,7 +27,7 @@ $patientRecords = pg_fetch_all(pg_query($dbconn, "SELECT record_id, patient_deta
 
 // Patient appointment details
 $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY date_of_appointment DESC;"));
-// TODO: apptDentistNames is stores the names of all the dentists who served this patient
+// apptDentistNames stores the names of all the dentists who served this patient
 $apptDentistNames = pg_fetch_all(pg_query($dbconn, "
 -- query to display all names of DENTISTS WHO SERVE PATIENT WITH ID $pID[0] in Appointments
 SELECT dinfo.name FROM Employee_info AS dinfo WHERE 
@@ -37,31 +37,6 @@ dinfo.employee_sin IN (
 	)
 );
 "));
-
-// TODO: All of this code below is me trying to print $apptDentistNames, one name at a time...
-// print_r($apptDentistNames);
-
-// for ($x = 0; $x <= sizeof($apptDentistNames); $x++) {
-//     echo json_encode($apptDentistNames[$x]);
-// }
-
-// foreach($apptDentistNames as $dentistName)
-// {
-//     echo $dentistName['name'] . "<br/>";
-// }
-
-// echo '<table>
-//         <tr>
-//          <td>Dentist Name</td>
-//         </tr>';
-
-// foreach($apptDentistNames as $dentistName)
-// {
-//     echo '<tr>
-//             <td>'. $dentistName.'</td>
-//           </tr>';
-// }
-// echo '</table>';
 
 // Treatment query
 $patientTreatments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Treatment WHERE patient_id='$pID[0]' ORDER BY appointment_id DESC;"));
@@ -75,6 +50,35 @@ $patientInvoice = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Invoice WHERE pa
 // Review query (all reviews on the website)
 $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of_review DESC;"));
 
+// insert patient review into Postgres
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
+    
+    //check_empty_input returns -1 on empty
+    $dentistNameInput = check_empty_input($_POST["dentistname"]);
+    $professionalismInput = check_empty_input($_POST["professionalism"]);
+    $communicationInput = check_empty_input($_POST["communication"]);
+    $cleanlinessInput = check_empty_input($_POST["cleanliness"]);
+    date_default_timezone_set("America/New_York");
+    $reviewDate = date("Y-m-d"); // YYYY-MM-DD format
+    $procedureIDInput = check_empty_input($_POST["procedure_id"]);
+
+    echo "Adding Review <br/>";
+
+    pg_query($dbconn, 'BEGIN'); // begins transaction
+    $reviewResult = pg_query_params($dbconn, 
+        "INSERT INTO Review (dentist_name, professionalism, communication, cleanliness, date_of_review, procedure_id) 
+        VALUES ($1, $2, $3, $4, $5, $6);",
+        array(
+            $dentistNameInput, //1
+            $professionalismInput, //2
+            $communicationInput, //3
+            $cleanlinessInput, //4
+            $reviewDate, //5
+            $procedureIDInput, //6
+        )
+    );
+
+}
 ?>
 
 <!DOCTYPE html>
@@ -201,199 +205,6 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                             </div>
                         </div>
                     </div>
-                    <!-- ==================================================================== -->
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="panel">
-                                <div class="panel-body">
-                                    <div class="bio-chart">
-                                        <div style="display: inline; width: 100px; height: 100px;">
-                                            <canvas width="100" height="100px"></canvas>
-                                            <input
-                                                class="knob"
-                                                data-width="100"
-                                                data-height="100"
-                                                data-displayprevious="true"
-                                                data-thickness=".2"
-                                                value="35"
-                                                data-fgcolor="#e06b7d"
-                                                data-bgcolor="#e8e8e8"
-                                                style="
-                                                    width: 54px;
-                                                    height: 33px;
-                                                    position: absolute;
-                                                    vertical-align: middle;
-                                                    margin-top: 33px;
-                                                    margin-left: -77px;
-                                                    border: 0px;
-                                                    font-weight: bold;
-                                                    font-style: normal;
-                                                    font-variant: normal;
-                                                    font-stretch: normal;
-                                                    font-size: 20px;
-                                                    line-height: normal;
-                                                    font-family: Arial;
-                                                    text-align: center;
-                                                    color: rgb(224, 107, 125);
-                                                    padding: 0px;
-                                                    -webkit-appearance: none;
-                                                    background: none;
-                                                "
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="bio-desk">
-                                        <h4 class="red">Envato Website</h4>
-                                        <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="panel">
-                                <div class="panel-body">
-                                    <div class="bio-chart">
-                                        <div style="display: inline; width: 100px; height: 100px;">
-                                            <canvas width="100" height="100px"></canvas>
-                                            <input
-                                                class="knob"
-                                                data-width="100"
-                                                data-height="100"
-                                                data-displayprevious="true"
-                                                data-thickness=".2"
-                                                value="63"
-                                                data-fgcolor="#4CC5CD"
-                                                data-bgcolor="#e8e8e8"
-                                                style="
-                                                    width: 54px;
-                                                    height: 33px;
-                                                    position: absolute;
-                                                    vertical-align: middle;
-                                                    margin-top: 33px;
-                                                    margin-left: -77px;
-                                                    border: 0px;
-                                                    font-weight: bold;
-                                                    font-style: normal;
-                                                    font-variant: normal;
-                                                    font-stretch: normal;
-                                                    font-size: 20px;
-                                                    line-height: normal;
-                                                    font-family: Arial;
-                                                    text-align: center;
-                                                    color: rgb(76, 197, 205);
-                                                    padding: 0px;
-                                                    -webkit-appearance: none;
-                                                    background: none;
-                                                "
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="bio-desk">
-                                        <h4 class="terques">ThemeForest CMS</h4>
-                                        <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="panel">
-                                <div class="panel-body">
-                                    <div class="bio-chart">
-                                        <div style="display: inline; width: 100px; height: 100px;">
-                                            <canvas width="100" height="100px"></canvas>
-                                            <input
-                                                class="knob"
-                                                data-width="100"
-                                                data-height="100"
-                                                data-displayprevious="true"
-                                                data-thickness=".2"
-                                                value="75"
-                                                data-fgcolor="#96be4b"
-                                                data-bgcolor="#e8e8e8"
-                                                style="
-                                                    width: 54px;
-                                                    height: 33px;
-                                                    position: absolute;
-                                                    vertical-align: middle;
-                                                    margin-top: 33px;
-                                                    margin-left: -77px;
-                                                    border: 0px;
-                                                    font-weight: bold;
-                                                    font-style: normal;
-                                                    font-variant: normal;
-                                                    font-stretch: normal;
-                                                    font-size: 20px;
-                                                    line-height: normal;
-                                                    font-family: Arial;
-                                                    text-align: center;
-                                                    color: rgb(150, 190, 75);
-                                                    padding: 0px;
-                                                    -webkit-appearance: none;
-                                                    background: none;
-                                                "
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="bio-desk">
-                                        <h4 class="green">VectorLab Portfolio</h4>
-                                        <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="panel">
-                                <div class="panel-body">
-                                    <div class="bio-chart">
-                                        <div style="display: inline; width: 100px; height: 100px;">
-                                            <canvas width="100" height="100px"></canvas>
-                                            <input
-                                                class="knob"
-                                                data-width="100"
-                                                data-height="100"
-                                                data-displayprevious="true"
-                                                data-thickness=".2"
-                                                value="50"
-                                                data-fgcolor="#cba4db"
-                                                data-bgcolor="#e8e8e8"
-                                                style="
-                                                    width: 54px;
-                                                    height: 33px;
-                                                    position: absolute;
-                                                    vertical-align: middle;
-                                                    margin-top: 33px;
-                                                    margin-left: -77px;
-                                                    border: 0px;
-                                                    font-weight: bold;
-                                                    font-style: normal;
-                                                    font-variant: normal;
-                                                    font-stretch: normal;
-                                                    font-size: 20px;
-                                                    line-height: normal;
-                                                    font-family: Arial;
-                                                    text-align: center;
-                                                    color: rgb(203, 164, 219);
-                                                    padding: 0px;
-                                                    -webkit-appearance: none;
-                                                    background: none;
-                                                "
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="bio-desk">
-                                        <h4 class="purple">Adobe Muse Template</h4>
-                                        <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Patient Information END -->
                     <!-- ==================================================================== -->
                     <!-- Patient Records START -->
@@ -595,6 +406,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                     <tr>
                                         <th>Review ID</th>
                                         <th>Dentist Name</th>
+                                        <!-- <th>Description</th> -->
                                         <th>Professionalism</th>
                                         <th>Communication</th>
                                         <th>Cleanliness</th>
@@ -607,6 +419,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                     <tr>
                                         <td><?php echo $reviews['review_id'] ?></td>
                                         <td><?php echo $reviews['dentist_name'] ?></td>
+                                        <!-- <td><?php echo $reviews['review_description'] ?></td> -->
                                         <td><?php echo $reviews['professionalism'] ?></td>
                                         <td><?php echo $reviews['communication'] ?></td>
                                         <td><?php echo $reviews['cleanliness'] ?></td>
@@ -623,217 +436,74 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                     <!-- Review Input Box -->
                     <div class="panel" id="patient_reviews">
                         <form>
-                            <textarea placeholder="Leave us an anonymous review!" rows="2" class="form-control input-lg p-text-area"></textarea>
+                            <textarea placeholder="Leave us an anonymous review! (Max. 255 characters)" rows="2" class="form-control input-lg p-text-area" maxlength="255"></textarea>
                         </form>
                         <footer class="panel-footer">
-                            <button class="btn btn-warning pull-right">Submit</button>
+                            <input class="btn btn-warning pull-right" type="submit" value="Submit"></input>
                             <ul class="nav nav-pills">
-                                <!-- <li>
-                                    <a href="#"><i class="fa fa-map-marker"></i></a>
+                                <li>
+                                    <label for="dentistname">Dentist Name:</label>
+                                    <select name="dentistname" id="dentistname">
+                                        <option value="">-</option>
+                                        <?php foreach($apptDentistNames as $dentistName => $apptDentistNames) :?>
+                                        <option value="<?php echo $apptDentistNames['name'];?>"><?php echo $apptDentistNames['name'];?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </li>
+                                <!-- <br/> -->
+                                <li>
+                                    <label for="professionalism">Professionalism:</label>
+                                    <select name="professionalism" id="professionalism">
+                                        <option value="">-</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </li>
+                                <!-- <br/> -->
+                                <li>
+                                    <label for="communication">Communication:</label>
+                                    <select name="communication" id="communication">
+                                        <option value="">-</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </li>
+                                <!-- <br/> -->
+                                <li>
+                                    <label for="cleanliness">Cleanliness:</label>
+                                    <select name="cleanliness" id="cleanliness">
+                                        <option value="">-</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fa fa-camera"></i></a>
+                                    <label for="procedure_id">Procedure:</label>
+                                    <select name="procedure_id" id="procedure_id">
+                                        <option value="">-</option>
+                                        <?php 
+                                        // Appointment_Procedure query
+                                        $apptProcedures = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment_procedure WHERE patient_id='$pID[0]' ORDER BY date_of_procedure DESC;"));
+                                        // populate dropdown menu with the patient's past procedure IDs
+                                        foreach($apptProcedures as $apptProcedure => $apptProcedures) :?>
+                                        <option value="<?php echo $apptProcedures['procedure_id'];?>">
+                                        <?php echo $apptProcedures['procedure_id'];?></option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </li>
-                                <li>
-                                    <a href="#"><i class="fa fa-film"></i></a>
-                                </li>
-                                <li>
-                                    <a href="#"><i class="fa fa-microphone"></i></a>
-                                </li> -->
+                                <!-- <br/> -->
                             </ul>
                         </footer>
-                    </div>
 
-                    <!-- Review Cards -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="panel">
-                                <div class="panel-body">
-                                    <div class="bio-chart">
-                                        <div style="display: inline; width: 100px; height: 100px;">
-                                            <canvas width="100" height="100px"></canvas>
-                                            <input
-                                                class="knob"
-                                                data-width="100"
-                                                data-height="100"
-                                                data-displayprevious="true"
-                                                data-thickness=".2"
-                                                value="35"
-                                                data-fgcolor="#e06b7d"
-                                                data-bgcolor="#e8e8e8"
-                                                style="
-                                                    width: 54px;
-                                                    height: 33px;
-                                                    position: absolute;
-                                                    vertical-align: middle;
-                                                    margin-top: 33px;
-                                                    margin-left: -77px;
-                                                    border: 0px;
-                                                    font-weight: bold;
-                                                    font-style: normal;
-                                                    font-variant: normal;
-                                                    font-stretch: normal;
-                                                    font-size: 20px;
-                                                    line-height: normal;
-                                                    font-family: Arial;
-                                                    text-align: center;
-                                                    color: rgb(224, 107, 125);
-                                                    padding: 0px;
-                                                    -webkit-appearance: none;
-                                                    background: none;
-                                                "
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="bio-desk">
-                                        <h4 class="red">Dentist Name</h4>
-                                        <!-- <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="panel">
-                                <div class="panel-body">
-                                    <div class="bio-chart">
-                                        <div style="display: inline; width: 100px; height: 100px;">
-                                            <canvas width="100" height="100px"></canvas>
-                                            <input
-                                                class="knob"
-                                                data-width="100"
-                                                data-height="100"
-                                                data-displayprevious="true"
-                                                data-thickness=".2"
-                                                value="63"
-                                                data-fgcolor="#4CC5CD"
-                                                data-bgcolor="#e8e8e8"
-                                                style="
-                                                    width: 54px;
-                                                    height: 33px;
-                                                    position: absolute;
-                                                    vertical-align: middle;
-                                                    margin-top: 33px;
-                                                    margin-left: -77px;
-                                                    border: 0px;
-                                                    font-weight: bold;
-                                                    font-style: normal;
-                                                    font-variant: normal;
-                                                    font-stretch: normal;
-                                                    font-size: 20px;
-                                                    line-height: normal;
-                                                    font-family: Arial;
-                                                    text-align: center;
-                                                    color: rgb(76, 197, 205);
-                                                    padding: 0px;
-                                                    -webkit-appearance: none;
-                                                    background: none;
-                                                "
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="bio-desk">
-                                        <h4 class="terques">Professionalism</h4>
-                                        <!-- <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="panel">
-                                <div class="panel-body">
-                                    <div class="bio-chart">
-                                        <div style="display: inline; width: 100px; height: 100px;">
-                                            <canvas width="100" height="100px"></canvas>
-                                            <input
-                                                class="knob"
-                                                data-width="100"
-                                                data-height="100"
-                                                data-displayprevious="true"
-                                                data-thickness=".2"
-                                                value="75"
-                                                data-fgcolor="#96be4b"
-                                                data-bgcolor="#e8e8e8"
-                                                style="
-                                                    width: 54px;
-                                                    height: 33px;
-                                                    position: absolute;
-                                                    vertical-align: middle;
-                                                    margin-top: 33px;
-                                                    margin-left: -77px;
-                                                    border: 0px;
-                                                    font-weight: bold;
-                                                    font-style: normal;
-                                                    font-variant: normal;
-                                                    font-stretch: normal;
-                                                    font-size: 20px;
-                                                    line-height: normal;
-                                                    font-family: Arial;
-                                                    text-align: center;
-                                                    color: rgb(150, 190, 75);
-                                                    padding: 0px;
-                                                    -webkit-appearance: none;
-                                                    background: none;
-                                                "
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="bio-desk">
-                                        <h4 class="green">Communication</h4>
-                                        <!-- <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="panel">
-                                <div class="panel-body">
-                                    <div class="bio-chart">
-                                        <div style="display: inline; width: 100px; height: 100px;">
-                                            <canvas width="100" height="100px"></canvas>
-                                            <input
-                                                class="knob"
-                                                data-width="100"
-                                                data-height="100"
-                                                data-displayprevious="true"
-                                                data-thickness=".2"
-                                                value="50"
-                                                data-fgcolor="#cba4db"
-                                                data-bgcolor="#e8e8e8"
-                                                style="
-                                                    width: 54px;
-                                                    height: 33px;
-                                                    position: absolute;
-                                                    vertical-align: middle;
-                                                    margin-top: 33px;
-                                                    margin-left: -77px;
-                                                    border: 0px;
-                                                    font-weight: bold;
-                                                    font-style: normal;
-                                                    font-variant: normal;
-                                                    font-stretch: normal;
-                                                    font-size: 20px;
-                                                    line-height: normal;
-                                                    font-family: Arial;
-                                                    text-align: center;
-                                                    color: rgb(203, 164, 219);
-                                                    padding: 0px;
-                                                    -webkit-appearance: none;
-                                                    background: none;
-                                                "
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="bio-desk">
-                                        <h4 class="purple">Cleanliness</h4>
-                                        <!-- <p>Started : 15 July</p>
-                                        <p>Deadline : 15 August</p> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Patient Reviews END -->
