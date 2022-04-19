@@ -54,7 +54,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     
     //check_empty_input returns -1 on empty
-    $dentistNameInput = check_empty_input($_POST["dentistname"]);
+    $dentistNameInput = check_empty_input($_POST["dentistName"]);
     $professionalismInput = check_empty_input($_POST["professionalism"]);
     $communicationInput = check_empty_input($_POST["communication"]);
     $cleanlinessInput = check_empty_input($_POST["cleanliness"]);
@@ -434,77 +434,159 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     <!-- Patient Review VIEW ALL EXISTING REVIEWS END -->
 
                     <!-- Review Input Box -->
-                    <div class="panel" id="patient_reviews">
-                        <form>
-                            <textarea placeholder="Leave us an anonymous review! (Max. 255 characters)" rows="2" class="form-control input-lg p-text-area" maxlength="255"></textarea>
-                        </form>
-                        <footer class="panel-footer">
-                            <input class="btn btn-warning pull-right" type="submit" value="Submit"></input>
-                            <ul class="nav nav-pills">
-                                <li>
-                                    <label for="dentistname">Dentist Name:</label>
-                                    <select name="dentistname" id="dentistname">
-                                        <option value="">-</option>
-                                        <?php foreach($apptDentistNames as $dentistName => $apptDentistNames) :?>
-                                        <option value="<?php echo $apptDentistNames['name'];?>"><?php echo $apptDentistNames['name'];?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </li>
-                                <!-- <br/> -->
-                                <li>
-                                    <label for="professionalism">Professionalism:</label>
-                                    <select name="professionalism" id="professionalism">
-                                        <option value="">-</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
-                                </li>
-                                <!-- <br/> -->
-                                <li>
-                                    <label for="communication">Communication:</label>
-                                    <select name="communication" id="communication">
-                                        <option value="">-</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
-                                </li>
-                                <!-- <br/> -->
-                                <li>
-                                    <label for="cleanliness">Cleanliness:</label>
-                                    <select name="cleanliness" id="cleanliness">
-                                        <option value="">-</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
-                                </li>
-                                <li>
-                                    <label for="procedure_id">Procedure:</label>
-                                    <select name="procedure_id" id="procedure_id">
-                                        <option value="">-</option>
-                                        <?php 
-                                        // Appointment_Procedure query
-                                        $apptProcedures = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment_procedure WHERE patient_id='$pID[0]' ORDER BY date_of_procedure DESC;"));
-                                        // populate dropdown menu with the patient's past procedure IDs
-                                        foreach($apptProcedures as $apptProcedure => $apptProcedures) :?>
-                                        <option value="<?php echo $apptProcedures['procedure_id'];?>">
-                                        <?php echo $apptProcedures['procedure_id'];?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </li>
-                                <!-- <br/> -->
-                            </ul>
-                        </footer>
+                    <?php
+                    // define variables and set to empty values
+                    /*$procedureIDErr = */
+                    $professionalismErr = $communicationErr = $cleanlinessErr = $dentistNameErr = "";
+                    $comment = "";
 
-                    </div>
+                    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+                        if (empty($_POST["dentistName"])) {
+                            $dentistNameErr = "";
+                        }
+                        if (empty($_POST["professionalism"])) {
+                            $professionalismErr = "";
+                        }
+                        if (empty($_POST["communication"])) {
+                            $communicationErr = "";
+                        }
+                        if (empty($_POST["cleanliness"])) {
+                            $cleanlinessErr = "";
+                        }
+                        if (empty($_POST["procedure_id"])) {
+                            $procedureIDErr = "";
+                        }
+
+                        if (empty($_POST["comment"])) {
+                            $comment = "";
+                        } else {
+                            $comment = test_input($_POST["comment"]);
+                        }
+                    }
+
+                    function test_input($data)
+                    {
+                        $data = trim($data);
+                        $data = stripslashes($data);
+                        $data = htmlspecialchars($data);
+                        return $data;
+                    }
+                    ?>
+
+                    <h2>Tell Us About Your Experience</h2>
+                    
+                    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                        <div class="panel" id="patient_reviews">
+                            <!-- Comment -->
+                            <textarea name="comment" placeholder="Leave us an anonymous review! (Max. 255 characters)" rows="4" class="form-control input-lg p-text-area" maxlength="255"><?php echo $comment;?></textarea>
+                            
+                            <footer class="panel-footer">
+                                <!-- Submit button -->
+                                <input class="btn btn-warning pull-right" type="submit" value="Submit"></input>
+
+                                <ul> <!-- This makes it look nicer, but it covers a bit of the Submit button... style="position:relative; right:40px; top:8px; z-index: 1" -->
+                                    <!-- <li> -->
+                                        <!-- Dentist Name Working -->
+                                        <label for="dentistName">Dentist:<span class="error">* <?php echo $dentistNameErr;?></span></label>
+                                        <select name="dentistName" id="dentistName">
+                                            <option value="">-</option>
+                                            <?php foreach($apptDentistNames as $dentistName => $apptDentistNames) :?>
+                                            <option value="<?php echo $apptDentistNames['name'];?>"><?php echo $apptDentistNames['name'];?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    <!-- </li> -->
+                                    <!-- <br> -->
+                                    <!-- Professionalism Working -->
+                                    <!-- <li> -->
+                                        <label for="professionalism">Professionalism:<span class="error">* <?php echo $professionalismErr;?></span></label>
+                                        <select name="professionalism" id="professionalism">
+                                            <option value="">-</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    <!-- </li> -->
+                                    <!-- <br> -->
+                                    <!-- Communication Working -->
+                                    <!-- <li> -->
+                                        <label for="communication">Communication:<span class="error">* <?php echo $communicationErr;?></span></label>
+                                        <select name="communication" id="communication">
+                                            <option value="">-</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    <!-- </li> -->
+                                    <!-- <br> -->
+                                    <!-- Cleanliness Working -->
+                                    <!-- <li> -->
+                                        <label for="cleanliness">Cleanliness:<span class="error">* <?php echo $cleanlinessErr;?></span></label>
+                                        <select name="cleanliness" id="cleanliness">
+                                            <option value="">-</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    <!-- </li>
+                                    <li> -->
+                                    <!-- <br> -->
+                                        <!-- <label for="procedure_id">Procedure:<span class="error">* <?php //echo $procedureIDErr;?></span></label>
+                                        <select name="procedure_id" id="procedure_id">
+                                            <option value="">-</option>
+                                            <?php 
+                                            // Appointment_Procedure query
+                                            //$apptProcedures = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment_procedure WHERE patient_id='$pID[0]' ORDER BY date_of_procedure DESC;"));
+                                            
+                                            // populate dropdown menu with the patient's past procedure IDs
+                                            //foreach($apptProcedures as $apptProcedure => $apptProcedures) :?>
+                                            <option value="<?php //echo $apptProcedures['procedure_id'];?>">
+                                            <?php //echo $apptProcedures['procedure_id'];?></option>
+                                            <?php //endforeach; ?>
+                                        </select> -->
+                                    <!-- </li> -->
+                                </ul>
+                            </footer>
+                        </div>
+                    </form>
+                    
+                    <?php
+                    
+                    /*&& isset($_POST['procedure_id'])*/ 
+                    if (!(empty($_POST["dentistName"]) || 
+                        empty($_POST["professionalism"]) || 
+                        empty($_POST["communication"]) || 
+                        empty($_POST["cleanliness"]))) {
+
+                        echo "<h2>Thank you for submitting your input!</h2>";
+                        echo "Your comment: " . $comment;
+                        echo "<br>";
+                        if(isset($_POST['dentistName'])) {
+                            echo "Selected Dentist: ". htmlspecialchars($_POST['dentistName'])."<br>";
+                        }
+                        if(isset($_POST['professionalism'])) {
+                            echo "Professionalism: ".htmlspecialchars($_POST['professionalism'])."<br>";
+                        }
+                        if(isset($_POST['communication'])) {
+                            echo "Communication: ".htmlspecialchars($_POST['communication'])."<br>";
+                        }
+                        if(isset($_POST['cleanliness'])) {
+                            echo "Cleanliness: ".htmlspecialchars($_POST['cleanliness'])."<br>";
+                        }
+                        // if(isset($_POST['procedure_id'])) {
+                        //     echo "Procedure ID: ".htmlspecialchars($_POST['procedure_id'])."<br>";
+                        // }
+                    }
+                        
+                    ?>
+
+                    
 
                     <!-- Patient Reviews END -->
                 </div>
@@ -516,6 +598,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <!-- Inner container -->
         </div>
         <!-- CSS container END https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
-        
+        <br>
+        <br>
     </body>
 </html>
