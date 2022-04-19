@@ -51,34 +51,34 @@ $patientInvoice = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Invoice WHERE pa
 $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of_review DESC;"));
 
 // insert patient review into Postgres
-if ($_SERVER['REQUEST_METHOD'] === "POST") {
+// if ($_SERVER['REQUEST_METHOD'] === "POST") {
     
-    //check_empty_input returns -1 on empty
-    $dentistNameInput = check_empty_input($_POST["dentistName"]);
-    $professionalismInput = check_empty_input($_POST["professionalism"]);
-    $communicationInput = check_empty_input($_POST["communication"]);
-    $cleanlinessInput = check_empty_input($_POST["cleanliness"]);
-    date_default_timezone_set("America/New_York");
-    $reviewDate = date("Y-m-d"); // YYYY-MM-DD format
-    $procedureIDInput = check_empty_input($_POST["procedure_id"]);
+//     //check_empty_input returns -1 on empty
+//     $dentistNameInput = check_empty_input($_POST["dentistName"]);
+//     $professionalismInput = check_empty_input($_POST["professionalism"]);
+//     $communicationInput = check_empty_input($_POST["communication"]);
+//     $cleanlinessInput = check_empty_input($_POST["cleanliness"]);
+//     date_default_timezone_set("America/New_York");
+//     $reviewDate = date("Y-m-d"); // YYYY-MM-DD format
+//     $procedureIDInput = check_empty_input($_POST["procedure_id"]);
 
-    echo "Adding Review <br/>";
+//     echo "Adding Review <br/>";
 
-    pg_query($dbconn, 'BEGIN'); // begins transaction
-    $reviewResult = pg_query_params($dbconn, 
-        "INSERT INTO Review (dentist_name, professionalism, communication, cleanliness, date_of_review, procedure_id) 
-        VALUES ($1, $2, $3, $4, $5, $6);",
-        array(
-            $dentistNameInput, //1
-            $professionalismInput, //2
-            $communicationInput, //3
-            $cleanlinessInput, //4
-            $reviewDate, //5
-            $procedureIDInput, //6
-        )
-    );
+//     pg_query($dbconn, 'BEGIN'); // begins transaction
+//     $reviewResult = pg_query_params($dbconn, 
+//         "INSERT INTO Review (dentist_name, professionalism, communication, cleanliness, date_of_review, procedure_id) 
+//         VALUES ($1, $2, $3, $4, $5, $6);",
+//         array(
+//             $dentistNameInput, //1
+//             $professionalismInput, //2
+//             $communicationInput, //3
+//             $cleanlinessInput, //4
+//             $reviewDate, //5
+//             $procedureIDInput, //6
+//         )
+//     );
+// }
 
-}
 ?>
 
 <!DOCTYPE html>
@@ -436,8 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     <!-- Review Input Box -->
                     <?php
                     // define variables and set to empty values
-                    /*$procedureIDErr = */
-                    $professionalismErr = $communicationErr = $cleanlinessErr = $dentistNameErr = "";
+                    $professionalismErr = $communicationErr = $cleanlinessErr = $dentistNameErr = $procedureIDErr = "";
                     $comment = "";
 
                     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -537,19 +536,19 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                                     <!-- </li>
                                     <li> -->
                                     <!-- <br> -->
-                                        <!-- <label for="procedure_id">Procedure:<span class="error">* <?php //echo $procedureIDErr;?></span></label>
+                                        <label for="procedure_id">Procedure:<span class="error">* <?php echo $procedureIDErr;?></span></label>
                                         <select name="procedure_id" id="procedure_id">
                                             <option value="">-</option>
                                             <?php 
                                             // Appointment_Procedure query
-                                            //$apptProcedures = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment_procedure WHERE patient_id='$pID[0]' ORDER BY date_of_procedure DESC;"));
+                                            $apptProcedures = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment_procedure WHERE patient_id='$pID[0]' ORDER BY date_of_procedure DESC;"));
                                             
                                             // populate dropdown menu with the patient's past procedure IDs
-                                            //foreach($apptProcedures as $apptProcedure => $apptProcedures) :?>
-                                            <option value="<?php //echo $apptProcedures['procedure_id'];?>">
-                                            <?php //echo $apptProcedures['procedure_id'];?></option>
-                                            <?php //endforeach; ?>
-                                        </select> -->
+                                            foreach($apptProcedures as $apptProcedure => $apptProcedures) :?>
+                                            <option value="<?php echo $apptProcedures['procedure_id'];?>">
+                                            <?php echo $apptProcedures['procedure_id'];?></option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     <!-- </li> -->
                                 </ul>
                             </footer>
@@ -558,11 +557,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     
                     <?php
                     
-                    /*&& isset($_POST['procedure_id'])*/ 
                     if (!(empty($_POST["dentistName"]) || 
                         empty($_POST["professionalism"]) || 
                         empty($_POST["communication"]) || 
-                        empty($_POST["cleanliness"]))) {
+                        empty($_POST["cleanliness"]) ||
+                        empty($_POST["procedure_id"]))) {
 
                         echo "<h2>Thank you for submitting your input!</h2>";
                         echo "Your comment: " . $comment;
@@ -579,9 +578,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                         if(isset($_POST['cleanliness'])) {
                             echo "Cleanliness: ".htmlspecialchars($_POST['cleanliness'])."<br>";
                         }
-                        // if(isset($_POST['procedure_id'])) {
-                        //     echo "Procedure ID: ".htmlspecialchars($_POST['procedure_id'])."<br>";
-                        // }
+                        if(isset($_POST['procedure_id'])) {
+                            echo "Procedure ID: ".htmlspecialchars($_POST['procedure_id'])."<br>";
+                        }
                     }
                         
                     ?>
