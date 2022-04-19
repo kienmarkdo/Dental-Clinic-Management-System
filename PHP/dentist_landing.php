@@ -53,19 +53,18 @@ $dReviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM review WHERE dentist_n
     <link rel="stylesheet" href="patient_landing_style.css" />
 </head>
 <body>
-    <!-- <h1>Here1 <?php echo $appointments[0] ?> -->
-    <div class="container">
-        <!-- LOGOUT BUTTON -->
-        <div class="logout-btn">
-            <a href="logout.php" class="logout-btn-text">Logout</a>
+    
+        <div class="container" style="position: sticky; top: 0px; z-index:1">
+            <div class="logout-btn bg-primary">
+                <a href="logout.php" class="logout-btn-text">Logout</a>
+            </div>
         </div>
-    </div>
-    <!-- END -->
+        <!-- Logout Button END -->
 
     <!-- LEFT NAVIGATION BAR -->
     <div class="container bootstrap snippets bootdey">
         <div class="row">
-            <div class="profile-nav col-md-3">
+            <div class="profile-nav col-md-3" style="position: sticky; top: 0px;">
                 <div class="panel">
                     <div class="user-heading round">
                         <h1>Welcome,</h1>
@@ -223,7 +222,7 @@ $dReviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM review WHERE dentist_n
             </div>
             <div class="panel" id="viewReviews">
                     <div class="bio-graph-heading">
-                        <h3><i class="fa fa-comments-o"></i> View My Reviews</h3>
+                        <h3><i class="fa fa-comments-o"></i> View Reviews</h3>
                     </div>
                     <div class="panel-body bio-graph-info">
                         <h5>Please note that the reviews are anonymous. Professionalism, Communication and Cleanliness are rated out of 5.</h5>

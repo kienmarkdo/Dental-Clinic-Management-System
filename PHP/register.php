@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   
 
     <div class="container">
-        <div class="logout-btn">
+        <div class="logout-btn bg-primary" style="position: sticky; top: 0px; z-index:1">
             <a href="logout.php" class="logout-btn-text">Return</a>
         </div>
 

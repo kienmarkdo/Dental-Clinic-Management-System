@@ -32,7 +32,7 @@ $arr = pg_fetch_all_columns($allPatients, 0);
 <!DOCTYPE html>
 
 
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth;">
     <head>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -45,8 +45,8 @@ $arr = pg_fetch_all_columns($allPatients, 0);
     </head>
     <body>
         <!-- Logout Button START -->
-        <div class="container">
-            <div class="logout-btn">
+        <div class="container" style="position: sticky; top: 0px; z-index:1">
+            <div class="logout-btn bg-primary">
                 <a href="logout.php" class="logout-btn-text">Logout</a>
             </div>
         </div>
@@ -55,7 +55,7 @@ $arr = pg_fetch_all_columns($allPatients, 0);
         <!-- CSS container START https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
         <div class="container bootstrap snippets bootdey">
             <div class="row">
-                <div class="profile-nav col-md-3">
+                <div class="profile-nav col-md-3" style="position: sticky; top: 0px;">
                     <div class="panel">
                         <div class="user-heading round">
                             <h1>Welcome,</h1>
@@ -64,7 +64,7 @@ $arr = pg_fetch_all_columns($allPatients, 0);
 
                         <ul class="nav nav-pills nav-stacked">
                             <!-- Font awesome fonts version 4: https://fontawesome.com/v4/icons/ -->
-                            <li class="active">
+                            <li>
                                 <a href="#myInfo"> <i class="fa fa-user"></i> My Information</a>
                             </li>
             
@@ -415,10 +415,12 @@ $arr = pg_fetch_all_columns($allPatients, 0);
                         move to patient_listing page when submitted -->
                     <form autocomplete="off" action="patient_listing.php", method = "GET"> 
                       <div class="autocomplete" style="width:300px;">
-                        <input id="myInput" type="text" name="viewPatient" placeholder="Please enter a patient's name">
+                        <input id="myInput" type="text" name="viewPatient" placeholder="Enter a patient's name">
                       </div>
                       <input type="submit">
                     </form>
+
+                    <br><br>
 
                     <script>
                     function autocomplete(inp, arr) {

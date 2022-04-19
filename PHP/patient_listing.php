@@ -84,6 +84,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>DCMS - Patient Homepage</title>
+        <link rel="icon" type="image/x-icon" href="images/information.png">
         <link rel="stylesheet" href="main.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
@@ -91,8 +92,8 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
     </head>
     <body>
         <!-- Logout Button START -->
-        <div class="container">
-            <div class="logout-btn">
+        <div class="container" style="position: sticky; top: 0px; z-index:1">
+            <div class="logout-btn bg-primary">
                 <a href="logout.php" class="logout-btn-text">Logout</a>
             </div>
         </div>
@@ -204,9 +205,19 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                         <?php
                                         if ($pRepresentative[0] == null) {
                                         echo "None";
-                                        } else {
-                                        echo $pRepresentative[0];
-                                        }
+                                    } else {
+                                        // pRepresentative[0] itself is a horrible string. These 4 lines of code below cleans the string and splits the parameters (name, phone, email, relationship) into an array
+                                        $pRepresentative[0] = str_replace("(","",$pRepresentative[0]);
+                                        $pRepresentative[0] = str_replace(")","",$pRepresentative[0]);
+                                        $pRepresentative[0] = str_replace('"',"",$pRepresentative[0]);
+                                        $pRepresentativeArr = preg_split ("/\,/", $pRepresentative[0]);
+                                        echo "<ul>";
+                                        echo "<li>Name: " . $pRepresentativeArr[0] . "</li>";
+                                        echo "<li>Phone: " . $pRepresentativeArr[1] . "</li>";
+                                        echo "<li>Email: " . $pRepresentativeArr[2] . "</li>";
+                                        echo "<li>Relationship: " . $pRepresentativeArr[3] . "</li>";
+                                        echo "</ul>";
+                                    }
                                         ?>
                                     </p>
                                 </div>
