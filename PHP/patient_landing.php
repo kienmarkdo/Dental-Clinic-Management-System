@@ -168,7 +168,13 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_
                                 <div class="bio-row">
                                     <p>
                                         <span>Insurance </span>
-                                        <?php echo $pInsurance[0] ?>
+                                        <?php 
+                                        if ($pInsurance[0] == null) {
+                                            echo "None";
+                                        } else {
+                                            echo $pInsurance[0];
+                                        }
+                                        ?>
                                     </p>
                                 </div>
                                 <div class="bio-row">
@@ -176,17 +182,21 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_
                                         <span>Representative </span>
                                         <br>
                                         <?php
-                                        // pRepresentative[0] itself is a horrible string. These 4 lines of code below cleans the string and splits the parameters (name, phone, email, relationship) into an array
-                                        $pRepresentative[0] = str_replace("(","",$pRepresentative[0]);
-                                        $pRepresentative[0] = str_replace(")","",$pRepresentative[0]);
-                                        $pRepresentative[0] = str_replace('"',"",$pRepresentative[0]);
-                                        $pRepresentativeArr = preg_split ("/\,/", $pRepresentative[0]);
-                                        echo "<ul>";
-                                        echo "<li>Name: " . $pRepresentativeArr[0] . "</li>";
-                                        echo "<li>Phone: " . $pRepresentativeArr[1] . "</li>";
-                                        echo "<li>Email: " . $pRepresentativeArr[2] . "</li>";
-                                        echo "<li>Relationship: " . $pRepresentativeArr[3] . "</li>";
-                                        echo "</ul>";
+                                        if ($pInsurance[0] == null) {
+                                            echo "None";
+                                        } else {
+                                            // pRepresentative[0] itself is a horrible string. These 4 lines of code below cleans the string and splits the parameters (name, phone, email, relationship) into an array
+                                            $pRepresentative[0] = str_replace("(","",$pRepresentative[0]);
+                                            $pRepresentative[0] = str_replace(")","",$pRepresentative[0]);
+                                            $pRepresentative[0] = str_replace('"',"",$pRepresentative[0]);
+                                            $pRepresentativeArr = preg_split ("/\,/", $pRepresentative[0]);
+                                            echo "<ul>";
+                                            echo "<li>Name: " . $pRepresentativeArr[0] . "</li>";
+                                            echo "<li>Phone: " . $pRepresentativeArr[1] . "</li>";
+                                            echo "<li>Email: " . $pRepresentativeArr[2] . "</li>";
+                                            echo "<li>Relationship: " . $pRepresentativeArr[3] . "</li>";
+                                            echo "</ul>";
+                                        }
                                         ?>
                                         
                                     </p>
