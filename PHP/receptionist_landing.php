@@ -413,7 +413,7 @@ $arr = pg_fetch_all_columns($allPatients, 0);
 
                     <!--Make sure the form has the autocomplete function switched off:
                         move to patient_listing page when submitted -->
-                    <form autocomplete="off" action="patient_listing.php"> 
+                    <form autocomplete="off" action="patient_listing.php", method = "GET"> 
                       <div class="autocomplete" style="width:300px;">
                         <input id="myInput" type="text" name="viewPatient" placeholder="Please enter a patient's name">
                       </div>
