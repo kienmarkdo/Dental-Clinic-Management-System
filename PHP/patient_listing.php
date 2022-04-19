@@ -38,31 +38,6 @@ dinfo.employee_sin IN (
 );
 "));
 
-// TODO: All of this code below is me trying to print $apptDentistNames, one name at a time...
-// print_r($apptDentistNames);
-
-// for ($x = 0; $x <= sizeof($apptDentistNames); $x++) {
-//     echo json_encode($apptDentistNames[$x]);
-// }
-
-// foreach($apptDentistNames as $dentistName)
-// {
-//     echo $dentistName['name'] . "<br/>";
-// }
-
-// echo '<table>
-//         <tr>
-//          <td>Dentist Name</td>
-//         </tr>';
-
-// foreach($apptDentistNames as $dentistName)
-// {
-//     echo '<tr>
-//             <td>'. $dentistName.'</td>
-//           </tr>';
-// }
-// echo '</table>';
-
 // Treatment query
 $patientTreatments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Treatment WHERE patient_id='$pID[0]' ORDER BY appointment_id DESC;"));
 
