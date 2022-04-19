@@ -2,7 +2,7 @@
 INSERT INTO Patient_info VALUES (
     164645466, 
     '123 Sesame Street', 
-    'Elmo', 
+    'Elmo Lee', 
     'M', 
     'elmo@elmail.com', 
     '6664206969', 
@@ -10,9 +10,9 @@ INSERT INTO Patient_info VALUES (
     NULL,
     NULL
 ),
-(111111111,'529 Random Road','Random McRandom','M','random@gmail.com','1231231234',TO_DATE('2020 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
-(111111112,'529 Random Road','Randomee McRandomee','F','randomee@gmail.com','5551231234',
-TO_DATE('2020 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
+(111111111,'529 Random Road','Stephie McRandom','M','random@gmail.com','1231231234',TO_DATE('2012 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
+(111111112,'529 Random Road','Paul McRandomee','F','randomee@gmail.com','5551231234',
+TO_DATE('2008 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
 --(111111112,'529 Random Road','Random McRandom','F','random@gmail.com','1231231234',
 --TO_DATE('2020 01 01','YYYY MM DD'),'Random Insurance Company Inc.',
 --NULL), -- this will not work because rep is NULL, yet the age < 15
@@ -30,9 +30,9 @@ INSERT INTO Patient VALUES
 
 -- Patient records
 INSERT INTO Patient_records VALUES
-(DEFAULT, 'Patient is going lose their teeth in 2 years if they do not book another appt with us.', 1),
-(DEFAULT,'Random current has healthy teeth. Only requires annual cleaning.', 2),
-(DEFAULT,'Random Sr. needs dentures ASAP. He has no teeth.', 3),
+(DEFAULT, 'Patient is going lose their teeth in 2 years if they do not book another appointment with us.', 1),
+(DEFAULT,'Stephie current has healthy teeth. Only requires annual cleaning.', 2),
+(DEFAULT,'Paul Sr. had an annual teeth cleaning last year', 3),
 (DEFAULT,'Brooke needs invisalign because her teeth is crooked.',4),
 (DEFAULT,'John needs extractions on her teeth.',5);
 
@@ -114,24 +114,24 @@ INSERT INTO Procedure_codes VALUES
 -- the appt booking can choose a dentist
 INSERT INTO Appointment VALUES
 (1,3,3,TO_DATE('2022 04 14', 'YYYY MM DD'),'10:00:00','11:00:00',2,'Booked',5), -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
- -- Random McRandom's appointments START
+ -- Stephie McRandom's appointments START
 (2,2,3,TO_DATE('2022 04 02', 'YYYY MM DD'),'08:30:00','09:00:00',2,'Cancelled',1),
 (3,2,3,TO_DATE('2022 04 03', 'YYYY MM DD'),'08:30:00','09:00:00',3,'No Show',2),
 (4,2,2,TO_DATE('2022 04 04', 'YYYY MM DD'),'10:00:00','11:00:00',3,'Completed',23),
 (5,2,2,TO_DATE('2022 04 05', 'YYYY MM DD'),'11:00:00','12:00:00',4,'Booked',21),
-(6,2,3,TO_DATE('2022 04 06', 'YYYY MM DD'),'09:00:00','10:00:00',5,'Booked',13),
+(6,2,3,TO_DATE('2022 04 06', 'YYYY MM DD'),'09:00:00','10:00:00',1,'Booked',13),
 (7,2,6,TO_DATE('2022 04 07', 'YYYY MM DD'),'14:00:00','14:30:00',2,'Unscheduled',11);
- -- Random McRandom's appointments END
+ -- Stephie McRandom's appointments END
 
 -- Treatment
 INSERT INTO Treatment VALUES
 (DEFAULT, 'Tooth removal', 'Midazolam', 'Tooth ache', 23, 'Do not eat food 24 hours before the procedure', 1, 1),
--- Random McRandom's treatments START
+-- Stephie McRandom's treatments START
 (DEFAULT, 'Tooth cleaning', 'No medications administered', 'No symptoms', 999, 'No comments', 2, 2),
 (DEFAULT, 'Root Canal', 'Anesthesia', 'Dysarthria (Temporary speech impairment)', 33, 'Do not eat food 24 hours before the procedure. Cannot drive after the treatment.', 2, 3),
 (DEFAULT, 'Bonding', 'No medications administered', 'No symptoms', 21, 'No comments', 2, 5),
 (DEFAULT, 'Invisalign', 'No medications administered', 'No symptoms', 999, 'Await further instructions from the orthodonist', 2, 7)
--- Random McRandom's treatments START
+-- Stephie McRandom's treatments START
 ;
 
 -- Appointment Procedure
@@ -142,15 +142,15 @@ INSERT INTO Appointment_procedure VALUES (
   TO_DATE('2022 04 14', 'YYYY MM DD'),
   NULL,
   3,
-  'We need to remove the bottom left tooth of the patient',
-  23, -- this means quadrant 2, tooth #3 https://www.summerleadental.com/all-about-the-tooth-numbers/
+  'We need to remove the wisdom tooth of the patient - Booked',
+  8, -- this means quadrant 2, tooth #3 https://www.summerleadental.com/all-about-the-tooth-numbers/
   1, -- this means, remove 1 tooth
   NULL,
   NULL,
   500.00,
   NULL
 ),
--- Random McRandom's procedures START
+-- Stephie McRandom's procedures START
 (
   DEFAULT,2,2,TO_DATE('2022 04 02', 'YYYY MM DD'),NULL,2,'Annual patient dental cleaning - Cancelled',
   999, -- code for operation that involves every tooth
@@ -176,7 +176,7 @@ INSERT INTO Appointment_procedure VALUES (
   NULL,NULL,1000,NULL -- root canal - cost is $1000
 ),
 (
-  DEFAULT,6,2,TO_DATE('2022 04 06', 'YYYY MM DD'),NULL,9,'Bonding appointment - Booked',
+  DEFAULT,6,2,TO_DATE('2022 04 06', 'YYYY MM DD'),NULL,9,'Dental Cleaning - Booked',
   21,
   9, -- 9 Bonding
   NULL,NULL,500,NULL -- bonding booked - cost is $500
@@ -187,7 +187,7 @@ INSERT INTO Appointment_procedure VALUES (
   8, -- 8 Invisalign
   NULL,NULL,7200,NULL -- invisalign unscheduled
 )
--- Random McRandom's procedures START
+-- Stephie McRandom's procedures START
 ;
 
 
@@ -195,7 +195,7 @@ INSERT INTO Appointment_procedure VALUES (
 INSERT INTO Fee_charge VALUES
 (DEFAULT, 1, 123,400), -- 123 is a random fee code for extractions
 (DEFAULT, 1, 124,100), -- 124 is a random fee code for medications
--- Random McRandom's appointment procedure fee charges START
+-- Stephie McRandom's appointment procedure fee charges START
 (DEFAULT, 2, -100,0), -- -100 is a random fee code for cancelled appointments
 (DEFAULT, 3, 94303,14), -- 94303 is a code for no shows; automatic $14 charge
 (DEFAULT, 4, 100,100), -- dental cleaning code 100 charge 100
@@ -203,7 +203,7 @@ INSERT INTO Fee_charge VALUES
 (DEFAULT, 5, 125,200), -- root canal anesthesia cost
 (DEFAULT, 6, 109,500), -- bonding cost
 (DEFAULT, 7, 108,7200) -- invisalign cost
--- Random McRandom's appointment procedure fee charges END
+-- Stephie McRandom's appointment procedure fee charges END
 ;
 
 
@@ -363,7 +363,7 @@ INSERT INTO user_account VALUES ('CrsClo9', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooL
 INSERT INTO Review VALUES (
   DEFAULT,
   'Tisham Islam',
-  -- "The dentist was very professional and clean, but he did not communicate with me very well",
+  "The dentist was very professional and clean, but he did not communicate with me very well",
   5, -- constraint is checked with values -1 and 6 (https://onecompiler.com/postgresql/3xxy4xntj)
   2,
   4,
@@ -373,7 +373,7 @@ INSERT INTO Review VALUES (
 (
   DEFAULT,
   'Céline Wan',
-  -- "I could not believe the service I received for this appointment. Absolutely horrible. You'll be hearing about me on Yelp!!!",
+  "I could not believe the service I received for this appointment. Absolutely horrible. You'll be hearing about me on Yelp!!!",
   1,
   1,
   1,
