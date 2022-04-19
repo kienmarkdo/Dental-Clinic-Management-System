@@ -69,7 +69,7 @@ $arr = pg_fetch_all_columns($allPatients, 0);
                             </li>
             
                             <li>
-                                <a href="#viewPatients"> <i class="fa fa-book"></i> View Patients</a>
+                                <a href="#managePatients"> <i class="fa fa-book"></i> Manage Patients</a>
                             </li>
 
                             <li>
@@ -346,9 +346,9 @@ $arr = pg_fetch_all_columns($allPatients, 0);
 
                      <!-- view patients START -->
 
-                    <div class="panel" id="viewPatients">
+                    <div class="panel" id="managePatients">
                         <div class="bio-graph-heading">
-                            <h3>View Patients</h3>
+                            <h3>Manage Patients</h3>
                         </div>
 
                     <!-- to autocomplete search bar : code from https://www.w3schools.com/howto/howto_js_autocomplete.asp -->
@@ -415,7 +415,7 @@ $arr = pg_fetch_all_columns($allPatients, 0);
                         move to patient_listing page when submitted -->
                     <form autocomplete="off" action="patient_listing.php"> 
                       <div class="autocomplete" style="width:300px;">
-                        <input id="myInput" type="text" name="viewPatient" placeholder="Input a patient's name...">
+                        <input id="myInput" type="text" name="viewPatient" placeholder="Please enter a patient's name">
                       </div>
                       <input type="submit">
                     </form>
