@@ -101,7 +101,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
         <!-- CSS container START https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
         <div class="container bootstrap snippets bootdey">
             <div class="row">
-                <div class="profile-nav col-md-3">
+                <div class="profile-nav col-md-3" style="position: sticky; top: 0px;">
                     <div class="panel">
                         <div class="user-heading round">
                             <h1>Profile of</h1>
@@ -110,7 +110,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 
                         <ul class="nav nav-pills nav-stacked">
                             <!-- Font awesome fonts version 4: https://fontawesome.com/v4/icons/ -->
-                            <li class="active">
+                            <li>
                                 <a href="#patient_info"> <i class="fa fa-user"></i> Patient Information</a>
                             </li>
                             <li>
