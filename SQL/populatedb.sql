@@ -363,6 +363,7 @@ INSERT INTO user_account VALUES ('CrsClo9', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooL
 INSERT INTO Review VALUES (
   DEFAULT,
   'Tisham Islam',
+  -- "The dentist was very professional and clean, but he did not communicate with me very well",
   5, -- constraint is checked with values -1 and 6 (https://onecompiler.com/postgresql/3xxy4xntj)
   2,
   4,
@@ -372,6 +373,7 @@ INSERT INTO Review VALUES (
 (
   DEFAULT,
   'Céline Wan',
+  -- "I could not believe the service I received for this appointment. Absolutely horrible. You'll be hearing about me on Yelp!!!",
   1,
   1,
   1,

@@ -180,6 +180,7 @@ CREATE TABLE Appointment_procedure (
 CREATE TABLE Review (
     review_id SERIAL PRIMARY KEY,
     dentist_name VARCHAR(30) NOT NULL,
+    --review_description VARCHAR(255) NULL,
     professionalism INTEGER CHECK(professionalism >= 0 AND professionalism <= 5) NOT NULL,
     communication INTEGER CHECK(communication >= 0 AND communication <= 5) NOT NULL, 
     cleanliness INTEGER CHECK(cleanliness >= 0 AND cleanliness <= 5) NOT NULL,
