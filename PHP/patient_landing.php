@@ -182,7 +182,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_
                                         <span>Representative </span>
                                         <br>
                                         <?php
-                                        if ($pInsurance[0] == null) {
+                                        if ($pRepresentative[0] == null) {
                                             echo "None";
                                         } else {
                                             // pRepresentative[0] itself is a horrible string. These 4 lines of code below cleans the string and splits the parameters (name, phone, email, relationship) into an array
@@ -198,7 +198,6 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_
                                             echo "</ul>";
                                         }
                                         ?>
-                                        
                                     </p>
                                 </div>
                             </div>
