@@ -123,50 +123,47 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                     <?php echo $pID[0] ?>
                                 </h1>
                                 <div class="row">
-                                    <!-- <div class="bio-row">
-                                        <p><span>Patient ID </span><?php echo $pName[0] ?></p>
-                                    </div> -->
                                     <div class="bio-row">
                                         <p>
                                             <span>Full Name </span>
-                                            <input type="text" id="fullname" name="fullname" placeholder=<?php echo $pName?>>
+                                            <input type="text" id="fullname" name="fullname" placeholder="<?php echo $pName?>">
                                           
                                         </p>
                                     </div>
                                     <div class="bio-row">
                                         <p>
                                             <span>SIN </span>
-                                            <input type="text" id="psin" name="psin" placeholder=<?php echo $pSin[0]?>>
+                                            <input type="text" id="psin" name="psin" placeholder="<?php echo $pSin[0]?>">
                                             
                                         </p>
                                     </div>
                                     <div class="bio-row">
                                         <p>
                                             <span>Date Of Birth</span>
-                                            <input type="text" id="pdob" name="pdob" placeholder=<?php echo $pDateOfBirth[0]?>>
+                                            <input type="text" id="pdob" name="pdob" placeholder="<?php echo $pDateOfBirth[0]?>">
                                          
                                         </p>
                                     </div>
                                     <div class="bio-row">
                                         <p>
                                             <span>Phone Number </span>
-                                            <input type="text" id="pnum" name="pnum" placeholder=<?php echo $pPhone[0]?>>
+                                            <input type="text" id="pnum" name="pnum" placeholder="<?php echo $pPhone[0]?>">
                                            
                                         </p>
                                     </div>
                                     <div class="bio-row">
                                         <p>
                                             <span>Email </span>
-                                             <input type="text" id="pemail" name="pemail" placeholder=<?php echo $pEmail[0]?>>
+                                             <input type="text" id="pemail" name="pemail" placeholder="<?php echo $pEmail[0]?>">
                                           
                                         </p>
                                     </div>
                                     <div class="bio-row">
                                         <p>
                                             <span>Address </span>
-                                            <input type="text" id="paddr" name="paddr"placeholder=<?php 
+                                            <input type="text" id="paddr" name="paddr"placeholder="<?php 
                                             echo $pAddress[0];
-                                            ?>>
+                                            ?>">
                                           
                                         </p>
                                     </div>
@@ -180,7 +177,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                             $insVal = $pInsurance[0];
                                             }
                                             ?>
-                                            <input type="text" id="pins" name="pins" placeholder=<?php echo $insVal?>>
+                                            <input type="text" id="pins" name="pins" placeholder="<?php echo $insVal?>">
 
                                         </p>
                                     </div>
@@ -211,23 +208,22 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 
                                             <p>
                                             <span>Name  </span>
-                                            <input type="text" id="rname" name="rname" placeholder= <?php echo $repName; ?> > 
-                                            <!-- TODO : repName doesn't show in full for some reason -->
+                                            <input type="text" id="rname" name="rname" placeholder= "<?php echo $repName; ?>" > 
                                             </p>
 
                                             <p>
                                             <span>Phone  </span>
-                                            <input type="text" id="rphone" name="rphone" placeholder= <?php echo  $repPhone; ?> >
+                                            <input type="text" id="rphone" name="rphone" placeholder= "<?php echo  $repPhone; ?>" >
                                             </p>
 
                                             <p>
                                             <span>Email  </span>
-                                            <input type="text" id="remail" name="remail" placeholder= <?php echo  $repEmail; ?> >
+                                            <input type="text" id="remail" name="remail" placeholder= "<?php echo  $repEmail; ?>" >
                                             </p>
 
                                             <p>
                                             <span>Relationship  </span>
-                                            <input type="text" id="relo" name="relo" placeholder= <?php echo  $repRelation; ?> >
+                                            <input type="text" id="relo" name="relo" placeholder= "<?php echo  $repRelation; ?>" >
                                             </p>
 
                                         </p>
