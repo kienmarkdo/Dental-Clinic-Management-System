@@ -111,94 +111,132 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                 <!-- Page Column START -->
                 <div class="profile-info col-md-9">
                     <!-- Patient Information START -->
-                    <div class="panel" id="patient_info">
-                        <div class="bio-graph-heading">
-                            <h3><i class="fa fa-user"></i> Patient Information</h3>
-                        </div>
-                        <div class="panel-body bio-graph-info">
-                            <h1>
-                                Patient ID -
-                                <?php echo $pID[0] ?>
-                            </h1>
-                            <div class="row">
-                                <!-- <div class="bio-row">
-                                    <p><span>Patient ID </span><?php echo $pName[0] ?></p>
-                                </div> -->
-                                <div class="bio-row">
-                                    <p>
-                                        <span>Full Name </span>
-                                        <?php echo $pName?>
-                                    </p>
-                                </div>
-                                <div class="bio-row">
-                                    <p>
-                                        <span>SIN </span>
-                                        <?php echo $pSin[0] ?>
-                                    </p>
-                                </div>
-                                <div class="bio-row">
-                                    <p>
-                                        <span>Date Of Birth</span>
-                                        <?php echo $pDateOfBirth[0] ?>
-                                    </p>
-                                </div>
-                                <div class="bio-row">
-                                    <p>
-                                        <span>Phone Number </span>
-                                        <?php echo $pPhone[0] ?>
-                                    </p>
-                                </div>
-                                <div class="bio-row">
-                                    <p>
-                                        <span>Email </span>
-                                        <?php echo $pEmail[0] ?>
-                                    </p>
-                                </div>
-                                <div class="bio-row">
-                                    <p>
-                                        <span>Address </span>
-                                        <?php echo $pAddress[0] ?>
-                                    </p>
-                                </div>
-                                <div class="bio-row">
-                                    <p>
-                                        <span>Insurance </span>
-                                        <?php
-                                        if ($pInsurance[0] == null) {
-                                        echo "None";
-                                        } else {
-                                        echo $pInsurance[0];
-                                        }
-                                        ?>
+                    <form onsubmit="setTimeout(function(){window.location.reload();},10);"> <!--refreshes the page on submit-->
 
-                                    </p>
-                                </div>
-                                <div class="bio-row">
-                                    <p>
-                                        <span>Representative </span>
-                                        
-                                        <?php
-                                        if ($pRepresentative[0] == null) {
-                                        echo "None";
-                                    } else {
-                                        // pRepresentative[0] itself is a horrible string. These 4 lines of code below cleans the string and splits the parameters (name, phone, email, relationship) into an array
-                                        $pRepresentative[0] = str_replace("(","",$pRepresentative[0]);
-                                        $pRepresentative[0] = str_replace(")","",$pRepresentative[0]);
-                                        $pRepresentative[0] = str_replace('"',"",$pRepresentative[0]);
-                                        $pRepresentativeArr = preg_split ("/\,/", $pRepresentative[0]);
-                                        echo "<ul>";
-                                        echo "<li>Name: " . $pRepresentativeArr[0] . "</li>";
-                                        echo "<li>Phone: " . $pRepresentativeArr[1] . "</li>";
-                                        echo "<li>Email: " . $pRepresentativeArr[2] . "</li>";
-                                        echo "<li>Relationship: " . $pRepresentativeArr[3] . "</li>";
-                                        echo "</ul>";
-                                    }
-                                        ?>
-                                    </p>
-                                </div>
+                        <div class="panel" id="patient_info">
+                            <div class="bio-graph-heading">
+                                <h3><i class="fa fa-user"></i> Patient Information</h3>
+                            </div>
+                            <div class="panel-body bio-graph-info">
+                                <h1>
+                                    Patient ID -
+                                    <?php echo $pID[0] ?>
+                                </h1>
+                                <div class="row">
+                                    <!-- <div class="bio-row">
+                                        <p><span>Patient ID </span><?php echo $pName[0] ?></p>
+                                    </div> -->
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Full Name </span>
+                                            <input type="text" id="fullname" name="fullname" placeholder=<?php echo $pName?>>
+                                          
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>SIN </span>
+                                            <input type="text" id="psin" name="psin" placeholder=<?php echo $pSin[0]?>>
+                                            
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Date Of Birth</span>
+                                            <input type="text" id="pdob" name="pdob" placeholder=<?php echo $pDateOfBirth[0]?>>
+                                         
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Phone Number </span>
+                                            <input type="text" id="pnum" name="pnum" placeholder=<?php echo $pPhone[0]?>>
+                                           
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Email </span>
+                                             <input type="text" id="pemail" name="pemail" placeholder=<?php echo $pEmail[0]?>>
+                                          
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Address </span>
+                                            <input type="text" id="paddr" name="paddr"placeholder=<?php 
+                                            echo $pAddress[0];
+                                            ?>>
+                                          
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Insurance </span>
+                                            <?php
+                                            if ($pInsurance[0] == null) {
+                                            $insVal = "";
+                                            } else {
+                                            $insVal = $pInsurance[0];
+                                            }
+                                            ?>
+                                            <input type="text" id="pins" name="pins" placeholder=<?php echo $insVal?>>
+
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Representative </span>
+                                            
+                                            <?php
+                                            if ($pRepresentative[0] == null) {
+                                            $repVal = "None";
+
+
+                                        } else {
+                                            // pRepresentative[0] itself is a horrible string. These 4 lines of code below cleans the string and splits the parameters (name, phone, email, relationship) into an array
+                                            $pRepresentative[0] = str_replace("(","",$pRepresentative[0]);
+                                            $pRepresentative[0] = str_replace(")","",$pRepresentative[0]);
+                                            $pRepresentative[0] = str_replace('"',"",$pRepresentative[0]);
+                                            $pRepresentativeArr = preg_split ("/\,/", $pRepresentative[0]);
+                                            
+                                            $repName = $pRepresentativeArr[0];
+                                            //echo $repName;
+                                            $repPhone = $pRepresentativeArr[1];
+                                            $repEmail = $pRepresentativeArr[2]; 
+                                            $repRelation = $pRepresentativeArr[3];
+                                           
+                                        }
+                                            ?>
+
+                                            <p>
+                                            <span>Name  </span>
+                                            <input type="text" id="rname" name="rname" placeholder= <?php echo $repName; ?> > 
+                                            <!-- TODO : repName doesn't show in full for some reason -->
+                                            </p>
+
+                                            <p>
+                                            <span>Phone  </span>
+                                            <input type="text" id="rphone" name="rphone" placeholder= <?php echo  $repPhone; ?> >
+                                            </p>
+
+                                            <p>
+                                            <span>Email  </span>
+                                            <input type="text" id="remail" name="remail" placeholder= <?php echo  $repEmail; ?> >
+                                            </p>
+
+                                            <p>
+                                            <span>Relationship  </span>
+                                            <input type="text" id="relo" name="relo" placeholder= <?php echo  $repRelation; ?> >
+                                            </p>
+
+                                        </p>
+                                    </div>
+                                </div><input type="submit"> 
                             </div>
                         </div>
-                    </div>
+
+                    </form> 
                     <!-- ==================================================================== -->
 
         
