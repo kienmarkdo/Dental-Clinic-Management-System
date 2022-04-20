@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <body>
         <!-- Logout Button START -->
         <div class="container" style="position: sticky; top: 0px; z-index:1">
-            <div class="logout-btn bg-primary">
+            <div class="logout-btn">
                 <a href="logout.php" class="logout-btn-text">Logout</a>
             </div>
         </div>

@@ -46,7 +46,7 @@ $arr = pg_fetch_all_columns($allPatients, 0);
     <body>
         <!-- Logout Button START -->
         <div class="container" style="position: sticky; top: 0px; z-index:1">
-            <div class="logout-btn bg-primary">
+            <div class="logout-btn">
                 <a href="logout.php" class="logout-btn-text">Logout</a>
             </div>
         </div>

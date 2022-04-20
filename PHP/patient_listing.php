@@ -49,6 +49,14 @@ $patientInvoice = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Invoice WHERE pa
 // Review query (all reviews on the website)
 $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of_review DESC;"));
 
+// Get all the types of procedure
+$procedureCodes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes ORDER BY procedure_code;"));
+
+// Get all the dentists
+$dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
+                                            FROM employee AS E, employee_info AS I 
+                                            WHERE E.employee_sin = I.employee_sin AND I.employee_type='d'; ")) 
+
 ?>
 
 <!DOCTYPE html>
@@ -57,7 +65,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>DCMS - Patient Homepage</title>
+        <title>DCMS - Patient Information</title>
         <link rel="icon" type="image/x-icon" href="images/information.png">
         <link rel="stylesheet" href="main.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
@@ -67,7 +75,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
     <body>
         <!-- Logout Button START -->
         <div class="container" style="position: sticky; top: 0px; z-index:1">
-            <div class="logout-btn bg-primary">
+            <div class="logout-btn">
                 <a href="logout.php" class="logout-btn-text">Logout</a>
             </div>
         </div>
@@ -382,7 +390,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                    <!-- Patient Records END -->
                     <!-- ==================================================================== -->
                     <!-- Patient Appointments START -->
-
+                    
                     <div class="panel" id="patient_appointments">
                         <div class="bio-graph-heading">
                             <h3><i class="fa fa-calendar"></i> Patient Appointments</h3>
@@ -418,7 +426,115 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                 </tbody>
                             </table>
                         </div>
+                        <hr>
+            
+                        <?php 
+                            $dateError = $dentistError = $procedureError = $startTimeError = $endTimeError = $roomError = "";
+                            
+                            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+                                // checks if all the required fiels are empty or not
+
+                                if (empty($_POST["date_of_appointment"])) {
+                                    $dateError = "Required";
+                                }
+                                if (empty($_POST["start_time"])) {
+                                    $startTimeError = "Required";
+                                }
+                                if (empty($_POST["end_time"])) {
+                                    $endTimeError = "Required";
+                                }
+                                if (empty($_POST["dentistName"])) {
+                                    $dentistError = "Required";
+                                }
+                                if (empty($_POST["procedure"])) {
+                                    $procedureError = "Required";
+                                }
+                                if (empty($_POST["room"])) {
+                                    $roomError = "Required";
+                                }
+                            }
+                            
+                        ?>
+
+                        <form action = "" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>"> 
+                        <div class="panel" id="setAppointment">
+                            <div class="panel-body bio-graph-info">
+                                <h1>Set an appointment for <?php echo $pName ?></h1>
+                                <h5><span class="error">*</span> indicates required fields </h5>
+                                <div class="row">
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Date</span>
+                                            <input type="date" id="date_of_appointment" name="date_of_appointment">
+                                            <span class="error">* <?php echo $dateError?></span>
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Start time </span>
+                                            <input type="time" id="start_time" name="start_time">
+                                            <span class="error">* <?php echo $startTimeError?></span>  
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Dentist </span>
+                                            <select name="dentistName" id="dentistName">
+                                                <option>-</option>
+                                                <?php 
+                                                    foreach($dentists as $dentist => $dentists) :?>
+                                                    <option value="<?php echo $dentists['name']?>">
+                                                        <?php echo $dentists['name'] ?>
+                                                    </option>
+                                                <?php endforeach?>
+                                            </select>
+                                            <span class="error">* <?php echo $dentistError?></span>
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>End time</span>
+                                            <input type="time" id="end_time" name="end_time">
+                                            <span class="error">* <?php echo $endTimeError?></span>
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Type of procedure </span>
+                                            <select name="procedure" id="procedure">
+                                                <option>-</option>
+                                                <?php 
+                                                    foreach($procedureCodes as $procedureCode => $procedureCodes) :?>
+                                                    <option value="<?php echo $procedureCodes['procedure_code']?>">
+                                                        <?php echo $procedureCodes['procedure_code'] . " - " . $procedureCodes['procedure_name']?>
+                                                    </option>
+                                                <?php endforeach?>
+                                            </select>
+                                            <span class="error">* <?php echo $procedureError ?></span>                                           
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Room </span>
+                                            <input type="number" id="room" name="room" placeholder="Enter room number">
+                                            <span class="error">* <?php echo $roomError ?></span>
+                                        </p>
+                                    </div>                                   
+                                </div>
+                                <input type="submit"> 
+                            </div>
+                        </div> 
+                        </form>
                     </div>
+                    <?php 
+                        if (!(empty($_POST["date_of_appointment"]) || empty($_POST["start_time"]) ||
+                            empty($_POST["end_time"]) || empty($_POST["dentistName"]) ||
+                            empty($_POST["procedure"]) || empty($_POST["room"]))) {
+                            
+                            echo "<h2>Submitted</h2>";
+                        }
+                    ?>
                     <!-- Patient Appointments END -->
                     <!-- ==================================================================== -->
                     <!-- Patient Treatments START -->

@@ -55,7 +55,7 @@ $dReviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM review WHERE dentist_n
 <body>
     
         <div class="container" style="position: sticky; top: 0px; z-index:1">
-            <div class="logout-btn bg-primary">
+            <div class="logout-btn">
                 <a href="logout.php" class="logout-btn-text">Logout</a>
             </div>
         </div>
