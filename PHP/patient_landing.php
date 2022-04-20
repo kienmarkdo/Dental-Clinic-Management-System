@@ -484,7 +484,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_
                     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                         <div class="panel" id="patient_reviews">
                             <!-- Comment box -->
-                            <textarea name="comment" placeholder="Leave us an anonymous review! (Max. 255 characters)" rows="4" class="form-control input-lg p-text-area" maxlength="255"><?php echo $comment;?></textarea>
+                            <textarea name="comment" placeholder="Leave us an anonymous review! (Max. 255 characters)" rows="4" class="form-control input-lg p-text-area" maxlength="255" style="color:#6C6C6C"><?php echo $comment;?></textarea>
                             
                             <footer class="panel-footer">
                                 <!-- Submit button -->
@@ -593,7 +593,6 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_
                         }
 
                         echo "<br>";
-                        echo "Your response was submitted on " . date("Y-m-d",time()) . "<br><br>";
 
                         // insert data into Review table in Postgres
                         // insert patient review into Postgres
@@ -608,9 +607,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_
                             $reviewDate = date("Y-m-d",time()); // YYYY-MM-DD format
                             $procedureIDInput = $_POST["procedure_id"];
 
-                            echo "Adding Review <br/>";
-
-                            echo "ahhhhhhhhhh ". $comment;
+                            echo "Adding Review <br>";
 
                             $reviewQuery = "INSERT INTO Review (dentist_name, review_description, professionalism, communication, cleanliness, date_of_review, procedure_id) VALUES ('$dentistNameInput','$comment','$professionalismInput','$communicationInput','$cleanlinessInput','$reviewDate','$procedureIDInput');";
 
@@ -620,7 +617,8 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_
                             if (!$insertReviewResult) {
                                 echo pg_last_error($dbconn);
                             } else {
-                                echo "<br>Review Added Successfully!<br><br><br>";
+                                echo "Review Added Successfully!<br><br>";
+                                echo "Your response was submitted on " . date("Y-m-d",time()) . "<br><br><br><br>";
                             }
 
 
