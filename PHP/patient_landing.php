@@ -245,7 +245,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="bio-graph-heading">
                             <h3><i class="fa fa-calendar"></i> Patient Appointments</h3>
                         </div>
-                        <form action = "" method = "post" style="margin: auto; width: 40%; padding: 10px;" >
+                        <form action = "patient_landing.php#patient_appointments" method = "post" style="margin: auto; width: 40%; padding: 10px;" >
                             <label for="sorting">Sort by: </label>
                             <select name="sorting" id="sorting">
                                 <?php 
@@ -537,8 +537,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <h2>Tell Us About Your Experience</h2>
                     
-                    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-                        <div class="panel" id="patient_reviews">
+                    <form action = "patient_landing.php#patient_reviews_submit" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                        <div class="panel" id="patient_reviews_submit">
                             <!-- Comment box -->
                             <textarea name="comment" placeholder="Leave us an anonymous review! (Max. 255 characters)" rows="4" class="form-control input-lg p-text-area" maxlength="255" style="color:#6C6C6C"><?php echo $comment;?></textarea>
                             
