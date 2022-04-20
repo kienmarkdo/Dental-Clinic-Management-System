@@ -13,7 +13,6 @@ $pName =  $_GET['viewPatient'];
 // Patient ID and patient info details
 $pSin = pg_fetch_row(pg_query($dbconn, "SELECT patient_sin FROM Patient_info WHERE name = '$pName';"));
 $pID = pg_fetch_row(pg_query($dbconn, "SELECT patient_id FROM Patient WHERE sin_info = '$pSin[0]';"));
-
 $pGender = pg_fetch_row(pg_query($dbconn, "SELECT gender FROM Patient_info WHERE patient_sin='$pSin[0]';"));
 $pEmail = pg_fetch_row(pg_query($dbconn, "SELECT email FROM Patient_info WHERE patient_sin='$pSin[0]';"));
 $pPhone = pg_fetch_row(pg_query($dbconn, "SELECT phone FROM Patient_info WHERE patient_sin='$pSin[0]';"));
@@ -111,7 +110,38 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                 <!-- Page Column START -->
                 <div class="profile-info col-md-9">
                     <!-- Patient Information START -->
-                    <form onsubmit="setTimeout(function(){window.location.reload();},10);"> <!--refreshes the page on submit-->
+
+                    <?php
+                    // This PHP block error traps the user inputs
+                    // The PHP block that inserts the data into the Postgres database is below the form
+                    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+                        $pnameErr = $pdobErr = $pnumErr = $pemailErr = $paddrErr = $pgenderErr = "";
+
+                        // checks whether all mandatory fields are filled out or not
+
+                        if (empty($_POST["fullname"])) {
+                            $pnameErr = "Required";
+                        }
+                        if (empty($_POST["pdob"])) {
+                            $pdobErr = "Required";
+                        }
+                        if (empty($_POST["pnum"])) {
+                            $pnumErr = "Required";
+                        }
+                        if (empty($_POST["pemail"])) {
+                            $pemailErr = "Required";
+                        }
+                        if (empty($_POST["paddr"])) {
+                            $paddr = "Required";
+                        }
+                        if (empty($_POST["pgender"])) {
+                            $paddr = "Required";
+                        }
+                    }
+                    ?>
+
+                    <form  action = "" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 
                         <div class="panel" id="patient_info">
                             <div class="bio-graph-heading">
@@ -126,45 +156,49 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                     <div class="bio-row">
                                         <p>
                                             <span>Full Name </span>
-                                            <input type="text" id="fullname" name="fullname" placeholder="<?php echo $pName?>">
-                                          
+                                            <input type="text" id="fullname" name="fullname" placeholder="<?php echo $pName?>" value="<?php echo $pName?>" maxlength="255">
+                                            <span class="error">* <?php echo $pnameErr;?></span>
                                         </p>
                                     </div>
                                     <div class="bio-row">
                                         <p>
+                                            <span>Gender </span>
+                                            <input type="text" id="pgender" name="pgender" placeholder="<?php echo $pGender[0]?>" value="<?php echo $pGender[0]?>" maxlength="1">
+                                            <span class="error">* <?php echo $pgenderErr;?></span>
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                    <p>
                                             <span>SIN </span>
-                                            <input type="text" id="psin" name="psin" placeholder="<?php echo $pSin[0]?>">
-                                            
+                                            <?php echo $pSin[0] ?>
                                         </p>
                                     </div>
                                     <div class="bio-row">
                                         <p>
                                             <span>Date Of Birth</span>
-                                            <input type="text" id="pdob" name="pdob" placeholder="<?php echo $pDateOfBirth[0]?>">
-                                         
+                                            <input type="text" id="pdob" name="pdob" placeholder="<?php echo $pDateOfBirth[0]?>" value="<?php echo $pDateOfBirth[0]?>" maxlength = "10">
+                                            <span class="error">* <?php echo $pdobErr;?></span>
                                         </p>
                                     </div>
                                     <div class="bio-row">
                                         <p>
                                             <span>Phone Number </span>
-                                            <input type="text" id="pnum" name="pnum" placeholder="<?php echo $pPhone[0]?>">
-                                           
+                                            <input type="text" id="pnum" name="pnum" placeholder="<?php echo $pPhone[0]?>" value="<?php echo $pPhone[0]?>" maxlength="20">
+                                            <span class="error">* <?php echo $pnumErr;?></span>
                                         </p>
                                     </div>
                                     <div class="bio-row">
                                         <p>
                                             <span>Email </span>
-                                             <input type="text" id="pemail" name="pemail" placeholder="<?php echo $pEmail[0]?>">
-                                          
+                                            <input type="text" id="pemail" name="pemail" placeholder="<?php echo $pEmail[0]?>" value="<?php echo $pEmail[0]?>" maxlength="255">
+                                            <span class="error">* <?php echo $pemailErr;?></span>
                                         </p>
                                     </div>
                                     <div class="bio-row">
                                         <p>
                                             <span>Address </span>
-                                            <input type="text" id="paddr" name="paddr"placeholder="<?php 
-                                            echo $pAddress[0];
-                                            ?>">
-                                          
+                                            <input type="text" id="paddr" name="paddr" placeholder="<?php echo $pAddress[0];?>" value="<?php echo $pAddress[0]?>" maxlength="255">
+                                            <span class="error">* <?php echo $paddrErr;?></span>
                                         </p>
                                     </div>
                                     <div class="bio-row">
@@ -172,12 +206,12 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                             <span>Insurance </span>
                                             <?php
                                             if ($pInsurance[0] == null) {
-                                            $insVal = "";
+                                                $insVal = "";
                                             } else {
-                                            $insVal = $pInsurance[0];
+                                                $insVal = $pInsurance[0];
                                             }
                                             ?>
-                                            <input type="text" id="pins" name="pins" placeholder="<?php echo $insVal?>">
+                                            <input type="text" id="pins" name="pins" placeholder="<?php echo $insVal?>" maxlength="255">
 
                                         </p>
                                     </div>
@@ -206,6 +240,7 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                                         }
                                             ?>
 
+                                            <!-- TODO: Add maxlength to these input boxes below -->
                                             <p>
                                             <span>Name  </span>
                                             <input type="text" id="rname" name="rname" placeholder= "<?php echo $repName; ?>" > 
@@ -232,7 +267,85 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
                             </div>
                         </div>
 
-                    </form> 
+                    </form>
+
+                    <?php
+                    
+                    // this PHP block processes the patient info input after the response was submitted successfully
+
+                    // if response was submitted successfully
+                    if (!(empty($_POST["fullname"]) || 
+                        empty($_POST["pdob"]) || 
+                        empty($_POST["pnum"]) ||
+                        empty($_POST["pemail"]) ||
+                        empty($_POST["pgender"]) ||
+                        empty($_POST["paddr"]))) {
+
+                        echo "<h2>Submitting New Patient Information</h2>";
+                        echo "<br>";
+
+                        if(isset($_POST['fullname'])) {
+                            echo "Full Name: ". htmlspecialchars($_POST['fullname'])."<br>";
+                        }
+                        if(isset($_POST['paddr'])) {
+                            echo "Gender: ".htmlspecialchars($_POST['pgender'])."<br>";
+                        }
+                        if(isset($_POST['pdob'])) {
+                            echo "Date of birth: ".htmlspecialchars($_POST['pdob'])."<br>";
+                        }
+                        if(isset($_POST['pnum'])) {
+                            echo "Phone Number: ".htmlspecialchars($_POST['pnum'])."<br>";
+                        }
+                        if(isset($_POST['pemail'])) {
+                            echo "Email: ".htmlspecialchars($_POST['pemail'])."<br>";
+                        }
+                        if(isset($_POST['paddr'])) {
+                            echo "Address: ".htmlspecialchars($_POST['paddr'])."<br>";
+                        }
+
+                        echo "<br>";
+
+                        // update data in Patient_info table in Postgres
+                        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                            
+                            // move the $_POST inputs into PHP variables for cleaner code
+                            $pNameInput = str_replace("'", "''", $_POST['fullname']);
+                            $pGenderInput = str_replace("'", "''", $_POST['pgender']);
+                            $pDobInput = str_replace("'", "''", $_POST['pdob']);
+                            $pNumInput = str_replace("'", "''", $_POST['pnum']);
+                            $pEmailInput = str_replace("'", "''", $_POST['pemail']);
+                            $pAddressInput = str_replace("'", "''", $_POST['paddr']);
+
+                            echo "Adding... <br>";
+
+                            $updatePatientInfoQuery = "
+                                UPDATE Patient_info
+                                SET address = '$pAddressInput',
+                                    name = '$pNameInput',
+                                    gender = '$pGenderInput',
+                                    email = '$pEmailInput',
+                                    phone = '$pNumInput',
+                                    date_of_birth = '$pDobInput'
+                                WHERE patient_sin='$pSin[0]';
+                            ";
+
+                            // $dbconn is the db connection in db.php
+                            $updatePatientInfoResult = pg_query($dbconn, $updatePatientInfoQuery); // insert data into database
+
+                            if (!$updatePatientInfoResult) {
+                                echo pg_last_error($dbconn);
+                            } else {
+                                echo "Updated patient information successfully!<br>";
+                                echo "<strong style=\"color:red\">Please refresh the page to view the changes</strong>" . "<br><br>";
+                            }
+
+
+                        } // end if ($_SERVER['REQUEST_METHOD'] === "POST")
+
+                    } // end if (if response was submitted successfully)
+                    
+                        
+                    ?>
                     <!-- ==================================================================== -->
 
         
@@ -435,4 +548,10 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
         <!-- CSS container END https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
         
     </body>
+    <script>
+        // this if statement turns off the "Confirm Form Resubmission" and prevents multiple form submissions after a successful form submission
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
 </html>
