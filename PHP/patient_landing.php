@@ -32,9 +32,9 @@ $apptDentistNames = pg_fetch_all(pg_query($dbconn, "
 -- query to display all names of DENTISTS WHO SERVE PATIENT WITH ID $pID[0] in Appointments
 SELECT dinfo.name FROM Employee_info AS dinfo WHERE 
 dinfo.employee_sin IN (
-	SELECT d.employee_sin FROM Employee AS d WHERE d.employee_id IN (
-		SELECT dentist_id FROM Appointment WHERE patient_id='$pID[0]'
-	)
+    SELECT d.employee_sin FROM Employee AS d WHERE d.employee_id IN (
+        SELECT dentist_id FROM Appointment WHERE patient_id='$pID[0]'
+    )
 );
 "));
 
@@ -49,6 +49,10 @@ $patientInvoice = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Invoice WHERE pa
 
 // Review query (all reviews on the website)
 $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_id DESC;"));
+$sorting = "";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $sorting =  $_POST["sorting"];
+}
 
 ?>
 
@@ -241,6 +245,31 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_
                         <div class="bio-graph-heading">
                             <h3><i class="fa fa-calendar"></i> Patient Appointments</h3>
                         </div>
+                        <form action = "" method = "post" style="margin: auto; width: 40%; padding: 10px;" >
+                            <label for="sorting">Sort by: </label>
+                            <select name="sorting" id="sorting">
+                                <?php 
+                                // This $apptOptionArr and the foreach loop below dynamic populates the Sort By dropdown menu. The purpose is to retain the sort option selected by the user
+                                $apptOptionArr = array("Appointment ID (High to Low)" => "apptSort1", "Appointment ID (Low to High)" => "apptSort2", "Dentist ID" => "apptSort3", "Date (Latest)" => "apptSort4", "Date (Oldest)" => "apptSort5", "Type" => "apptSort6", "Status" => "apptSort7");
+                                foreach($apptOptionArr as $key => $value){
+                                    $isSelected = "";
+                                    if($_POST["sorting"] == $value){
+                                        $isSelected = "selected";
+                                    }
+                                    echo '<option value="'.$value.'"'.$isSelected.'>'.$key.'</option>';
+                                }
+                                ?>
+                                <!-- This is not preferred because the dropdown menu will be static and does not retain the user selected sorting option
+                                <option value="apptSort1">Appointment ID (High to Low)</option>
+                                <option value="apptSort2">Appointment ID (Low to High)</option>
+                                <option value="apptSort3">Dentist ID</option>
+                                <option value="apptSort4">Date (Latest)</option>
+                                <option value="apptSort5">Date (Oldest)</option>
+                                <option value="apptSort6">Type</option>
+                                <option value="apptSort7">Status</option> -->
+                            </select>
+                            <input class="" type="submit" value="Submit"/><br>
+                        </form>
                         <div class="panel-body bio-graph-info">
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                                 <thead>
@@ -257,7 +286,34 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_
                                 </thead>
                                 <tbody>
                                     <!-- Populate table with patient appointments data from Postgres -->
-                                    <?php foreach($patientAppointments as $patientAppointment => $patientAppointments) :?>
+                                    <?php 
+                                    switch ($sorting) {
+                                        case "apptSort1":
+                                            $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY appointment_id DESC;"));
+                                            break;
+                                        case "apptSort2":
+                                            $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY appointment_id;"));
+                                            break;
+                                        case "apptSort3":
+                                            $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY dentist_id"));
+                                            break;
+                                        case "apptSort4":
+                                            $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY date_of_appointment DESC;"));
+                                            break;
+                                        case "apptSort5":
+                                            $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY date_of_appointment;"));
+                                            break;
+                                        case "apptSort6":
+                                            $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY appointment_type;"));
+                                            break;
+                                        case "apptSort7":
+                                            $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY appointment_status;"));
+                                            break;
+                                        default:
+                                            // same as case 1
+                                            $patientAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE patient_id='$pID[0]' ORDER BY appointment_id DESC;"));
+                                      }
+                                    foreach($patientAppointments as $patientAppointment => $patientAppointments) :?>
                                     <tr>
                                         <td><?php echo $patientAppointments['appointment_id'] ?></td>
                                         <!-- Change this line below to dentist name instead of dentist_id if possible -->
