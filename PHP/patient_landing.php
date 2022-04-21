@@ -503,10 +503,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // This PHP block error checks the user inputs
 
                     // define variables and set to empty values
-                    $professionalismErr = $communicationErr = $cleanlinessErr = $dentistNameErr = $procedureIDErr = "";
-                    $comment = "";
                     
-                    if ($_POST['add']){
+                        
+                        $professionalismErr = $communicationErr = $cleanlinessErr = $dentistNameErr = $procedureIDErr = "";
+                        $comment = "";
+
                         if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             // checks whether all mandatory fields are filled out or not
@@ -542,7 +543,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $data = htmlspecialchars($data);
                             return $data;
                         }
-                    }
+                    
                     ?>
 
                     <h2>Tell Us About Your Experience</h2>
@@ -554,7 +555,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             
                             <footer class="panel-footer">
                                 <!-- Submit button -->
-                                <input class="btn btn-warning pull-right" type="submit" value="Submit" name="add"></input>
+                                <input class="btn btn-warning pull-right" type="submit" value="Submit"></input>
 
                                 <ul> <!-- This makes it look nicer, but it covers a bit of the Submit button... style="position:relative; right:40px; top:8px; z-index: 1" -->
                                     <!-- <li> -->
@@ -629,7 +630,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </form>
                     
                     <?php
-                    
                     // this PHP block processes the Review input after the response was submitted successfully
 
                     // if response was submitted successfully
@@ -638,7 +638,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         empty($_POST["communication"]) || 
                         empty($_POST["cleanliness"]) ||
                         empty($_POST["procedure_id"]))) {
-
+                           
                         echo "<h2>Thank you for submitting your input!</h2>";
                         echo "Your comment: " . $comment;
                         echo "<br>";
@@ -673,7 +673,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $reviewDate = date("Y-m-d",time()); // YYYY-MM-DD format
                             $procedureIDInput = $_POST["procedure_id"];
 
-                            echo "Adding Review <br>";
+                            echo "Adding Review... <br>";
 
                             $reviewQuery = "INSERT INTO Review (dentist_name, review_description, professionalism, communication, cleanliness, date_of_review, procedure_id) VALUES ('$dentistNameInput','$comment','$professionalismInput','$communicationInput','$cleanlinessInput','$reviewDate','$procedureIDInput');";
 

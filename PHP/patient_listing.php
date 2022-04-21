@@ -394,8 +394,8 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                             if (!$updatePatientInfoResult) {
                                 echo pg_last_error($dbconn);
                             } else {
-                                echo "Updated patient information successfully!<br>";
-                                echo "<strong style=\"color:red\">Please refresh the page to view the changes</strong>" . "<br><br>";
+                                echo "<h5>You've sucessfully updated the information of $pName!<h5>";
+                                echo "<h5><strong style=\"color:red\">Please refresh the page to view the changes</strong></h5>". "<br><br>";
                             }
 
 
