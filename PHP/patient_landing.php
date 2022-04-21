@@ -38,14 +38,6 @@ dinfo.employee_sin IN (
 );
 "));
 
-//Get all dentist names associated with dentist ids
-$dentist_names_results = pg_fetch_all(pg_query($dbconn, "SELECT DISTINCT a.dentist_id, e_info.name AS dentist_name FROM appointment a JOIN Employee e ON a.dentist_id = e.employee_id JOIN Employee_info e_info ON e.employee_sin = e_info.employee_sin;"));
-
-$d_id_to_name = array(); //array that associates dentist IDs to dentist names
-foreach ($dentist_names_results as $dentist_names_result) {
-    $d_id_to_name[$dentist_names_result["dentist_id"]] = $dentist_names_result["dentist_name"];
-}
-
 // Treatment query
 $patientTreatments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Treatment WHERE patient_id='$pID[0]' ORDER BY appointment_id DESC;"));
 
@@ -258,7 +250,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <select name="sorting" id="sorting">
                                 <?php 
                                 // This $apptOptionArr and the foreach loop below dynamic populates the Sort By dropdown menu. The purpose is to retain the sort option selected by the user
-                                $apptOptionArr = array("Appointment ID (High to Low)" => "apptSort1", "Appointment ID (Low to High)" => "apptSort2", "Dentist Name" => "apptSort3", "Date (Latest)" => "apptSort4", "Date (Oldest)" => "apptSort5", "Type" => "apptSort6", "Status" => "apptSort7");
+                                $apptOptionArr = array("Appointment ID (High to Low)" => "apptSort1", "Appointment ID (Low to High)" => "apptSort2", "Dentist ID" => "apptSort3", "Date (Latest)" => "apptSort4", "Date (Oldest)" => "apptSort5", "Type" => "apptSort6", "Status" => "apptSort7");
                                 foreach($apptOptionArr as $key => $value){
                                     $isSelected = "";
                                     if($_POST["sorting"] == $value){
@@ -270,20 +262,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <!-- This is not preferred because the dropdown menu will be static and does not retain the user selected sorting option
                                 <option value="apptSort1">Appointment ID (High to Low)</option>
                                 <option value="apptSort2">Appointment ID (Low to High)</option>
-                                <option value="apptSort3">Dentist Name</option>
+                                <option value="apptSort3">Dentist ID</option>
                                 <option value="apptSort4">Date (Latest)</option>
                                 <option value="apptSort5">Date (Oldest)</option>
                                 <option value="apptSort6">Type</option>
                                 <option value="apptSort7">Status</option> -->
                             </select>
-                            <input class="" type="submit" value="Submit"/><br>
+                            <input class="" type="submit" value="Submit" name="sort"/><br>
                         </form>
                         <div class="panel-body bio-graph-info">
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th>Appointment ID</th>
-                                        <th>Dentist Name</th>
+                                        <th>Dentist ID</th>
                                         <th>Date</th>
                                         <th>Start Time</th>
                                         <th>End Time</th>
@@ -325,7 +317,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <tr>
                                         <td><?php echo $patientAppointments['appointment_id'] ?></td>
                                         <!-- Change this line below to dentist name instead of dentist_id if possible -->
-                                        <td><?php echo $d_id_to_name[$patientAppointments['dentist_id']] ?></td>
+                                        <td><?php echo $patientAppointments['dentist_id'] ?></td>
                                         <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
                                         <td><?php echo $patientAppointments['start_time'] ?></td>
                                         <td><?php echo $patientAppointments['end_time'] ?></td>
@@ -505,41 +497,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // define variables and set to empty values
                     $professionalismErr = $communicationErr = $cleanlinessErr = $dentistNameErr = $procedureIDErr = "";
                     $comment = "";
+                    
+                    if ($_POST['add']){
+                        if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-                    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                            // checks whether all mandatory fields are filled out or not
 
-                        // checks whether all mandatory fields are filled out or not
+                            if (empty($_POST["dentistName"])) {
+                                $dentistNameErr = "Required";
+                            }
+                            if (empty($_POST["professionalism"])) {
+                                $professionalismErr = "Required";
+                            }
+                            if (empty($_POST["communication"])) {
+                                $communicationErr = "Required";
+                            }
+                            if (empty($_POST["cleanliness"])) {
+                                $cleanlinessErr = "Required";
+                            }
+                            if (empty($_POST["procedure_id"])) {
+                                $procedureIDErr = "Required";
+                            }
 
-                        if (empty($_POST["dentistName"])) {
-                            $dentistNameErr = "Required";
-                        }
-                        if (empty($_POST["professionalism"])) {
-                            $professionalismErr = "Required";
-                        }
-                        if (empty($_POST["communication"])) {
-                            $communicationErr = "Required";
-                        }
-                        if (empty($_POST["cleanliness"])) {
-                            $cleanlinessErr = "Required";
-                        }
-                        if (empty($_POST["procedure_id"])) {
-                            $procedureIDErr = "Required";
+                            if (empty($_POST["comment"])) {
+                                $comment = "";
+                            } else {
+                                $comment = test_input($_POST["comment"]);
+                            }
                         }
 
-                        if (empty($_POST["comment"])) {
-                            $comment = "";
-                        } else {
-                            $comment = test_input($_POST["comment"]);
+                        function test_input($data)
+                        {
+                            $data = trim($data);
+                            $data = stripslashes($data);
+                            $data = str_replace("\\", "", $data);
+                            $data = htmlspecialchars($data);
+                            return $data;
                         }
-                    }
-
-                    function test_input($data)
-                    {
-                        $data = trim($data);
-                        $data = stripslashes($data);
-                        $data = str_replace("\\", "", $data);
-                        $data = htmlspecialchars($data);
-                        return $data;
                     }
                     ?>
 
@@ -552,7 +546,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             
                             <footer class="panel-footer">
                                 <!-- Submit button -->
-                                <input class="btn btn-warning pull-right" type="submit" value="Submit"></input>
+                                <input class="btn btn-warning pull-right" type="submit" value="Submit" name="add"></input>
 
                                 <ul> <!-- This makes it look nicer, but it covers a bit of the Submit button... style="position:relative; right:40px; top:8px; z-index: 1" -->
                                     <!-- <li> -->
