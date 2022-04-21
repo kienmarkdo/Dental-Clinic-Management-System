@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- CSS container START https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
         <div class="container bootstrap snippets bootdey">
             <div class="row">
-                <div class="profile-nav col-md-3">
+                <div class="profile-nav col-md-3" style="position: sticky; top: 0px;">
                     <div class="panel">
                         <div class="user-heading round">
                             <h1>Welcome,</h1>

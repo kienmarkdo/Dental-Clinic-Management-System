@@ -64,7 +64,7 @@ $dReviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM review WHERE dentist_n
     <!-- LEFT NAVIGATION BAR -->
     <div class="container bootstrap snippets bootdey">
         <div class="row">
-            <div class="profile-nav col-md-3">
+            <div class="profile-nav col-md-3" style="position: sticky; top: 0px;">
                 <div class="panel">
                     <div class="user-heading round">
                         <h1>Welcome,</h1>
