@@ -77,7 +77,6 @@ CREATE TABLE Invoice (
 CREATE TABLE Insurance_claim (
     claim_id SERIAL PRIMARY KEY,
     patient_sin INTEGER NOT NULL,
-    employer_name VARCHAR(255) NOT NULL,
     insurance_company VARCHAR(255) NOT NULL,
     plan_number INTEGER NOT NULL,
     coverage NUMERIC(10,2) NOT NULL,
@@ -181,6 +180,7 @@ CREATE TABLE Appointment_procedure (
 CREATE TABLE Review (
     review_id SERIAL PRIMARY KEY,
     dentist_name VARCHAR(30) NOT NULL,
+    review_description VARCHAR(255) NULL,
     professionalism INTEGER CHECK(professionalism >= 0 AND professionalism <= 5) NOT NULL,
     communication INTEGER CHECK(communication >= 0 AND communication <= 5) NOT NULL, 
     cleanliness INTEGER CHECK(cleanliness >= 0 AND cleanliness <= 5) NOT NULL,

@@ -1,0 +1,63 @@
+.error {
+    color: #ff0000;
+}
+
+/* Logout button */
+.logout-btn {
+    background-color: #2B4758;
+    width: fit-content;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    float: right;
+}
+
+.logout-btn:hover {
+    background-color: #2f5064;
+}
+
+.logout-btn-text {
+    color:aliceblue
+}
+
+.logout-btn-text:hover {
+    color:aliceblue;
+    text-decoration: none;
+}
+
+
+/* Styling used in dentist landing page */
+.boxInfo {
+    background-color: beige;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 15px;
+    height: 10em;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+.h-100 {
+    height: 100%;
+}
+.card {
+    box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+}
+.card .card-header {
+    font-weight: 500;
+}
+.card-header:first-child {
+    border-radius: 0.35rem 0.35rem 0 0;
+}
+.card-header {
+    padding: 1rem 1.35rem;
+    margin-bottom: 0;
+    background-color: rgba(33, 40, 50, 0.03);
+    border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+}
+.appointment-info {
+    padding: 10px;
+    border-radius: 10;
+}
