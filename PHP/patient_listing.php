@@ -74,7 +74,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
     </head>
     <body>
         <!-- Logout Button START -->
-        <div class="container" style="position: sticky; top: 0px; z-index:1">
+        <div class="container">
             <div class="logout-btn">
                 <a href="logout.php" class="logout-btn-text">Logout</a>
             </div>
@@ -84,7 +84,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
         <!-- CSS container START https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
         <div class="container bootstrap snippets bootdey">
             <div class="row">
-                <div class="profile-nav col-md-3" style="position: sticky; top: 0px;">
+                <div class="profile-nav col-md-3">
                     <div class="panel">
                         <div class="user-heading round">
                             <h1>Profile of</h1>

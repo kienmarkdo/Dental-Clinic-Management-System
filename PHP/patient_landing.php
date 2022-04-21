@@ -79,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </head>
     <body>
         <!-- Logout Button START -->
-        <div class="container" style="position: sticky; top: 0px; z-index:1">
+        <div class="container">
             <div class="logout-btn">
                 <a href="logout.php" class="logout-btn-text">Logout</a>
             </div>
@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- CSS container START https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
         <div class="container bootstrap snippets bootdey">
             <div class="row">
-                <div class="profile-nav col-md-3" style="position: sticky; top: 0px;">
+                <div class="profile-nav col-md-3">
                     <div class="panel">
                         <div class="user-heading round">
                             <h1>Welcome,</h1>
@@ -505,41 +505,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // define variables and set to empty values
                     $professionalismErr = $communicationErr = $cleanlinessErr = $dentistNameErr = $procedureIDErr = "";
                     $comment = "";
+                    
+                    if ($_POST['add']){
+                        if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-                    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                            // checks whether all mandatory fields are filled out or not
 
-                        // checks whether all mandatory fields are filled out or not
+                            if (empty($_POST["dentistName"])) {
+                                $dentistNameErr = "Required";
+                            }
+                            if (empty($_POST["professionalism"])) {
+                                $professionalismErr = "Required";
+                            }
+                            if (empty($_POST["communication"])) {
+                                $communicationErr = "Required";
+                            }
+                            if (empty($_POST["cleanliness"])) {
+                                $cleanlinessErr = "Required";
+                            }
+                            if (empty($_POST["procedure_id"])) {
+                                $procedureIDErr = "Required";
+                            }
 
-                        if (empty($_POST["dentistName"])) {
-                            $dentistNameErr = "Required";
-                        }
-                        if (empty($_POST["professionalism"])) {
-                            $professionalismErr = "Required";
-                        }
-                        if (empty($_POST["communication"])) {
-                            $communicationErr = "Required";
-                        }
-                        if (empty($_POST["cleanliness"])) {
-                            $cleanlinessErr = "Required";
-                        }
-                        if (empty($_POST["procedure_id"])) {
-                            $procedureIDErr = "Required";
+                            if (empty($_POST["comment"])) {
+                                $comment = "";
+                            } else {
+                                $comment = test_input($_POST["comment"]);
+                            }
                         }
 
-                        if (empty($_POST["comment"])) {
-                            $comment = "";
-                        } else {
-                            $comment = test_input($_POST["comment"]);
+                        function test_input($data)
+                        {
+                            $data = trim($data);
+                            $data = stripslashes($data);
+                            $data = str_replace("\\", "", $data);
+                            $data = htmlspecialchars($data);
+                            return $data;
                         }
-                    }
-
-                    function test_input($data)
-                    {
-                        $data = trim($data);
-                        $data = stripslashes($data);
-                        $data = str_replace("\\", "", $data);
-                        $data = htmlspecialchars($data);
-                        return $data;
                     }
                     ?>
 
@@ -552,7 +554,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             
                             <footer class="panel-footer">
                                 <!-- Submit button -->
-                                <input class="btn btn-warning pull-right" type="submit" value="Submit"></input>
+                                <input class="btn btn-warning pull-right" type="submit" value="Submit" name="add"></input>
 
                                 <ul> <!-- This makes it look nicer, but it covers a bit of the Submit button... style="position:relative; right:40px; top:8px; z-index: 1" -->
                                     <!-- <li> -->
