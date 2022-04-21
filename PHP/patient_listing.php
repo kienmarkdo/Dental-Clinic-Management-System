@@ -320,46 +320,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                         empty($_POST["pgender"]) ||
                         empty($_POST["paddr"]))) {
 
-                        echo "<h2>Submitting New Patient Information</h2>";
-                        echo "<br>";
-
-                        
-                        if(isset($_POST['fullname'])) {
-                            echo "Full Name: ". htmlspecialchars($_POST['fullname'])."<br>";
-                        }
-                        if(isset($_POST['paddr'])) {
-                            echo "Gender: ".htmlspecialchars($_POST['pgender'])."<br>";
-                        }
-                        if(isset($_POST['pdob'])) {
-                            echo "Date of birth: ".htmlspecialchars($_POST['pdob'])."<br>";
-                        }
-                        if(isset($_POST['pnum'])) {
-                            echo "Phone Number: ".htmlspecialchars($_POST['pnum'])."<br>";
-                        }
-                        if(isset($_POST['pemail'])) {
-                            echo "Email: ".htmlspecialchars($_POST['pemail'])."<br>";
-                        }
-                        if(isset($_POST['paddr'])) {
-                            echo "Address: ".htmlspecialchars($_POST['paddr'])."<br>";
-                        }
-                        if(isset($_POST['pins'])) {
-                            echo "Insurance: ".htmlspecialchars($_POST['pins'])."<br>";
-                        }
-                        if(isset($_POST['rname'])) {
-                            echo "Representative name:  ".htmlspecialchars($_POST['rname'])."<br>";
-                        }
-                        if(isset($_POST['rphone'])) {
-                            echo "Representative phone:  ".htmlspecialchars($_POST['rphone'])."<br>";
-                        }
-                        if(isset($_POST['remail'])) {
-                            echo "Representative email:  ".htmlspecialchars($_POST['remail'])."<br>";
-                        }
-                         if(isset($_POST['relo'])) {
-                            echo "Representative relationship to patient:  ".htmlspecialchars($_POST['relo'])."<br>";
-                        }
-
-
-                        echo "<br>";
+                        echo "<h4>Submitting New Patient Information</h4>";
 
                         // update data in Patient_info table in Postgres
                         if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -377,7 +338,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                             $pRepEmailInput = str_replace("'", "''", $_POST['remail']);
                             $pRepRelaInput = str_replace("'", "''", $_POST['relo']);
 
-                            echo "Adding... <br>";
+                            echo "Editing... <br>";
 
                             $updatePatientInfoQuery = "
                                 UPDATE Patient_info
