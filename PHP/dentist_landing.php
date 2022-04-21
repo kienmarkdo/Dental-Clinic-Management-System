@@ -20,7 +20,7 @@ $dSalary = pg_fetch_row(pg_query($dbconn, "SELECT annual_salary FROM employee_in
 $branchId = pg_fetch_row(pg_query($dbconn, "SELECT branch_id FROM employee WHERE employee_sin='$dSin[0]';"));
 $branchCity = pg_fetch_row(pg_query($dbconn, "SELECT city FROM branch WHERE branch_id=$branchId[0];"));
 $managerID = pg_fetch_row(pg_query($dbconn, "SELECT manager_id FROM branch WHERE branch_id=$branchId[0];"));
-$mName= pg_fetch_row(pg_query($dbconn, "SELECT i.name FROM employee e, employee_info i WHERE e.employee_id='$managerID[0]' AND e.employee_sin = i.employee_sin;"));
+$mName = pg_fetch_row(pg_query($dbconn, "SELECT i.name FROM employee e, employee_info i WHERE e.employee_id='$managerID[0]' AND e.employee_sin = i.employee_sin;"));
 
 //get type - dentist/hygienist
 $type = pg_fetch_row(pg_query($dbconn, "SELECT employee_type FROM Employee_info WHERE employee_sin = '$dSin[0]';"));

@@ -38,6 +38,14 @@ dinfo.employee_sin IN (
 );
 "));
 
+//Get all dentist names associated with dentist ids
+$dentist_names_results = pg_fetch_all(pg_query($dbconn, "SELECT DISTINCT a.dentist_id, e_info.name AS dentist_name FROM appointment a JOIN Employee e ON a.dentist_id = e.employee_id JOIN Employee_info e_info ON e.employee_sin = e_info.employee_sin;"));
+
+$d_id_to_name = array(); //array that associates dentist IDs to dentist names
+foreach ($dentist_names_results as $dentist_names_result) {
+    $d_id_to_name[$dentist_names_result["dentist_id"]] = $dentist_names_result["dentist_name"];
+}
+
 // Treatment query
 $patientTreatments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Treatment WHERE patient_id='$pID[0]' ORDER BY appointment_id DESC;"));
 
@@ -250,7 +258,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <select name="sorting" id="sorting">
                                 <?php 
                                 // This $apptOptionArr and the foreach loop below dynamic populates the Sort By dropdown menu. The purpose is to retain the sort option selected by the user
-                                $apptOptionArr = array("Appointment ID (High to Low)" => "apptSort1", "Appointment ID (Low to High)" => "apptSort2", "Dentist ID" => "apptSort3", "Date (Latest)" => "apptSort4", "Date (Oldest)" => "apptSort5", "Type" => "apptSort6", "Status" => "apptSort7");
+                                $apptOptionArr = array("Appointment ID (High to Low)" => "apptSort1", "Appointment ID (Low to High)" => "apptSort2", "Dentist Name" => "apptSort3", "Date (Latest)" => "apptSort4", "Date (Oldest)" => "apptSort5", "Type" => "apptSort6", "Status" => "apptSort7");
                                 foreach($apptOptionArr as $key => $value){
                                     $isSelected = "";
                                     if($_POST["sorting"] == $value){
@@ -262,7 +270,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <!-- This is not preferred because the dropdown menu will be static and does not retain the user selected sorting option
                                 <option value="apptSort1">Appointment ID (High to Low)</option>
                                 <option value="apptSort2">Appointment ID (Low to High)</option>
-                                <option value="apptSort3">Dentist ID</option>
+                                <option value="apptSort3">Dentist Name</option>
                                 <option value="apptSort4">Date (Latest)</option>
                                 <option value="apptSort5">Date (Oldest)</option>
                                 <option value="apptSort6">Type</option>
@@ -275,7 +283,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <thead>
                                     <tr>
                                         <th>Appointment ID</th>
-                                        <th>Dentist ID</th>
+                                        <th>Dentist Name</th>
                                         <th>Date</th>
                                         <th>Start Time</th>
                                         <th>End Time</th>
@@ -317,7 +325,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <tr>
                                         <td><?php echo $patientAppointments['appointment_id'] ?></td>
                                         <!-- Change this line below to dentist name instead of dentist_id if possible -->
-                                        <td><?php echo $patientAppointments['dentist_id'] ?></td>
+                                        <td><?php echo $d_id_to_name[$patientAppointments['dentist_id']] ?></td>
                                         <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
                                         <td><?php echo $patientAppointments['start_time'] ?></td>
                                         <td><?php echo $patientAppointments['end_time'] ?></td>

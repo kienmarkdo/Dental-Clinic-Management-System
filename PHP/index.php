@@ -112,8 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             <fieldset>
             <legend>What are you logging in as?</legend>
-                <input type="radio" name="login_type" value="Patient">Patient<br>
-                <input type="radio" name="login_type" value="Employee">Employee<br>
+                <input type="radio" name="login_type" value="Patient" checked="true"> Patient<br>
+                <input type="radio" name="login_type" value="Employee"> Employee<br>
             </fieldset>
 
             <button class="btn btn-lg btn-primary btn-block" type="submit" 
