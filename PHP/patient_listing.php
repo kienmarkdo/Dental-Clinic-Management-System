@@ -122,29 +122,57 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                     <?php
                     // This PHP block error traps the user inputs
                     // The PHP block that inserts the data into the Postgres database is below the form
-                    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    if($_POST['edit']){
+                        if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-                        $pnameErr = $pdobErr = $pnumErr = $pemailErr = $paddrErr = $pgenderErr = "";
+                            $pnameErr = $pdobErr = $pnumErr = $pemailErr = $paddrErr = $pgenderErr = "";
 
-                        // checks whether all mandatory fields are filled out or not
+                            // checks whether all mandatory fields are filled out or not
 
-                        if (empty($_POST["fullname"])) {
-                            $pnameErr = "Required";
+                            if (empty($_POST["fullname"])) {
+                                $pnameErr = "Required";
+                            }
+                            if (empty($_POST["pdob"])) {
+                                $pdobErr = "Required";
+                            }
+                            if (empty($_POST["pnum"])) {
+                                $pnumErr = "Required";
+                            }
+                            if (empty($_POST["pemail"])) {
+                                $pemailErr = "Required";
+                            }
+                            if (empty($_POST["paddr"])) {
+                                $paddr = "Required";
+                            }
+                            if (empty($_POST["pgender"])) {
+                                $paddr = "Required";
+                            }
                         }
-                        if (empty($_POST["pdob"])) {
-                            $pdobErr = "Required";
-                        }
-                        if (empty($_POST["pnum"])) {
-                            $pnumErr = "Required";
-                        }
-                        if (empty($_POST["pemail"])) {
-                            $pemailErr = "Required";
-                        }
-                        if (empty($_POST["paddr"])) {
-                            $paddr = "Required";
-                        }
-                        if (empty($_POST["pgender"])) {
-                            $paddr = "Required";
+                    } elseif($_POST['add']) {
+                        $dateError = $dentistError = $procedureError = $startTimeError = $endTimeError = $roomError = "";
+                            
+                        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+                            // checks if all the required fiels are empty or not
+
+                            if (empty($_POST["date_of_appointment"])) {
+                                $dateError = "Required";
+                            }
+                            if (empty($_POST["start_time"])) {
+                                $startTimeError = "Required";
+                            }
+                            if (empty($_POST["end_time"])) {
+                                $endTimeError = "Required";
+                            }
+                            if ($_POST["dentistName"] == "-") {
+                                $dentistError = "Required";
+                            }
+                            if ($_POST["procedure"] == "-") {
+                                $procedureError = "Required";
+                            }
+                            if (empty($_POST["room"])) {
+                                $roomError = "Required";
+                            }
                         }
                     }
                     ?>
@@ -271,7 +299,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
 
                                         </p>
                                     </div>
-                                </div><input type="submit"> 
+                                </div><input type="submit" name="edit"> 
                             </div>
                         </div>
 
@@ -428,37 +456,8 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                         </div>
                         <hr>
             
-                        <?php 
-                            $dateError = $dentistError = $procedureError = $startTimeError = $endTimeError = $roomError = "";
-                            
-                            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-                                // checks if all the required fiels are empty or not
-
-                                if (empty($_POST["date_of_appointment"])) {
-                                    $dateError = "Required";
-                                }
-                                if (empty($_POST["start_time"])) {
-                                    $startTimeError = "Required";
-                                }
-                                if (empty($_POST["end_time"])) {
-                                    $endTimeError = "Required";
-                                }
-                                if (empty($_POST["dentistName"])) {
-                                    $dentistError = "Required";
-                                }
-                                if (empty($_POST["procedure"])) {
-                                    $procedureError = "Required";
-                                }
-                                if (empty($_POST["room"])) {
-                                    $roomError = "Required";
-                                }
-                            }
-                            
-                        ?>
-
-                        <form action = "" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>"> 
-                        <div class="panel" id="setAppointment">
+                        <form action="<?php echo "#patient_appointments"; ?>" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ;?>">
+                        <div class="panel" id="set_appointment">
                             <div class="panel-body bio-graph-info">
                                 <h1>Set an appointment for <?php echo $pName ?></h1>
                                 <h5><span class="error">*</span> indicates required fields </h5>
@@ -522,17 +521,37 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                         </p>
                                     </div>                                   
                                 </div>
-                                <input type="submit"> 
+                                <input type="submit" name="add"> 
                             </div>
                         </div> 
                         </form>
                     </div>
                     <?php 
-                        if (!(empty($_POST["date_of_appointment"]) || empty($_POST["start_time"]) ||
-                            empty($_POST["end_time"]) || empty($_POST["dentistName"]) ||
-                            empty($_POST["procedure"]) || empty($_POST["room"]))) {
-                            
-                            echo "<h2>Submitted</h2>";
+                        if (!(empty($_POST["date_of_appointment"]) && empty($_POST["start_time"]) &&
+                            empty($_POST["end_time"]) && empty($_POST["room"])) && $_POST["dentistName"] != "-" &&
+                            $_POST["procedure"] != "-") {
+        
+                                if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                                    $dentistNameInput = $_POST['dentistName'];
+                                    $dId = pg_fetch_row(pg_query($dbconn, "SELECT E.employee_id FROM employee AS E, employee_info AS I WHERE I.employee_sin=E.employee_sin AND name='$dentistNameInput';"));
+                                    $dateInput = $_POST['date_of_appointment'];
+                                    $startTimeInput = $_POST['start_time'] . ":00";
+                                    $endTimeInput = $_POST['end_time'] . ":00";
+                                    $appointmentInput = $_POST['procedure'];
+                                    $roomInput = $_POST['room'];
+
+                                    $query = "INSERT INTO appointment (patient_id,dentist_id,date_of_appointment,start_time,end_time,appointment_type,appointment_status,room) VALUES ('$pID[0]','$dId[0]','$dateInput','$startTimeInput','$endTimeInput','$appointmentInput','Booked','$roomInput')";
+                                    $addAppointment = pg_query($dbconn, $query);
+                                   
+                                    if (!$addAppointment) {
+                                        echo pg_last_error($dbconn);
+                                        echo "<h1>ERROR</h1>";
+                                    } else {
+                                        $time = $_POST['start_time'];
+                                        echo "<h3>You've succesfully set an appointment for $pName on $dateInput at $time <br></h3>";
+                                        echo "<h3>Please refresh to see the changes.<br></h3>";
+                                    }
+                                }
                         }
                     ?>
                     <!-- Patient Appointments END -->
