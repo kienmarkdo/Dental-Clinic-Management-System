@@ -8,11 +8,15 @@ include_once 'db.php';
 error_reporting(0);
 
 // get variable from submit button
-$pName =  $_GET['viewPatient']; 
+$pID =  $_SESSION['patientID'];
+$pSin = pg_fetch_row(pg_query($dbconn, "SELECT sin_info FROM Patient WHERE patient_id = '$pID[0]';"));
+
+$pNameFetch = pg_fetch_row(pg_query($dbconn, "SELECT name FROM Patient_info WHERE patient_sin='$pSin[0]';"));
+
+$pName = $pNameFetch[0];
 
 // Patient ID and patient info details
-$pSin = pg_fetch_row(pg_query($dbconn, "SELECT patient_sin FROM Patient_info WHERE name = '$pName';"));
-$pID = pg_fetch_row(pg_query($dbconn, "SELECT patient_id FROM Patient WHERE sin_info = '$pSin[0]';"));
+//$pID = pg_fetch_row(pg_query($dbconn, "SELECT patient_id FROM Patient WHERE sin_info = '$pSin[0]';"));
 $pGender = pg_fetch_row(pg_query($dbconn, "SELECT gender FROM Patient_info WHERE patient_sin='$pSin[0]';"));
 $pEmail = pg_fetch_row(pg_query($dbconn, "SELECT email FROM Patient_info WHERE patient_sin='$pSin[0]';"));
 $pPhone = pg_fetch_row(pg_query($dbconn, "SELECT phone FROM Patient_info WHERE patient_sin='$pSin[0]';"));
@@ -60,7 +64,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
 ?>
 
 <!DOCTYPE html>
-<html lang="en" style="scroll-behavior: smooth;">
+<html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -84,7 +88,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
         <!-- CSS container START https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
         <div class="container bootstrap snippets bootdey">
             <div class="row">
-                <div class="profile-nav col-md-3">
+                <div class="profile-nav col-md-3" style="position: sticky; top: 0px;">
                     <div class="panel">
                         <div class="user-heading round">
                             <h1>Profile of</h1>
@@ -479,7 +483,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                         </div>
                         <hr>
             
-                        <form action="<?php echo "#patient_appointments"; ?>" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ;?>">
+                        <form action="<?php echo "#set_appointment"; ?>" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ;?>">
                         <div class="panel" id="set_appointment">
                             <div class="panel-body bio-graph-info">
                                 <h1>Set an appointment for <?php echo $pName ?></h1>

@@ -26,6 +26,19 @@ $allPatients = pg_query($dbconn, "SELECT name FROM patient_info;");
 //input patient names to array
 $arr = pg_fetch_all_columns($allPatients, 0);
 
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
+  $patientName = $_POST["viewPatient"];
+  $patientID = pg_fetch_row(pg_query($dbconn, "
+  SELECT patient_id FROM Patient WHERE sin_info IN (SELECT patient_sin FROM Patient_info WHERE name='$patientName')
+  "));
+
+
+  $_SESSION['patientID'] = $patientID[0];
+  header('Location:patient_listing.php');
+}
+
+
+
 ?>
 
 
@@ -55,7 +68,7 @@ $arr = pg_fetch_all_columns($allPatients, 0);
         <!-- CSS container START https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
         <div class="container bootstrap snippets bootdey">
             <div class="row">
-                <div class="profile-nav col-md-3">
+                <div class="profile-nav col-md-3" style="position: sticky; top: 0px;">
                     <div class="panel">
                         <div class="user-heading round">
                             <h1>Welcome,</h1>
@@ -217,7 +230,7 @@ $arr = pg_fetch_all_columns($allPatients, 0);
 
                     <!--Make sure the form has the autocomplete function switched off:
                         move to patient_listing page when submitted -->
-                    <form autocomplete="off" action="patient_listing.php", method = "GET"> 
+                    <form autocomplete="off" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post"> 
                       <div class="autocomplete" style="width:300px;">
                         <input id="myInput" type="text" name="viewPatient" placeholder="Enter a patient's name">
                       </div>
