@@ -31,7 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $patient_fields["representative_email"]  = sanitize_input($_POST["representative_email"]); //representative_email not required
     $patient_fields["representative_relationship"]  = sanitize_input($_POST["representative_rrelationship"]); //representative_relationship not required
 
-    if ( !is_numeric($patient_fields["patient_sin"]) || $patient_fields["patient_sin"] < 100000000 || $patient_fields["patient_sin"] > 999999999) {
+    //strip sin of spaces : 123 456 789 -> 123456789
+    $cleanedSin = str_replace(' ', '', $patient_fields["patient_sin"]);
+
+    if ( !is_numeric($cleanedSin) || $patient_fields["patient_sin"] < 100000000 || $patient_fields["patient_sin"] > 999999999) {
         $err = "SIN is invalid";
     } else if ($password != $password_verify) {
         $err = "Given passwords don't match";
