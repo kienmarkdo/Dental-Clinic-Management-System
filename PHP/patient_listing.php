@@ -247,7 +247,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                                 $insVal = $pInsurance[0];
                                             }
                                             ?>
-                                            <input type="text" id="pins" name="pins" placeholder="<?php echo $insVal?>" maxlength="255">
+                                            <input type="text" id="pins" name="pins" placeholder="<?php echo $insVal?>" value="<?php echo $insVal?>" maxlength="255">
 
                                         </p>
                                     </div>
@@ -276,30 +276,29 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                         }
                                             ?>
 
-                                            <!-- TODO: Add maxlength to these input boxes below -->
                                             <p>
                                             <span>Name  </span>
-                                            <input type="text" id="rname" name="rname" placeholder= "<?php echo $repName; ?>" > 
+                                            <input type="text" id="rname" name="rname" placeholder="<?php echo $repName?>" value="<?php echo $repName?>" maxlength="255">
                                             </p>
 
                                             <p>
                                             <span>Phone  </span>
-                                            <input type="text" id="rphone" name="rphone" placeholder= "<?php echo  $repPhone; ?>" >
+                                            <input type="text" id="rphone" name="rphone" placeholder="<?php echo $repPhone?>" value="<?php echo $repPhone?>" maxlength="255">
                                             </p>
 
                                             <p>
                                             <span>Email  </span>
-                                            <input type="text" id="remail" name="remail" placeholder= "<?php echo  $repEmail; ?>" >
+                                            <input type="text" id="remail" name="remail" placeholder="<?php echo $repEmail?>" value="<?php echo $repEmail?>" maxlength="255">
                                             </p>
 
                                             <p>
                                             <span>Relationship  </span>
-                                            <input type="text" id="relo" name="relo" placeholder= "<?php echo  $repRelation; ?>" >
+                                            <input type="text" id="relo" name="relo" placeholder="<?php echo $repRelation?>" value="<?php echo $repRelation?>" maxlength="255">
                                             </p>
 
                                         </p>
                                     </div>
-                                </div><input type="submit" name="edit"> 
+                                </div><input type="submit"> 
                             </div>
                         </div>
 
@@ -320,6 +319,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                         echo "<h2>Submitting New Patient Information</h2>";
                         echo "<br>";
 
+                        
                         if(isset($_POST['fullname'])) {
                             echo "Full Name: ". htmlspecialchars($_POST['fullname'])."<br>";
                         }
@@ -338,6 +338,22 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                         if(isset($_POST['paddr'])) {
                             echo "Address: ".htmlspecialchars($_POST['paddr'])."<br>";
                         }
+                        if(isset($_POST['pins'])) {
+                            echo "Insurance: ".htmlspecialchars($_POST['pins'])."<br>";
+                        }
+                        if(isset($_POST['rname'])) {
+                            echo "Representative name:  ".htmlspecialchars($_POST['rname'])."<br>";
+                        }
+                        if(isset($_POST['rphone'])) {
+                            echo "Representative phone:  ".htmlspecialchars($_POST['rphone'])."<br>";
+                        }
+                        if(isset($_POST['remail'])) {
+                            echo "Representative email:  ".htmlspecialchars($_POST['remail'])."<br>";
+                        }
+                         if(isset($_POST['relo'])) {
+                            echo "Representative relationship to patient:  ".htmlspecialchars($_POST['relo'])."<br>";
+                        }
+
 
                         echo "<br>";
 
@@ -351,6 +367,11 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                             $pNumInput = str_replace("'", "''", $_POST['pnum']);
                             $pEmailInput = str_replace("'", "''", $_POST['pemail']);
                             $pAddressInput = str_replace("'", "''", $_POST['paddr']);
+                            $pInsInput = str_replace("'", "''", $_POST['pins']);
+                            $pRepNameInput = str_replace("'", "''", $_POST['rname']);
+                            $pRepPhoneInput = str_replace("'", "''", $_POST['rphone']);
+                            $pRepEmailInput = str_replace("'", "''", $_POST['remail']);
+                            $pRepRelaInput = str_replace("'", "''", $_POST['relo']);
 
                             echo "Adding... <br>";
 
@@ -361,7 +382,9 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                     gender = '$pGenderInput',
                                     email = '$pEmailInput',
                                     phone = '$pNumInput',
-                                    date_of_birth = '$pDobInput'
+                                    date_of_birth = '$pDobInput',
+                                    insurance = '$pInsInput',
+                                    rep = ROW('$pRepNameInput', '$pRepPhoneInput', '$pRepEmailInput', '$pRepRelaInput')
                                 WHERE patient_sin='$pSin[0]';
                             ";
 
