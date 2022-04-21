@@ -10,8 +10,8 @@ INSERT INTO Patient_info VALUES (
     NULL,
     NULL
 ),
-(111111111,'529 Random Road','Stephie McRandom','M','random@gmail.com','1231231234',TO_DATE('2012 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
-(111111112,'529 Random Road','Paul McRandomee','F','randomee@gmail.com','5551231234',
+(111111111,'529 Random Road','Stephie McRandom','F','random@gmail.com','1231231234',TO_DATE('2012 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
+(111111112,'529 Random Road','Paul McRandomee','M','randomee@gmail.com','5551231234',
 TO_DATE('2008 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
 --(111111112,'529 Random Road','Random McRandom','F','random@gmail.com','1231231234',
 --TO_DATE('2020 01 01','YYYY MM DD'),'Random Insurance Company Inc.',
@@ -113,14 +113,14 @@ INSERT INTO Procedure_codes VALUES
 -- We could make a list/drop menu of dentists where the person who's doing 
 -- the appt booking can choose a dentist
 INSERT INTO Appointment VALUES
-(1,3,3,TO_DATE('2022 04 14', 'YYYY MM DD'),'10:00:00','11:00:00',2,'Booked',5), -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
+(DEFAULT,3,3,TO_DATE('2022 04 14', 'YYYY MM DD'),'10:00:00','11:00:00',2,'Booked',5), -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
  -- Stephie McRandom's appointments START
-(2,2,3,TO_DATE('2022 04 02', 'YYYY MM DD'),'08:30:00','09:00:00',2,'Cancelled',1),
-(3,2,3,TO_DATE('2022 04 03', 'YYYY MM DD'),'08:30:00','09:00:00',3,'No Show',2),
-(4,2,2,TO_DATE('2022 04 04', 'YYYY MM DD'),'10:00:00','11:00:00',3,'Completed',23),
-(5,2,2,TO_DATE('2022 04 05', 'YYYY MM DD'),'11:00:00','12:00:00',4,'Booked',21),
-(6,2,3,TO_DATE('2022 04 06', 'YYYY MM DD'),'09:00:00','10:00:00',1,'Booked',13),
-(7,2,6,TO_DATE('2022 04 07', 'YYYY MM DD'),'14:00:00','14:30:00',2,'Unscheduled',11);
+(DEFAULT,2,3,TO_DATE('2022 04 02', 'YYYY MM DD'),'08:30:00','09:00:00',2,'Cancelled',1),
+(DEFAULT,2,3,TO_DATE('2022 04 03', 'YYYY MM DD'),'08:30:00','09:00:00',3,'No Show',2),
+(DEFAULT,2,2,TO_DATE('2022 04 04', 'YYYY MM DD'),'10:00:00','11:00:00',3,'Completed',23),
+(DEFAULT,2,2,TO_DATE('2022 04 05', 'YYYY MM DD'),'11:00:00','12:00:00',4,'Booked',21),
+(DEFAULT,2,3,TO_DATE('2022 04 06', 'YYYY MM DD'),'09:00:00','10:00:00',1,'Booked',13),
+(DEFAULT,2,6,TO_DATE('2022 04 07', 'YYYY MM DD'),'14:00:00','14:30:00',2,'Unscheduled',11);
  -- Stephie McRandom's appointments END
 
 -- Treatment
