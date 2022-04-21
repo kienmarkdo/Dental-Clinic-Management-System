@@ -298,7 +298,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
 
                                         </p>
                                     </div>
-                                </div><input type="submit"> 
+                                </div><input type="submit" name="edit"> 
                             </div>
                         </div>
 
@@ -571,8 +571,8 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                         echo "<h1>ERROR</h1>";
                                     } else {
                                         $time = $_POST['start_time'];
-                                        echo "<h3>You've succesfully set an appointment for $pName on $dateInput at $time <br></h3>";
-                                        echo "<h3>Please refresh to see the changes.<br></h3>";
+                                        echo "<h5>You've succesfully set an appointment for $pName on $dateInput at $time. </h5>";
+                                        echo "<h5><strong style=\"color:red\">Please refresh to see the changes</strong>.<br></h5>";
                                     }
                                 }
                         }

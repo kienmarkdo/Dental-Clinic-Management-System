@@ -82,7 +82,7 @@ $dReviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM review WHERE dentist_n
                             <a href="#viewPatientRecords"><i class="fa fa-heart"></i> View Patient Records</a>
                         </li>
                         <li>
-                            <a href="#viewReviews"><i class="fa fa-comments-o"></i> View reviews</a>
+                            <a href="#viewReviews"><i class="fa fa-comments-o"></i> View Reviews</a>
                         </li>                         
                     </ul>
                 </div>
@@ -155,7 +155,7 @@ $dReviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM review WHERE dentist_n
                             <h3><i class="fa fa-calendar"></i> Upcoming Appointments</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
-                            <h5>Please view each patient's medical records before administering the procedure. Please note that the end time is only here for information ("à titre indicatif" in french)</h5>
+                            <h5>Please view each patient's medical records before administering the procedure. Please note that the end time is only here for information purposes ("à titre indicatif" in french)</h5>
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
@@ -163,7 +163,7 @@ $dReviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM review WHERE dentist_n
                                         <th>Date</th>
                                         <th>Start Time</th>
                                         <th>End Time</th>
-                                        <th>Procedure Description</th>
+                                        <th>Procedure To Do</th>
                                         <th>Room</th>
                                     </tr>
                                 </thead>
@@ -180,9 +180,9 @@ $dReviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM review WHERE dentist_n
                                         <td><?php echo $dAppointments['end_time'] ?></td>
                                         <td>
                                         <?php 
-                                            $aId = $dAppointments['appointment_id'];
-                                            $procedureDesc = pg_fetch_row(pg_query($dbconn, "SELECT appointment_description FROM appointment_procedure WHERE appointment_id=$aId;"));
-                                            echo $procedureDesc[0] ?>
+                                            $aId = $dAppointments['appointment_id'];   
+                                            $procedureName = pg_fetch_row(pg_query($dbconn, "SELECT procedure_name FROM procedure_codes WHERE procedure_code=CAST((SELECT appointment_type FROM appointment WHERE dentist_id=$eID AND appointment_status='Booked' AND appointment_id=$aId) AS INT);"));
+                                            echo $procedureName[0] ?>
                                         <td><?php echo $dAppointments['room'] ?></td>
                                     </tr>
                                     <?php endforeach;?>
@@ -254,8 +254,11 @@ $dReviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM review WHERE dentist_n
                                 </tbody>
                             </table>
                         </div>
-                
             </div>
         </div>
+        <br>
+        <br>
+        <br>
+        <br>
 </body>
 </html>
