@@ -38,7 +38,7 @@ dinfo.employee_sin IN (
 );
 "));
 
-//Get all dentist names associated with dentist ids
+//Get all dentist names (dentist/hygienist) associated with dentist ids
 $dentist_names_results = pg_fetch_all(pg_query($dbconn, "SELECT DISTINCT a.dentist_id, e_info.name AS dentist_name FROM appointment a JOIN Employee e ON a.dentist_id = e.employee_id JOIN Employee_info e_info ON e.employee_sin = e_info.employee_sin;"));
 
 $d_id_to_name = array(); //array that associates dentist IDs to dentist names
@@ -258,7 +258,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <select name="sorting" id="sorting">
                                 <?php 
                                 // This $apptOptionArr and the foreach loop below dynamic populates the Sort By dropdown menu. The purpose is to retain the sort option selected by the user
-                                $apptOptionArr = array("Appointment ID (High to Low)" => "apptSort1", "Appointment ID (Low to High)" => "apptSort2", "Dentist Name" => "apptSort3", "Date (Latest)" => "apptSort4", "Date (Oldest)" => "apptSort5", "Type" => "apptSort6", "Status" => "apptSort7");
+                                $apptOptionArr = array("Appointment ID (High to Low)" => "apptSort1", "Appointment ID (Low to High)" => "apptSort2", "Doctor Name" => "apptSort3", "Date (Latest)" => "apptSort4", "Date (Oldest)" => "apptSort5", "Type" => "apptSort6", "Status" => "apptSort7");
                                 foreach($apptOptionArr as $key => $value){
                                     $isSelected = "";
                                     if($_POST["sorting"] == $value){
@@ -283,7 +283,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <thead>
                                     <tr>
                                         <th>Appointment ID</th>
-                                        <th>Dentist Name</th>
+                                        <th>Doctor Name</th>
                                         <th>Date</th>
                                         <th>Start Time</th>
                                         <th>End Time</th>
@@ -469,7 +469,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <thead>
                                     <tr>
                                         <th>Review ID</th>
-                                        <th>Dentist Name</th>
+                                        <th>Doctor Name</th>
                                         <th>Description</th>
                                         <th>Professionalism</th>
                                         <th>Communication</th>
@@ -560,7 +560,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <ul> <!-- This makes it look nicer, but it covers a bit of the Submit button... style="position:relative; right:40px; top:8px; z-index: 1" -->
                                     <!-- <li> -->
                                         <!-- Dentist Name Working -->
-                                        <label for="dentistName">Dentist:<span class="error">* <?php echo $dentistNameErr;?></span></label>
+                                        <label for="dentistName">Doctor:<span class="error">* <?php echo $dentistNameErr;?></span></label>
                                         <select name="dentistName" id="dentistName">
                                             <option value="">-</option>
                                             <!-- Populate dropdown menu with DENTIST NAMES WHO ARE IN THE PATIENT'S APPOINTMENT TABLE from Postgres -->
@@ -643,7 +643,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         echo "Your comment: " . $comment;
                         echo "<br>";
                         if(isset($_POST['dentistName'])) {
-                            echo "Selected Dentist: ". htmlspecialchars($_POST['dentistName'])."<br>";
+                            echo "Selected Doctor: ". htmlspecialchars($_POST['dentistName'])."<br>";
                         }
                         if(isset($_POST['professionalism'])) {
                             echo "Professionalism: ".htmlspecialchars($_POST['professionalism'])."<br>";

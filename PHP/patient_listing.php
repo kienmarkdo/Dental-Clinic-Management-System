@@ -10,9 +10,7 @@ error_reporting(0);
 // get variable from submit button
 $pID =  $_SESSION['patientID'];
 $pSin = pg_fetch_row(pg_query($dbconn, "SELECT sin_info FROM Patient WHERE patient_id = '$pID[0]';"));
-
 $pNameFetch = pg_fetch_row(pg_query($dbconn, "SELECT name FROM Patient_info WHERE patient_sin='$pSin[0]';"));
-
 $pName = $pNameFetch[0];
 
 // Patient ID and patient info details
@@ -57,9 +55,9 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 $procedureCodes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes ORDER BY procedure_code;"));
 
 // Get all the dentists
-$dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
+$doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                             FROM employee AS E, employee_info AS I 
-                                            WHERE E.employee_sin = I.employee_sin AND I.employee_type='d'; ")) 
+                                            WHERE E.employee_sin = I.employee_sin AND (I.employee_type='d' OR I.employee_type='h');")) 
 
 ?>
 
@@ -153,7 +151,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                             }
                         }
                     } elseif($_POST['add']) {
-                        $dateError = $dentistError = $procedureError = $startTimeError = $endTimeError = $roomError = "";
+                        $dateError = $doctorError = $procedureError = $startTimeError = $endTimeError = $roomError = "";
                             
                         if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -168,8 +166,8 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                             if (empty($_POST["end_time"])) {
                                 $endTimeError = "Required";
                             }
-                            if ($_POST["dentistName"] == "-") {
-                                $dentistError = "Required";
+                            if ($_POST["doctorName"] == "-") {
+                                $doctorError = "Required";
                             }
                             if ($_POST["procedure"] == "-") {
                                 $procedureError = "Required";
@@ -416,7 +414,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                 <thead>
                                     <tr>
                                         <th>Appointment ID</th>
-                                        <th>Dentist ID</th>
+                                        <th>Doctor Name</th>
                                         <th>Date</th>
                                         <th>Start Time</th>
                                         <th>End Time</th>
@@ -429,7 +427,11 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                     <?php foreach($patientAppointments as $patientAppointment => $patientAppointments) :?>
                                     <tr>
                                         <td><?php echo $patientAppointments['appointment_id'] ?></td>
-                                        <td><?php echo $patientAppointments['dentist_id'] ?></td>
+                                        <td><?php 
+                                            $doctorId = $patientAppointments['dentist_id'];
+                                            $doctorSin = pg_fetch_row(pg_query($dbconn,"SELECT employee_sin FROM employee WHERE employee_id=$doctorId;"));
+                                            $doctorName = pg_fetch_row(pg_query($dbconn, "SELECT name FROM employee_info WHERE employee_sin='$doctorSin[0]';"));
+                                            echo $doctorName[0] ?></td>
                                         <!-- <td><?php //echo pg_fetch_result(pg_query($dbconn, "SELECT e_info.name FROM Employee_info AS e_info WHERE e_info.employee_sin in (SELECT e.employee_sin FROM Employee AS e WHERE e.employee_id='$patientAppointments['employee_id']');")); ?></td> -->
                                         <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
                                         <td><?php echo $patientAppointments['start_time'] ?></td>
@@ -466,17 +468,29 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                     </div>
                                     <div class="bio-row">
                                         <p>
-                                            <span>Dentist </span>
-                                            <select name="dentistName" id="dentistName">
+                                            <span>Dentist/Hygienist </span>
+                                            <select name="doctorName" id="doctorName">
                                                 <option>-</option>
                                                 <?php 
-                                                    foreach($dentists as $dentist => $dentists) :?>
-                                                    <option value="<?php echo $dentists['name']?>">
-                                                        <?php echo $dentists['name'] ?>
+                                                    foreach($doctors as $doctor => $doctors) :?>
+                                                    <option value="<?php echo $doctors['name']?>">
+                                                        <?php 
+
+                                                        $doctorName = $doctors['name'];
+
+                                                        $eLetterType = pg_fetch_row(pg_query($dbconn, "SELECT employee_type FROM employee_info WHERE name='$doctorName';"));
+
+                                                        if($eLetterType[0] == 'd'){
+                                                            $eType = "Dentist";
+                                                        } 
+                                                        elseif($eLetterType[0] == 'h'){
+                                                            $eType = "Hygienist";
+                                                        }
+                                                        echo $doctors['name']. " - " . $eType ?>
                                                     </option>
                                                 <?php endforeach?>
                                             </select>
-                                            <span class="error">* <?php echo $dentistError?></span>
+                                            <span class="error">* <?php echo $doctorError?></span>
                                         </p>
                                     </div>
                                     <div class="bio-row">
@@ -516,12 +530,12 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                     </div>
                     <?php 
                         if (!(empty($_POST["date_of_appointment"]) && empty($_POST["start_time"]) &&
-                            empty($_POST["end_time"]) && empty($_POST["room"])) && $_POST["dentistName"] != "-" &&
+                            empty($_POST["end_time"]) && empty($_POST["room"])) && $_POST["doctorName"] != "-" &&
                             $_POST["procedure"] != "-") {
         
                                 if ($_SERVER['REQUEST_METHOD'] === "POST") {
-                                    $dentistNameInput = $_POST['dentistName'];
-                                    $dId = pg_fetch_row(pg_query($dbconn, "SELECT E.employee_id FROM employee AS E, employee_info AS I WHERE I.employee_sin=E.employee_sin AND name='$dentistNameInput';"));
+                                    $doctorNameInput = $_POST['doctorName'];
+                                    $dId = pg_fetch_row(pg_query($dbconn, "SELECT E.employee_id FROM employee AS E, employee_info AS I WHERE I.employee_sin=E.employee_sin AND name='$doctorNameInput';"));
                                     $dateInput = $_POST['date_of_appointment'];
                                     $startTimeInput = $_POST['start_time'] . ":00";
                                     $endTimeInput = $_POST['end_time'] . ":00";

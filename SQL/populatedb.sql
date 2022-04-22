@@ -10,14 +10,14 @@ INSERT INTO Patient_info VALUES (
     NULL,
     NULL
 ),
-(111111111,'529 Random Road','Stephie McRandom','F','random@gmail.com','1231231234',TO_DATE('2012 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
+(111111111,'529 Random Road','Stephie McRandom','F','random@gmail.com','1231231234',TO_DATE('2012 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Pat McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
 (111111112,'529 Random Road','Paul McRandomee','M','randomee@gmail.com','5551231234',
-TO_DATE('2008 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Random McRandom Sr.','1231231234','randomsenior@gmail.com','Dad')),
+TO_DATE('2008 01 01','YYYY MM DD'),'Random Insurance Company Inc.',ROW('Bob McRandomee Sr.','1231231234','randomsenior@gmail.com','Dad')),
 --(111111112,'529 Random Road','Random McRandom','F','random@gmail.com','1231231234',
 --TO_DATE('2020 01 01','YYYY MM DD'),'Random Insurance Company Inc.',
 --NULL), -- this will not work because rep is NULL, yet the age < 15
 (515151547, '525 Elgin Street', 'Brooke Lay', 'F', 'brooke@gamil.com','3436589636',TO_DATE('2002 06 08', 'YYYY MM DD'),NULL,NULL),
-(388498874, '1225 Imaginary Street, Toronto, ON, Canada', 'John Li', 'F', 'john@gamil.com','3437826548',TO_DATE('2000 09 03', 'YYYY MM DD'),NULL,NULL);
+(388498874, '1225 Imaginary Street, Toronto, ON, Canada', 'John Li', 'M', 'john@gmail.com','3437826548',TO_DATE('2000 09 03', 'YYYY MM DD'),NULL,NULL);
 
 -- Patient
 INSERT INTO Patient VALUES 
