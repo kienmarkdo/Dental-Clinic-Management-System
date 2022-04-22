@@ -104,7 +104,7 @@ CREATE TABLE Appointment (
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     appointment_type VARCHAR(255) NOT NULL, 
-    appointment_status VARCHAR(255) NOT NULL, -- no show, cancelled, completed, unscheduled, booked
+    appointment_status VARCHAR(255) NOT NULL CHECK (appointment_status IN ('No Show', 'Cancelled', 'Completed','Booked')),
     room INTEGER NOT NULL,
 
     CONSTRAINT FK_patient_id
