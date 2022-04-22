@@ -176,6 +176,32 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                 $roomError = "Required";
                             }
                         }
+                    }elseif($_POST['addInvoice']) {
+                        $invoiceDateError = $contactError = $chargeError = $insuranceError = $discountError = $penaltyError = "";
+                            
+                        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+                            // checks if all the required fields are empty or not
+
+                            if (empty($_POST["date(date_of_birth)"])) {
+                                 $invoiceDateError = "Required";
+                            }
+                            if (empty($_POST["contact_info"])) {
+                                $contactError = "Required";
+                            }
+                             if (empty($_POST["patient_charge"])) {
+                                $chargeError = "Required";
+                            }
+                             if (empty($_POST["insurance_charge"])) {
+                                $insuranceError = "Required";
+                            }
+                             if (empty($_POST["patient_discount"])) {
+                                $discountError = "Required";
+                            }
+                             if (empty($_POST["patient_penalty"])) {
+                                $penaltyError = "Required";
+                            }
+                        }
                     }
                     ?>
 
@@ -681,6 +707,95 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                         </div>
                     </div>
                     <!-- Patient Invoice END -->
+
+                    <!-- Edit patient invoice START -->
+                    <form action="<?php echo "#patient_invoices"; ?>" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ;?>">
+                        <div class="panel" id="set_invoice">
+                            <div class="panel-body bio-graph-info">
+                                <h1>Set an invoice for <?php echo $pName ?></h1>
+                                <h5><span class="error">*</span> indicates required fields </h5>
+                                <div class="row">
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Date of Issue</span>
+                                            <input type="date" id="date_of_issue" name="date_of_issue">
+                                            <span class="error">* <?php echo $invoiceDateError?></span>
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                           <span>Contact Info</span>
+                                            <input type="text" id="contact_info" name="contact_info" maxlength="255">
+                                            <span class="error">* <?php echo $contactError ?></span>      
+                                        </p>
+                                    </div>
+
+                                    <div class="bio-row">
+                                        <p>
+                                           <span>Patient Charge</span>
+                                            <input type="number" min="0.00"step="0.01" id="patient_charge" name="patient_charge"> <span class="error"> * <?php echo $chargeError?></span>
+                                        </p>
+                                    </div>
+
+                                    <div class="bio-row">
+                                        <p>
+                                           <span>Insurance</span>
+                                            <input type="number" min="0.00"step="0.01" id="insurance_charge" name="insurance_charge"><span class="error">* <?php echo $insuranceError?></span>
+                                        </p>
+                                    </div>
+
+                                    <div class="bio-row">
+                                        <p>
+                                           <span>Discount</span>
+                                            <input type="number" min="0.00"step="0.01" id="patient_discount" name="patient_discount"><span class="error"> * <?php echo $discountError?></span>
+                                        </p>
+                                    </div>
+
+                                     <div class="bio-row">
+                                        <p>
+                                           <span>Penalty Fee</span>
+                                            <input type="number" min="0.00"step="0.01" id="patient_penalty" name="patient_penalty"><span class="error">* <?php echo $penaltyError?></span>
+                                        </p>
+                                    </div>
+                                                                       
+                                </div>
+                                <input class="btn btn-primary"type="submit" name="addInvoice"> 
+                            </div>
+                        </div> 
+                        </form>
+                    </div>
+
+                    <?php 
+                        if (!(empty($_POST["date_of_issue"]) && empty($_POST["contact_info"]) &&
+                            empty($_POST["patient_charge"]) && empty($_POST["patient_penalty"])) && $_POST["insurance_charge"] != "-" &&
+                            $_POST["discount"] != "-") {
+        
+                                if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                                    $contactInput = $_POST['contact_info'];                                  
+                                    $dateIssueInput = $_POST['date_of_issue'];
+                                    $chargeInput = $_POST['patient_charge'];
+                                    $insuranceInput = $_POST['insurance_charge'];
+                                    $discountInput = $_POST['patient_discount'];
+                                    $penaltyInput = $_POST['patient_penalty'];
+
+                                    $iquery = "INSERT INTO invoice (patient_id, date_of_issue, contact_info, patient_charge, insurance_charge, discount, penalty) VALUES ('$pID[0]', '$dateIssueInput', '$contactInput', '$chargeInput', '$insuranceInput', '$discountInput', '$penaltyInput')";
+                                    $addInvoice = pg_query($dbconn, $iquery);
+                                   
+                                    if (!$addInvoice) {
+                                        echo pg_last_error($dbconn);
+                                        echo "<h1>ERROR</h1>";
+                                    } else {
+                                        echo "<h5>You've succesfully set invoice for $pName.</h5>";
+                                        echo "<h5><strong style=\"color:red\">Please refresh to see the changes</strong>.<br></h5>";
+                                    }
+                                }
+                        }
+                    ?>
+
+                    <!-- edit patient Invoice END-->
 
                     
                 </div>
