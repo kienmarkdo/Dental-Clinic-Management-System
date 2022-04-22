@@ -419,8 +419,9 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                         <th>Start Time</th>
                                         <th>End Time</th>
                                         <th>Type</th>
-                                        <th>Status</th>
                                         <th>Room</th>
+                                        <th>Status</th>
+                                        <th>Editable Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -437,8 +438,16 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                         <td><?php echo $patientAppointments['start_time'] ?></td>
                                         <td><?php echo $patientAppointments['end_time'] ?></td>
                                         <td><?php echo $patientAppointments['appointment_type'] ?></td>
-                                        <td><?php echo $patientAppointments['appointment_status'] ?></td>
                                         <td><?php echo $patientAppointments['room'] ?></td>
+                                        <td><?php echo $patientAppointments['appointment_status'] ?></td>
+                                        <td>
+                                        <select id="cars" name="cars">
+                                            <option value="booked">Booked</option>
+                                            <option value="completed">Completed</option>
+                                            <option value="cancelled">Cancelled</option>
+                                            <option value="no_show">No Show</option>
+                                        </select>
+                                        </td>
                                     </tr>
                                     <?php endforeach;?>
                                 </tbody>
@@ -523,7 +532,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                         </p>
                                     </div>                                   
                                 </div>
-                                <input type="submit" name="add"> 
+                                <input class="btn btn-primary"type="submit" name="add"> 
                             </div>
                         </div> 
                         </form>
