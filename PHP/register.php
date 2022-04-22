@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     //patient fields
     $patient_fields["patient_sin"] = $_POST["patient_sin"]; //SIN is validated below
     $patient_fields["address"] = check_empty_input($_POST["address"]);
-    $patient_fields["name"]  = check_empty_input($_POST["name"]); 
+    $patient_fields["fullname"]  = check_empty_input($_POST["fullname"]); 
     $patient_fields["gender"]  = check_empty_input($_POST["gender"]);
     $patient_fields["email"]  = check_empty_input($_POST["email"]);
     $patient_fields["phone"]  = check_empty_input($_POST["phone"]);
@@ -38,14 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $err = "SIN is invalid";
     } else if ($password != $password_verify) {
         $err = "Given passwords don't match";
-    } else if (!check_alpha_spaces($_POST['name'])) {
+    } else if (!ctype_alpha($_POST["fullname"])) {
         $err = "Name contains special characters";
     } else if ($username != -1
         && $password != -1
         && $password_verify != -1
         && $patient_fields["patient_sin"] != -1
         && $patient_fields["address"]  != -1
-        && $patient_fields["name"]  != -1
+        && $patient_fields["fullname"]  != -1
         && $patient_fields["gender"]  != -1
         && $patient_fields["email"]  != -1
         && $patient_fields["phone"]  != -1
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8);",
             array( $patient_fields["patient_sin"], //1
                 $patient_fields["address"], //2
-                $patient_fields["name"], //3
+                $patient_fields["fullname"], //3
                 $patient_fields["gender"], //4
                 $patient_fields["email"], //5
                 $patient_fields["phone"], //6
@@ -203,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             <label for="fullname">Full Name:</label>
             <input type="text" class="form-control" id="namefield" name="fullname" placeholder="ex: Evan Marth" onkeyup="return validateName(this.value);" required>
-            <span class="error"> * <?php echo $patient_fields["name"] == -1 ? "name is required!" : '' ?> </span><br>
+            <span class="error"> * <?php echo $patient_fields["fullname"] == -1 ? "name is required!" : '' ?> </span><br>
 
             <label for="email">Email Address:</label>
             <input type="email" class="form-control" id="emailfield" name="email" placeholder="ex: evan.marth@gmail.com" onkeyup="return validateEmail(this.value);" required>
