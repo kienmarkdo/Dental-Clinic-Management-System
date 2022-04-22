@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
       
     <div class="container bootstrap snippets bootdey">
     <br>
-    <h1 class="bio-graph-heading" style="text-align:center; font-style: normal; padding: 40px 110px; font-size: 30px; font-weight: 600; border-radius: 4px 4px 4px 4px;">Dental Clinic Management System</h1>
+    <h1 class="bio-graph-heading" style="text-align:center; font-style: normal; padding: 40px; font-size: 30px; font-weight: 600; border-radius: 4px 4px 4px 4px;">Dental Clinic Management System</h1>
     <br>
     <!-- <h1 style="text-align:center">Login page</h1> -->
     <h2>Enter Login Details</h2>
