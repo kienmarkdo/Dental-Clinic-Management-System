@@ -120,7 +120,7 @@ INSERT INTO Appointment VALUES
 (DEFAULT,2,2,TO_DATE('2022 04 04', 'YYYY MM DD'),'10:00:00','11:00:00',3,'Completed',23),
 (DEFAULT,2,2,TO_DATE('2022 04 05', 'YYYY MM DD'),'11:00:00','12:00:00',4,'Booked',21),
 (DEFAULT,2,3,TO_DATE('2022 04 06', 'YYYY MM DD'),'09:00:00','10:00:00',1,'Booked',13),
-(DEFAULT,2,6,TO_DATE('2022 04 07', 'YYYY MM DD'),'14:00:00','14:30:00',2,'Unscheduled',11),
+(DEFAULT,2,6,TO_DATE('2022 04 30', 'YYYY MM DD'),'14:00:00','14:30:00',2,'Booked',11),
  -- Stephie McRandom's appointments END
  -- Elmo appointment
 (DEFAULT,1,6,TO_DATE('2022 05 15', 'YYYY MM DD'),'11:00:00','13:00:00',10,'Booked',8);
