@@ -6,6 +6,8 @@ include_once 'functions.php';
 include_once 'db.php';
 error_reporting(0);
 
+$userAccounts = pg_fetch_all(pg_query($dbconn, "SELECT * FROM user_account;"));
+
 if ($_SERVER['REQUEST_METHOD'] === "POST")
 {
 
@@ -98,10 +100,22 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCMS - Login</title>
-    <link rel="icon" type="image/x-icon" href="images/toothmap.png">
+    <link rel="icon" type="image/x-icon" href="images/login.png">
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="patient_landing_style.css" />
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/excite-bike/jquery-ui.css" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="scripts/dbms.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#toggle").click(function(){
+                $("#accounts").fadeToggle();
+            });
+        });
+    </script>
+    
 </head>
 <body>
       
@@ -123,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
             
             <h4>Password</h4>
             <input type="password" class="form-control"
-                name="password" placeholder="Enter password" maxlength="255" required>
+                name="password" placeholder="Enter password" maxlength="255" value="ASDFGHJKL:123456" required>
                 <span class="error"> * <?php echo $password == - 1 ? 'Password is required!' : '' ?> </span><br>
 
             <fieldset>
@@ -135,9 +149,45 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
             <button class="btn btn-lg btn-primary btn-block btn-warning" type="submit" name="login">Login</button>
         </form>
 
-        <h2> No Account? <a href="register.php">Register here! </a> </h2>
+        <h2> No Account? <a href="register.php">Register here! </a> </h2> <br>
+
+        <button class="btn btn-lg btn-primary btn-block" id="toggle">Toggle between showing and hiding all existing accounts</button> <br>
+
+        <div class="panel" id="accounts">
+        <div class="bio-graph-heading">
+            <h3><i class="fa fa-credit-card"></i> Existing User Accounts</h3>
+        </div>
+        <div class="panel-body bio-graph-info">
+            <table id="appointments_grid" class="table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Encrypted Password</th>
+                        <th>Type ID</th>
+                        <th>Patient ID</th>
+                        <th>Employee ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($userAccounts as $account => $userAccounts) :?>
+                    <tr>
+                        <td><?php echo $userAccounts['username'] ?></td>
+                        <td><?php echo $userAccounts['password'] ?></td>
+                        <td><?php echo $userAccounts['type_id'] ?></td>
+                        <td><?php echo $userAccounts['patient_id'] ?></td>
+                        <td><?php echo $userAccounts['employee_id'] ?></td>
+
+                    </tr>
+                    <?php endforeach;?>
+                </tbody>
+            </table>
+        </div>
 
     </div>
+
+    </div>
+
+
         
     
 </body>
