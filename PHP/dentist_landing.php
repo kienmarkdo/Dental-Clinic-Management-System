@@ -33,7 +33,7 @@ if ($type[0] == 'h'){
 $dAppointments = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment WHERE dentist_id=$eID AND appointment_status='Booked' ORDER BY date_of_appointment;"));
 
 // patient records of all the dentist/hygienist's patients
-$dPatientRecords = pg_fetch_all(pg_query($dbconn, "SELECT record_id, patient_details, P.patient_id FROM patient_records AS P, appointment AS A WHERE P.patient_id=A.appointment_id AND dentist_id=$eID;"));
+$dPatientRecords = pg_fetch_all(pg_query($dbconn, "SELECT DISTINCT record_id, patient_details, P.patient_id FROM patient_records AS P, appointment AS A WHERE P.patient_id=A.patient_id AND A.dentist_id=$eID;"));
 
 // reviews of the dentist/hygienist
 $dReviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM review WHERE dentist_name='$dName[0]' ORDER BY date_of_review DESC;"))
