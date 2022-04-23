@@ -184,10 +184,10 @@ INSERT INTO Appointment_procedure VALUES (
   NULL,NULL,500,NULL -- bonding booked - cost is $500
 ),
 (
-  DEFAULT,7,2,TO_DATE('2022 04 07', 'YYYY MM DD'),NULL,8,'Invisalign appointment - Unscheduled',
+  DEFAULT,7,2,TO_DATE('2022 04 07', 'YYYY MM DD'),NULL,8,'Invisalign appointment - Booked',
   999, -- code for operation that involves every tooth
   8, -- 8 Invisalign
-  NULL,NULL,7200,NULL -- invisalign unscheduled
+  NULL,NULL,7200,NULL -- invisalign Booked
 )
 -- Stephie McRandom's procedures START
 ;
@@ -263,7 +263,7 @@ INSERT INTO Invoice VALUES
   300,200,0,0,2
 ),
 (
-  DEFAULT,TO_DATE('2022 04 07', 'YYYY MM DD'), -- invisalign unscheduled
+  DEFAULT,TO_DATE('2022 04 07', 'YYYY MM DD'), -- invisalign Booked
   'The Downtown Dental Clinic
   Ottawa ON K1P 6L7
   (613) 234-0792
@@ -327,7 +327,7 @@ patient_charge = 300,
 insurance_claim_id = 4
 WHERE (procedure_id = 6);
 
-UPDATE Appointment_procedure -- Random has insurance; Unscheduled invisalign
+UPDATE Appointment_procedure -- Random has insurance; Booked invisalign
 SET 
 invoice_id = 7,
 patient_charge = 7200
