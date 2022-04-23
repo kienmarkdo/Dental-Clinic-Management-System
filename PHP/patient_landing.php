@@ -434,7 +434,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <h3><i class="fa fa-credit-card"></i> Invoices</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
-                            <p><i class="fa fa-question-circle"></i> Invoices are created after an Appointment is completed</p>
+                            <p><i class="fa fa-question-circle"></i> Invoices are created after an Appointment Procedure is completed</p>
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
