@@ -9,9 +9,9 @@ function sanitize_input($input) {
     return $input;
 }
 
-//check if an input is empty, returns empty if it is, sanitized input if it isn't
+//check if an input is empty, returns -1 if it is, sanitized input if it isn't
 function check_empty_input($input) {
-    return (!empty($input) ? sanitize_input($input) : ""); 
+    return (!empty($input) ? sanitize_input($input) : -1); 
 }
 
 //check if a string is alphabetical, with spaces in betweens
