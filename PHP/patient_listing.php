@@ -202,7 +202,9 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                 $penaltyError = "Required";
                             }
                         }
-                    }
+                    } 
+                    
+                    
                     ?>
 
                     <form  action = "" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
@@ -326,7 +328,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
 
                                         </p>
                                     </div>
-                                </div><input type="submit" name="edit"> 
+                                </div><input type="submit" class= "btn btn-primary" name="edit"> 
                             </div>
                         </div>
 
@@ -391,6 +393,21 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                         } // end if ($_SERVER['REQUEST_METHOD'] === "POST")
 
                     } // end if (if response was submitted successfully)
+
+                    if($_POST['edit_status']){
+                        $updateStatus = "
+                        UPDATE appointment
+                        SET appointment_status = $1 
+                        WHERE appointment_id= $2; 
+                        ";
+                        $statusInput = $_POST['cars'];
+                        $aptId = $_POST['apt_id'];
+                        // echo $statusInput;
+                        // echo "something";
+                        // echo $aptId;
+                        // $dbconn is the db connection in db.php. Need to figure out how to get the appointment_id
+                        $updatePatientInfoResult = pg_query_params($dbconn, $updateStatus, array($statusInput,$aptId)); // insert data into database
+                    }
                     
                         
                     ?>
@@ -452,29 +469,68 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                 </thead>
                                 <tbody>
                                     <?php foreach($patientAppointments as $patientAppointment => $patientAppointments) :?>
-                                    <tr>
-                                        <td><?php echo $patientAppointments['appointment_id'] ?></td>
-                                        <td><?php 
-                                            $doctorId = $patientAppointments['dentist_id'];
-                                            $doctorSin = pg_fetch_row(pg_query($dbconn,"SELECT employee_sin FROM employee WHERE employee_id=$doctorId;"));
-                                            $doctorName = pg_fetch_row(pg_query($dbconn, "SELECT name FROM employee_info WHERE employee_sin='$doctorSin[0]';"));
-                                            echo $doctorName[0] ?></td>
-                                        <!-- <td><?php //echo pg_fetch_result(pg_query($dbconn, "SELECT e_info.name FROM Employee_info AS e_info WHERE e_info.employee_sin in (SELECT e.employee_sin FROM Employee AS e WHERE e.employee_id='$patientAppointments['employee_id']');")); ?></td> -->
-                                        <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
-                                        <td><?php echo $patientAppointments['start_time'] ?></td>
-                                        <td><?php echo $patientAppointments['end_time'] ?></td>
-                                        <td><?php echo $patientAppointments['appointment_type'] ?></td>
-                                        <td><?php echo $patientAppointments['room'] ?></td>
-                                        <td><?php echo $patientAppointments['appointment_status'] ?></td>
-                                        <td>
-                                        <select id="cars" name="cars">
-                                            <option value="booked">Booked</option>
-                                            <option value="completed">Completed</option>
-                                            <option value="cancelled">Cancelled</option>
-                                            <option value="no_show">No Show</option>
-                                        </select>
-                                        </td>
-                                    </tr>
+                                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+                                        <input name="apt_id" type="text" hidden value="<?php echo $patientAppointments['appointment_id'] ?>">
+                                        <tr>
+                                            <td><?php echo $patientAppointments['appointment_id'] ?></td>
+                                            <td><?php 
+                                                $doctorId = $patientAppointments['dentist_id'];
+                                                $doctorSin = pg_fetch_row(pg_query($dbconn,"SELECT employee_sin FROM employee WHERE employee_id=$doctorId;"));
+                                                $doctorName = pg_fetch_row(pg_query($dbconn, "SELECT name FROM employee_info WHERE employee_sin='$doctorSin[0]';"));
+                                                echo $doctorName[0] ?></td>
+                                            <!-- <td><?php //echo pg_fetch_result(pg_query($dbconn, "SELECT e_info.name FROM Employee_info AS e_info WHERE e_info.employee_sin in (SELECT e.employee_sin FROM Employee AS e WHERE e.employee_id='$patientAppointments['employee_id']');")); ?></td> -->
+                                            <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
+                                            <td><?php echo $patientAppointments['start_time'] ?></td>
+                                            <td><?php echo $patientAppointments['end_time'] ?></td>
+                                            <td><?php echo $patientAppointments['appointment_type'] ?></td>
+                                            <td><?php echo $patientAppointments['room'] ?></td>
+                                            <td><?php echo $patientAppointments['appointment_status'] ?></td>
+                                            <td>
+                                            
+                                                <?php 
+                                                $status = $patientAppointments['appointment_status'];
+                                                if ($status == 'Booked'){
+                                                    echo "<select id='cars' name='cars'>
+                                                        <option value='Booked' selected>Booked</option>
+                                                        <option value='Completed'>Completed</option>
+                                                        <option value='Cancelled'>Cancelled</option>
+                                                        <option value='No Show'>No Show</option>
+                                                    </select>";
+                                                }
+
+                                                elseif ($status == 'Completed'){
+                                                    echo "<select id='cars' name='cars'>
+                                                        <option value='Booked'>Booked</option>
+                                                        <option value='Completed' selected>Completed</option>
+                                                        <option value='Cancelled'>Cancelled</option>
+                                                        <option value='No Show'>No Show</option>
+                                                    </select>";
+                                                }
+
+                                                elseif ($status == 'Cancelled'){
+                                                    echo "<select id='cars' name='cars'>
+                                                        <option value='Booked'>Booked</option>
+                                                        <option value='Completed'>Completed</option>
+                                                        <option value='Cancelled' selected>Cancelled</option>
+                                                        <option value='No Show'>No Show</option>
+                                                    </select>";
+                                                }
+                                                elseif ($status == 'No Show'){
+                                                    echo "<select id='cars' name='cars'>
+                                                        <option value='Booked'>Booked</option>
+                                                        <option value='Completed'>Completed</option>
+                                                        <option value='Cancelled'>Cancelled</option>
+                                                        <option value='No Show' selected>No Show</option>
+                                                    </select>";
+                                                } ?>
+
+                                                <input type="submit" class= "btn btn-primary" style="padding:1px" name="edit_status" > 
+                                                
+
+                                            </td>
+                                        </tr>
+                                    </form>
+
                                     <?php endforeach;?>
                                 </tbody>
                             </table>
