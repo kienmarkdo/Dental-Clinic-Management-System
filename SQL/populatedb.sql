@@ -113,17 +113,17 @@ INSERT INTO Procedure_codes VALUES
 -- We could make a list/drop menu of dentists where the person who's doing 
 -- the appt booking can choose a dentist
 INSERT INTO Appointment VALUES
-(DEFAULT,3,3,TO_DATE('2022 04 14', 'YYYY MM DD'),'10:00:00','11:00:00',2,'Booked',5), -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
+(DEFAULT,3,3,TO_DATE('2022 04 14', 'YYYY MM DD'),'10:00:00','11:00:00',2,'Completed',5), -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
  -- Stephie McRandom's appointments START
 (DEFAULT,2,3,TO_DATE('2022 04 02', 'YYYY MM DD'),'08:30:00','09:00:00',2,'Cancelled',1),
 (DEFAULT,2,3,TO_DATE('2022 04 03', 'YYYY MM DD'),'08:30:00','09:00:00',3,'No Show',2),
 (DEFAULT,2,2,TO_DATE('2022 04 04', 'YYYY MM DD'),'10:00:00','11:00:00',3,'Completed',23),
-(DEFAULT,2,2,TO_DATE('2022 04 05', 'YYYY MM DD'),'11:00:00','12:00:00',4,'Booked',21),
-(DEFAULT,2,3,TO_DATE('2022 04 06', 'YYYY MM DD'),'09:00:00','10:00:00',1,'Booked',13),
+(DEFAULT,2,2,TO_DATE('2022 04 05', 'YYYY MM DD'),'11:00:00','12:00:00',4,'Completed',21),
+(DEFAULT,2,3,TO_DATE('2022 04 06', 'YYYY MM DD'),'09:00:00','10:00:00',1,'Completed',13),
 (DEFAULT,2,6,TO_DATE('2022 04 30', 'YYYY MM DD'),'14:00:00','14:30:00',2,'Booked',11),
  -- Stephie McRandom's appointments END
  -- Elmo appointment
-(DEFAULT,1,6,TO_DATE('2022 05 15', 'YYYY MM DD'),'11:00:00','13:00:00',10,'Booked',8);
+(DEFAULT,1,6,TO_DATE('2022 05 15', 'YYYY MM DD'),'11:00:00','13:00:00',10,'Completed',8);
 
 -- Treatment
 INSERT INTO Treatment VALUES
@@ -144,7 +144,7 @@ INSERT INTO Appointment_procedure VALUES (
   TO_DATE('2022 04 14', 'YYYY MM DD'),
   NULL,
   3,
-  'We need to remove the wisdom tooth of the patient - Booked',
+  'We need to remove the wisdom tooth of the patient - Completed',
   8, -- this means quadrant 2, tooth #3 https://www.summerleadental.com/all-about-the-tooth-numbers/
   1, -- this means, remove 1 tooth
   NULL,
@@ -172,16 +172,16 @@ INSERT INTO Appointment_procedure VALUES (
   NULL,NULL,100,NULL -- teeth cleaning completed
 ),
 (
-  DEFAULT,5,2,TO_DATE('2022 04 05', 'YYYY MM DD'),NULL,7,'Root canal appointment - Booked',
+  DEFAULT,5,2,TO_DATE('2022 04 05', 'YYYY MM DD'),NULL,7,'Root canal appointment - Completed',
   33,
   7, -- 7 Root Canal
   NULL,NULL,1000,NULL -- root canal - cost is $1000
 ),
 (
-  DEFAULT,6,2,TO_DATE('2022 04 06', 'YYYY MM DD'),NULL,9,'Dental Cleaning - Booked',
+  DEFAULT,6,2,TO_DATE('2022 04 06', 'YYYY MM DD'),NULL,9,'Dental Cleaning - Completed',
   21,
   9, -- 9 Bonding
-  NULL,NULL,500,NULL -- bonding booked - cost is $500
+  NULL,NULL,500,NULL -- bonding Completed - cost is $500
 ),
 (
   DEFAULT,7,2,TO_DATE('2022 04 07', 'YYYY MM DD'),NULL,8,'Invisalign appointment - Booked',
@@ -203,8 +203,8 @@ INSERT INTO Fee_charge VALUES
 (DEFAULT, 4, 100,100), -- dental cleaning code 100 charge 100
 (DEFAULT, 5, 107,800), -- root canal cost
 (DEFAULT, 5, 125,200), -- root canal anesthesia cost
-(DEFAULT, 6, 109,500), -- bonding cost
-(DEFAULT, 7, 108,7200) -- invisalign cost
+(DEFAULT, 6, 109,500) -- bonding cost
+-- (DEFAULT, 7, 108,7200) -- invisalign cost
 -- Stephie McRandom's appointment procedure fee charges END
 ;
 
@@ -247,7 +247,7 @@ INSERT INTO Invoice VALUES
   20,80,0,0,2
 ),
 (
-  DEFAULT,TO_DATE('2022 04 05', 'YYYY MM DD'), -- root canal booked
+  DEFAULT,TO_DATE('2022 04 05', 'YYYY MM DD'), -- root canal Completed
   'The Downtown Dental Clinic
   Ottawa ON K1P 6L7
   (613) 234-0792
@@ -255,21 +255,21 @@ INSERT INTO Invoice VALUES
   100,900,0,0,2
 ),
 (
-  DEFAULT,TO_DATE('2022 04 06', 'YYYY MM DD'), -- bonding booked
+  DEFAULT,TO_DATE('2022 04 06', 'YYYY MM DD'), -- bonding Completed
   'The Downtown Dental Clinic
   Ottawa ON K1P 6L7
   (613) 234-0792
   ',
   300,200,0,0,2
-),
-(
-  DEFAULT,TO_DATE('2022 04 07', 'YYYY MM DD'), -- invisalign Booked
-  'The Downtown Dental Clinic
-  Ottawa ON K1P 6L7
-  (613) 234-0792
-  ',
-  7200,0,0,0,2
 )
+-- (
+--   DEFAULT,TO_DATE('2022 04 07', 'YYYY MM DD'), -- invisalign Completed
+--   'The Downtown Dental Clinic
+--   Ottawa ON K1P 6L7
+--   (613) 234-0792
+--   ',
+--   7200,0,0,0,2
+-- )
   -- Random's invoices END
 ;
 
@@ -311,7 +311,7 @@ patient_charge = 20,
 insurance_claim_id = 2
 WHERE (procedure_id = 4);
 
-UPDATE Appointment_procedure -- Random has insurance; Booked Root Canal
+UPDATE Appointment_procedure -- Random has insurance; Completed Root Canal
 SET 
 invoice_id = 5,
 insurance_charge = 900,
@@ -319,7 +319,7 @@ patient_charge = 100,
 insurance_claim_id = 3
 WHERE (procedure_id = 5);
 
-UPDATE Appointment_procedure -- Random has insurance; Booked Bonding
+UPDATE Appointment_procedure -- Random has insurance; Completed Bonding
 SET 
 invoice_id = 6,
 insurance_charge = 200,
@@ -327,22 +327,23 @@ patient_charge = 300,
 insurance_claim_id = 4
 WHERE (procedure_id = 6);
 
-UPDATE Appointment_procedure -- Random has insurance; Booked invisalign
-SET 
-invoice_id = 7,
-patient_charge = 7200
-WHERE (procedure_id = 7);
+-- UPDATE Appointment_procedure -- Random has insurance; Completed invisalign
+-- SET 
+-- invoice_id = 7,
+-- patient_charge = 7200
+-- WHERE (procedure_id = 7);
 
 
 
 -- Patient Billing
 INSERT INTO Patient_billing VALUES
 (DEFAULT,1,300,200,500,'Visa'),
-(DEFAULT,2,14,0,14,'Cash'),
-(DEFAULT,2,20,80,100,'Mastercard'),
+(DEFAULT,2,14,0,14,'Cash/Debit'),
+(DEFAULT,2,20,80,100,'Visa'),
 (DEFAULT,2,100,900,1000,'Mastercard'),
-(DEFAULT,2,300,200,500,'Mastercard'),
-(DEFAULT,2,7200,0,7200,'Visa');
+(DEFAULT,2,300,200,500,'Mastercard')
+-- (DEFAULT,2,7200,0,7200,'Visa')
+;
 
 
 -- User Accounts

@@ -55,6 +55,9 @@ $apptProcedures = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment_proc
 // Invoice query - all of patient's invoice
 $patientInvoice = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Invoice WHERE patient_id='$pID[0]' ORDER BY invoice_id DESC;")); // assume that latest review ID means latest date_of_issue
 
+// Patient billing query (view all patient billing)
+$patientBilling = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Patient_billing WHERE patient_id ='$pID[0]' ORDER BY bill_id DESC;"));
+
 // Review query (all reviews on the website)
 $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_id DESC;"));
 $sorting = "";
@@ -114,7 +117,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <a href="#patient_appointment_procedures"> <i class="fa fa-book"></i> Appointment Procedures</a>
                             </li>
                             <li>
-                                <a href="#patient_invoices"> <i class="fa fa-credit-card"></i> Invoices</a>
+                                <a href="#patient_invoices"> <i class="fa fa-file-text"></i> Invoices</a>
+                            </li>
+                            <li>
+                                <a href="#patient_make_payment"> <i class="fa fa-credit-card"></i> Make a Payment</a>
+                            </li>
+                            <li>
+                                <a href="#patient_billing"> <i class="fa fa-th-large"></i> Patient Billing</a>
                             </li>
                             <li>
                                 <a href="#patient_reviews"> <i class="fa fa-comments-o"></i> Reviews</a>
@@ -425,6 +434,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <h3><i class="fa fa-credit-card"></i> Invoices</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
+                            <p><i class="fa fa-question-circle"></i> Invoices are created after an Appointment is completed</p>
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
@@ -454,6 +464,72 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                     </div>
                     <!-- Patient Invoice END -->
+                    <!-- ==================================================================== -->
+                    <!-- Patient Make a Payment START -->
+                    <?php
+                    $payment_type = $_POST['payment_method'];
+                    if ($_SERVER['REQUEST_METHOD'] === "POST" && $payment_type == "yespayment")
+                    {
+                        $_SESSION['pusername'] = $patientUsername; //send username via session
+                        header('Location:make_payment.php');
+                    }
+                    ?>
+
+                    <div class="panel" id="patient_make_payment">
+                        <div class="bio-graph-heading">
+                            <h3><i class="fa fa-credit-card"></i> Make a Payment</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <h1>Select payment method</h1>
+                            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                                <fieldset>
+                                    <!-- <input type="radio" name="payment_method" value="no_payment" checked="true"> No Payment<br> -->
+                                    <input type="radio" name="payment_method" value="nopayment" checked="true"> No Payment<br>
+                                    <input type="radio" name="payment_method" value="yespayment"> Make a Payment<br>
+                                </fieldset>
+                                <br><br>
+                                <button class="btn btn-lg btn-primary btn-block btn-warning" type="submit" name="login">Proceed to payment</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Patient Make a Payment END -->
+
+                    <!-- ==================================================================== -->
+                    <!-- Patient Billing START -->
+
+                    <div class="panel" id="patient_billing">
+                        <div class="bio-graph-heading">
+                            <h3><i class="fa fa-th-large"></i> Patient Billing</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <p><i class="fa fa-question-circle"></i> Bills are created after a payment is made</p>
+                            <table id="appointments_grid" class="table" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Bill ID</th>
+                                        <th>Patient ID</th>
+                                        <th>Patient Amount</th>
+                                        <th>Insurance Amount</th>
+                                        <th>Total Amount</th>
+                                        <th>Payment Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($patientBilling as $patientBill => $patientBilling) :?>
+                                    <tr>
+                                        <td><?php echo $patientBilling['bill_id'] ?></td>
+                                        <td><?php echo $patientBilling['patient_id'] ?></td>
+                                        <td><?php echo $patientBilling['patient_amount'] ?></td>
+                                        <td><?php echo $patientBilling['insurance_amount'] ?></td>
+                                        <td><?php echo $patientBilling['total_amount'] ?></td>
+                                        <td><?php echo $patientBilling['payment_type'] ?></td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Patient Billing END -->
 
                     <!-- ==================================================================== -->
                     <!-- Patient Reviews START -->
