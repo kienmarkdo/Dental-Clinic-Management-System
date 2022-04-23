@@ -251,4 +251,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     </div>
 </body>
+<script>
+        // this if statement turns off the "Confirm Form Resubmission" and prevents multiple Review submissions
+        //  after a successful Review submission
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
 </html>
