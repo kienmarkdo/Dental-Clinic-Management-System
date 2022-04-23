@@ -113,7 +113,7 @@ INSERT INTO Procedure_codes VALUES
 -- We could make a list/drop menu of dentists where the person who's doing 
 -- the appt booking can choose a dentist
 INSERT INTO Appointment VALUES
-(DEFAULT,3,3,TO_DATE('2022 04 14', 'YYYY MM DD'),'10:00:00','11:00:00',2,'Completed',5), -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
+(DEFAULT,3,3,TO_DATE('2022 04 14', 'YYYY MM DD'),'10:00:00','11:00:00',3,'Completed',5), -- Make sure the 'Extractions' and 'Teeth Cleanings' match up with the procedure code in the Appointment_procedure table
  -- Stephie McRandom's appointments START
 (DEFAULT,2,3,TO_DATE('2022 04 02', 'YYYY MM DD'),'08:30:00','09:00:00',2,'Cancelled',1),
 (DEFAULT,2,3,TO_DATE('2022 04 03', 'YYYY MM DD'),'08:30:00','09:00:00',3,'No Show',2),
@@ -144,7 +144,7 @@ INSERT INTO Appointment_procedure VALUES (
   TO_DATE('2022 04 14', 'YYYY MM DD'),
   NULL,
   3,
-  'We need to remove the wisdom tooth of the patient - Completed',
+  'We need to remove the wisdom tooth of the patient',
   8, -- this means quadrant 2, tooth #3 https://www.summerleadental.com/all-about-the-tooth-numbers/
   1, -- this means, remove 1 tooth
   NULL,
@@ -154,42 +154,42 @@ INSERT INTO Appointment_procedure VALUES (
 ),
 -- Stephie McRandom's procedures START
 (
-  DEFAULT,2,2,TO_DATE('2022 04 02', 'YYYY MM DD'),NULL,2,'Annual patient dental cleaning - Cancelled',
+  DEFAULT,2,2,TO_DATE('2022 04 02', 'YYYY MM DD'),NULL,2,'Annual patient dental cleaning',
   999, -- code for operation that involves every tooth
-  0, -- it's a cleaning, so it's 0
+  1, --  means doctor does 1 cleaning
   NULL,NULL,00.00,NULL -- cancelled so price is 0
 ),
 (
-  DEFAULT,3,2,TO_DATE('2022 04 03', 'YYYY MM DD'),NULL,2,'Annual patient dental cleaning - No show',
+  DEFAULT,3,2,TO_DATE('2022 04 03', 'YYYY MM DD'),NULL,2,'Annual patient dental cleaning',
   999, -- code for operation that involves every tooth
-  0, -- it's a cleaning, so it's 0
+  1, -- means doctor does 1 cleaning
   NULL,NULL,14.00,NULL -- no show - a charge of $14 is added to the patient's account
 ),
 (
-  DEFAULT,4,2,TO_DATE('2022 04 04', 'YYYY MM DD'),NULL,2,'Annual patient dental cleaning - Completed',
+  DEFAULT,4,2,TO_DATE('2022 04 04', 'YYYY MM DD'),NULL,2,'Annual patient dental cleaning',
   999, -- code for operation that involves every tooth
-  0, -- it's a cleaning, so it's 0
+  1, -- means doctor does 1 cleaning
   NULL,NULL,100,NULL -- teeth cleaning completed
 ),
 (
-  DEFAULT,5,2,TO_DATE('2022 04 05', 'YYYY MM DD'),NULL,7,'Root canal appointment - Completed',
-  33,
-  7, -- 7 Root Canal
+  DEFAULT,5,2,TO_DATE('2022 04 05', 'YYYY MM DD'),NULL,2,'Teeth Whitening appointment',
+  999, -- all teeth
+  1, -- has to do 1 whitening
   NULL,NULL,1000,NULL -- root canal - cost is $1000
 ),
 (
-  DEFAULT,6,2,TO_DATE('2022 04 06', 'YYYY MM DD'),NULL,9,'Dental Cleaning - Completed',
+  DEFAULT,6,2,TO_DATE('2022 04 06', 'YYYY MM DD'),NULL,9,'Dental Cleaning',
   21,
   9, -- 9 Bonding
   NULL,NULL,500,NULL -- bonding Completed - cost is $500
 ),
 (
-  DEFAULT,7,2,TO_DATE('2022 04 07', 'YYYY MM DD'),NULL,8,'Invisalign appointment - Booked',
+  DEFAULT,7,2,TO_DATE('2022 04 07', 'YYYY MM DD'),NULL,8,'Invisalign appointment',
   999, -- code for operation that involves every tooth
-  8, -- 8 Invisalign
+  1, -- 1 Invisalign to do
   NULL,NULL,7200,NULL -- invisalign Booked
 )
--- Stephie McRandom's procedures START
+-- Stephie McRandom's procedures END
 ;
 
 
