@@ -94,7 +94,7 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
                             <a href="#viewAppointments"><i class="fa fa-calendar"></i> View upcoming appointment</a>
                         </li>
                         <li>
-                            <a href="#viewPatientRecords"><i class="fa fa-heart"></i> View Patient Records</a>
+                            <a href="#viewPatientRecords"><i class="fa fa-heart"></i> View Patient Medical Records</a>
                         </li>
                         <li>
                             <a href="#patient_treatments"> <i class="fa fa-flag"></i> Patient Treatments</a>
@@ -240,14 +240,14 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
                             <h3><i class="fa fa-calendar"></i> Upcoming Appointments</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
-                            <h5>Please view each patient's medical records before administering the procedure. Please note that the end time is only here for information purposes ("à titre indicatif" in french)</h5>
+                            <p><i class="fa fa-question-circle"></i> Please view each patient's Medical Records before administering an Appointment Procedure.</p>
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th>Patient Name</th>
                                         <th>Date</th>
                                         <th>Start Time</th>
-                                        <th>End Time</th>
+                                        <th><abbr title="End Time is provided for informational purposes only - « à titre indicatif » en français">End Time</abbr></th>
                                         <th>Procedure To Do</th>
                                         <th>Room</th>
                                         <th>Appointment ID</th>
@@ -280,9 +280,10 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
            
             <div class="panel" id="viewPatientRecords">
                     <div class="bio-graph-heading">
-                        <h3><i class="fa fa-heart"></i> View Patient Records</h3>
+                        <h3><i class="fa fa-heart"></i> View Patient Medical Records</h3>
                     </div>
                     <div class="panel-body bio-graph-info">
+                        <p><i class="fa fa-question-circle"></i> Notes on patient medical history and other relevant health information</p>
                         <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
@@ -313,6 +314,7 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
                         <h3><i class="fa fa-flag"></i> Patient Treatments</h3>
                     </div>
                     <div class="panel-body bio-graph-info">
+                        <p><i class="fa fa-question-circle"></i> Treatments are diagnosed after an Appointment with a patient and are required before creating a patient's Appointment Procedure</p>
                         <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
@@ -349,8 +351,9 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
                         <div class="panel" id="add_treatment">
                             <div class="panel-body bio-graph-info">
                                 <h1>Add a treatment for a patient</h1>
-                                <h4>Please note that you can add a treatment for only your patients and your appointments.</h4>
-                                <h5><span class="error">*</span> indicates required fields </h5>
+                                <p><i class="fa fa-question-circle"></i> Note that you can only add a treatment for <abbr title="Patients with whom you have had an appointment">your patients and your appointments</abbr></p>
+                                <br>
+                                <p><span class="error">* indicates required fields </span></p>
                                 <div class="row">
                                     <div class="bio-row">
                                         <p>
@@ -470,6 +473,7 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
                         <h3><i class="fa fa-book"></i> Appointment Procedures</h3>
                     </div>
                     <div class="panel-body bio-graph-info">
+                        <p><i class="fa fa-question-circle"></i> Note that the date of the Appointment Procedures are the same as the date of their respective Appointment IDs </abbr></p>
                         <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
@@ -508,8 +512,9 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
                             <div class="panel" id="add_appt_procedure">
                                 <div class="panel-body bio-graph-info">
                                     <h1>Add an appointment procedure for a patient</h1>
-                                    <h4>Please note that the invoice is gonna be taken care of by the receptionist.</h4>
-                                    <h5><span class="error">*</span> indicates required fields </h5>
+                                    <p><i class="fa fa-question-circle"></i> Note that the Invoice will be taken care of by the Receptionist after the procedure is completed</p>
+                                    <br>
+                                    <p><span class="error">* indicates required fields </span></p>
                                     <div class="row">
                                         <div class="bio-row">
                                             <p>
@@ -529,14 +534,14 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
                                         </div>
                                         <div class="bio-row">
                                             <p>
-                                            <span>Tooth number </span>
+                                            <span>Tooth Number </span>
                                             <input type="number" id="apptTooth" name="apptTooth" placeholder="Enter tooth number">
                                             <span class="error">* <?php echo $apptToothErr ?></span>  
                                             </p>
                                         </div>
                                         <div class="bio-row">
                                             <p>
-                                            <span>Procedure </span>
+                                            <span>Procedure Code </span>
                                             <select name="apptProcedure" id="apptProcedure">
                                                 <option>-</option>
                                                 <?php 
@@ -552,8 +557,8 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
                                         </div>
                                         <div class="bio-row">
                                             <p>
-                                            <span>Appointment Procedure Description </span>
-                                            <input type="text" id="apptDesc" name="apptDesc" placeholder="Enter description">
+                                            <span>Procedure Description </span>
+                                            <input type="text" id="apptDesc" name="apptDesc" placeholder="Enter description" maxlength="255">
                                             <span class="error">* <?php echo $apptDescErr?></span>  
                                             </p>
                                         </div>
@@ -566,14 +571,14 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
                                         </div> 
                                         <div class="bio-row">
                                             <p>
-                                            <span>Amount of procedure to do </span>
-                                            <input type="number" id="amount" name="amount" placeholder="Enter number of procedure">
+                                            <span><abbr title="The number of times this procedure needs to be performed">Procedure Amount</abbr> </span>
+                                            <input type="number" id="amount" name="amount" placeholder="Enter amount">
                                             <span class="error">* <?php echo $amountErr?></span>  
                                             </p>
                                         </div>                                       
                                         <div class="bio-row">
                                             <p>
-                                            <span>ID of Concerned Appointement  </span>
+                                            <span><abbr title="ID of a previous Appointment you've had with a patient">Appointment ID</abbr> </span>
                                             <select name="apptId" id="apptId">
                                                 <option>-</option>
                                                 <?php 
@@ -639,7 +644,7 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
                         <h3><i class="fa fa-comments-o"></i> View Reviews</h3>
                     </div>
                     <div class="panel-body bio-graph-info">
-                        <h5>Please note that the reviews are anonymous. Professionalism, Communication and Cleanliness are rated out of 5.</h5>
+                        <p><i class="fa fa-question-circle"></i> Note that patient reviews are anonymous. Ratings are on a scale from 1 to 5.</p>
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
