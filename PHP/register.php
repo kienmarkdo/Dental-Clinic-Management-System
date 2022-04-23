@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <span class="error"> * <?php echo $patient_fields["patient_sin"] == -1 ? "patient_sin is required!" : '' ?> </span><br>
 
             <label for="address">Address:</label>
-            <input type="text" class="form-control" id="addressfield" name="address" placeholder="Enter full home address" 
+            <input type="text" class="form-control" id="addressfield" name="address" placeholder="Enter full home address, city, province, country (e.g.: 123 Street Road, Ottawa, Ontario, Canada)" 
             onkeyup="return validateTextField(this);" value="<?php echo $patient_fields["address"] != -1 ? $patient_fields["address"] : '' ?>" required>
             <span class="error"> * <?php echo $patient_fields["address"] == -1 ? "patient_sin is required!" : '' ?> </span><br>
 
