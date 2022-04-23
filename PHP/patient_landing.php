@@ -403,7 +403,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <th>Code</th>
                                         <th>Description</th>
                                         <th>Tooth</th>
-                                        <th><abbr title="This is actually the Procedure Code (1: Teeth Cleanings, 2: Teeth Whitening, 3: Extractions, 4: Veneers, 5: Fillings, 6: Crowns, 7: Root Canal, 8: Braces/Invisalign, 9: Bonding, 10: Dentures)">Amount</abbr></th>
+                                        <th><abbr title="Refers to the amount of procedure to perform">Amount</abbr></th>
                                         <th>Total Charge</th>
                                     </tr>
                                 </thead>
@@ -758,6 +758,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             if (!$insertReviewResult) {
                                 echo pg_last_error($dbconn);
+                                echo "<h5>There was an error adding the review</h5>";
                             } else {
                                 echo "Review Added Successfully!<br><br>";
                                 echo "Your response was submitted on " . date("Y-m-d",time()) . "<br><br><br><br>";

@@ -183,7 +183,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
 
                             // checks if all the required fields are empty or not
 
-                            if (empty($_POST["date(date_of_birth)"])) {
+                            if (empty($_POST["date_of_issue"])) {
                                  $invoiceDateError = "Required";
                             }
                             if (empty($_POST["contact_info"])) {
@@ -328,7 +328,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
 
                                         </p>
                                     </div>
-                                </div><input type="submit" class= "btn btn-primary" name="edit"> 
+                                </div><input type="submit" class= "btn btn-primary" name="edit" value="Edit information"> 
                             </div>
                         </div>
 
@@ -394,7 +394,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
 
                     } // end if (if response was submitted successfully)
 
-                    if($_POST['edit_status']){
+                    elseif($_POST['edit_status']){
                         $updateStatus = "
                         UPDATE appointment
                         SET appointment_status = $1 
@@ -402,11 +402,16 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                         ";
                         $statusInput = $_POST['cars'];
                         $aptId = $_POST['apt_id'];
-                        // echo $statusInput;
-                        // echo "something";
-                        // echo $aptId;
-                        // $dbconn is the db connection in db.php. Need to figure out how to get the appointment_id
+                        
                         $updatePatientInfoResult = pg_query_params($dbconn, $updateStatus, array($statusInput,$aptId)); // insert data into database
+
+                        if(!$updatePatientInfoResult) {
+                            echo preg_last_error($dbconn);
+                            echo "<h5>There was an error updating the status</h5>";
+                        } else {
+                            echo "<h5>You've sucessfully updated the status of appointment with ID $aptId!<h5>";
+                            echo "<h5><strong style=\"color:red\">Please refresh the page to view the changes</strong></h5>". "<br><br>";
+                        }
                     }
                     
                         
@@ -469,7 +474,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                 </thead>
                                 <tbody>
                                     <?php foreach($patientAppointments as $patientAppointment => $patientAppointments) :?>
-                                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+                                    <form action="<?php echo "#patient_appointments" ?>" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
                                         <input name="apt_id" type="text" hidden value="<?php echo $patientAppointments['appointment_id'] ?>">
                                         <tr>
                                             <td><?php echo $patientAppointments['appointment_id'] ?></td>
@@ -524,7 +529,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                                     </select>";
                                                 } ?>
 
-                                                <input type="submit" class= "btn btn-primary" style="padding:1px" name="edit_status" > 
+                                                <input type="submit" class= "btn btn-primary" style="padding:1px" name="edit_status" value="Save"> 
                                                 
 
                                             </td>
@@ -614,7 +619,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                         </p>
                                     </div>                                   
                                 </div>
-                                <input class="btn btn-primary"type="submit" name="add"> 
+                                <input class="btn btn-primary"type="submit" name="add" value="Set appointment"> 
                             </div>
                         </div> 
                         </form>
@@ -638,7 +643,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                    
                                     if (!$addAppointment) {
                                         echo pg_last_error($dbconn);
-                                        echo "<h1>ERROR</h1>";
+                                        echo "<h5>There was an error when setting the appointment</h5>";
                                     } else {
                                         $time = $_POST['start_time'];
                                         echo "<h5>You've succesfully set an appointment for $pName on $dateInput at $time. </h5>";
@@ -703,7 +708,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                         <th>Code</th>
                                         <th>Description</th>
                                         <th>Tooth</th>
-                                        <th><abbr title="This is actually the Procedure Code (1: Teeth Cleanings, 2: Teeth Whitening, 3: Extractions, 4: Veneers, 5: Fillings, 6: Crowns, 7: Root Canal, 8: Braces/Invisalign, 9: Bonding, 10: Dentures)">Amount</abbr></th>
+                                        <th><abbr title="Refers to the amount of procedure to perform">Amount</abbr></th>
                                         <th>Total Charge</th>
                                     </tr>
                                 </thead>
@@ -765,7 +770,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                     <!-- Patient Invoice END -->
 
                     <!-- Edit patient invoice START -->
-                    <form action="<?php echo "#patient_invoices"; ?>" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ;?>">
+                    <form action="<?php echo "#set_invoice"; ?>" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ;?>">
                         <div class="panel" id="set_invoice">
                             <div class="panel-body bio-graph-info">
                                 <h1>Set an invoice for <?php echo $pName ?></h1>
@@ -792,43 +797,45 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                     <div class="bio-row">
                                         <p>
                                            <span>Patient Charge</span>
-                                            <input type="number" min="0.00"step="0.01" id="patient_charge" name="patient_charge"> <span class="error"> * <?php echo $chargeError?></span>
+                                            <input type="number" min="0.00"step="0.01" id="patient_charge" name="patient_charge">
+                                            <span class="error">* <?php echo $chargeError?></span>
                                         </p>
                                     </div>
 
                                     <div class="bio-row">
                                         <p>
-                                           <span>Insurance</span>
-                                            <input type="number" min="0.00"step="0.01" id="insurance_charge" name="insurance_charge"><span class="error">* <?php echo $insuranceError?></span>
+                                           <span>Insurance Charge</span>
+                                            <input type="number" min="0.00"step="0.01" id="insurance_charge" name="insurance_charge">
+                                            <span class="error">* <?php echo $insuranceError?></span>
                                         </p>
                                     </div>
 
                                     <div class="bio-row">
                                         <p>
                                            <span>Discount</span>
-                                            <input type="number" min="0.00"step="0.01" id="patient_discount" name="patient_discount"><span class="error"> * <?php echo $discountError?></span>
+                                            <input type="number" min="0.00"step="0.01" id="patient_discount" name="patient_discount">
+                                            <span class="error">* <?php echo $discountError?></span>
                                         </p>
                                     </div>
 
                                      <div class="bio-row">
                                         <p>
                                            <span>Penalty Fee</span>
-                                            <input type="number" min="0.00"step="0.01" id="patient_penalty" name="patient_penalty"><span class="error">* <?php echo $penaltyError?></span>
+                                            <input type="number" min="0.00"step="0.01" id="patient_penalty" name="patient_penalty">
+                                            <span class="error">* <?php echo $penaltyError?></span>
                                         </p>
                                     </div>
                                                                        
                                 </div>
-                                <input class="btn btn-primary"type="submit" name="addInvoice"> 
+                                <input class="btn btn-primary"type="submit" name="addInvoice" value="Add Invoice"> 
                             </div>
                         </div> 
                         </form>
-                    </div>
-
-                    <?php 
+                        <?php 
                         if (!(empty($_POST["date_of_issue"]) && empty($_POST["contact_info"]) &&
-                            empty($_POST["patient_charge"]) && empty($_POST["patient_penalty"])) && $_POST["insurance_charge"] != "-" &&
-                            $_POST["discount"] != "-") {
-        
+                            empty($_POST["patient_charge"]) && empty($_POST["patient_penalty"]) 
+                            && empty($_POST["insurance_charge"]) && empty($_POST["discount"]))) {
+                                
                                 if ($_SERVER['REQUEST_METHOD'] === "POST") {
                                     $contactInput = $_POST['contact_info'];                                  
                                     $dateIssueInput = $_POST['date_of_issue'];
@@ -841,8 +848,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                     $addInvoice = pg_query($dbconn, $iquery);
                                    
                                     if (!$addInvoice) {
-                                        echo pg_last_error($dbconn);
-                                        echo "<h1>ERROR</h1>";
+                                        echo "<h4>There was an error adding the invoice. Please fill in all the required fields</h4>";
                                     } else {
                                         echo "<h5>You've succesfully set invoice for $pName.</h5>";
                                         echo "<h5><strong style=\"color:red\">Please refresh to see the changes</strong>.<br></h5>";
@@ -850,6 +856,8 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                 }
                         }
                     ?>
+                    </div>
+                    
 
                     <!-- edit patient Invoice END-->
 
@@ -863,7 +871,10 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
             <!-- Inner container -->
         </div>
         <!-- CSS container END https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
-        
+        <br>
+        <br>
+        <br>
+        <br>             
     </body>
     <script>
         // this if statement turns off the "Confirm Form Resubmission" and prevents multiple form submissions after a successful form submission

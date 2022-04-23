@@ -50,6 +50,8 @@ $allTreatments = pg_fetch_all(pg_query($dbconn,"SELECT * FROM treatment as T WHE
 // gets the different types of procedure available
 $treatmentTypes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes;"));
 
+// gets all the appointment procedure related to the concerned doctor
+$allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointment_procedure WHERE appointment_id IN (SELECT appointment_id FROM Appointment WHERE dentist_id=$eID ORDER BY appointment_id) ORDER BY date_of_procedure DESC;"))
 ?>
 
 <!DOCTYPE html>
@@ -134,21 +136,39 @@ $treatmentTypes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes;
                     if (empty($_POST["comments"])) {
                         $commentsErr = "Required";
                     }
-                    if ($_POST["concernedAppintment"] == "-") {
+                    if ($_POST["concernedAppointment"] == "-") {
                         $idErr = "Required";
                     }
 
                 }
             } elseif ($_POST['addAppointmentProcedure']) {
 
-                $apptPatientNameErr = "";
+                $apptPatientNameErr = $apptToothErr = $apptProcedureErr = $amountErr = $apptIdErr = $totalChargeErr = $apptDescErr = "";
 
                  // checks if all required fields are filled
 
                 if ($_POST["apptPatient"] == "-") {
                     $apptPatientNameErr = "Required";
                 }
-                // TO COMPLETE FOR APPOINTMENT PROCEDURE
+                if (empty($_POST["apptTooth"])) {
+                    $apptToothErr = "Required";
+                }
+                if ($_POST["apptProcedure"] == "-") {
+                    $apptProcedureErr = "Required";
+                }
+                if (empty($_POST["amount"])) {
+                    $amountErr = "Required";
+                }
+                if ($_POST["apptId"] == "-") {
+                    $apptIdErr = "Required";
+                }
+                if (empty($_POST["totalCharge"])) {
+                    $totalChargeErr = "Required";
+                }
+                if (empty($_POST["apptDesc"])) {
+                    $apptDescErr = "Required";
+                }
+                
             }
 
             ?>
@@ -329,6 +349,7 @@ $treatmentTypes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes;
                         <div class="panel" id="add_treatment">
                             <div class="panel-body bio-graph-info">
                                 <h1>Add a treatment for a patient</h1>
+                                <h4>Please note that you can add a treatment for only your patients and your appointments.</h4>
                                 <h5><span class="error">*</span> indicates required fields </h5>
                                 <div class="row">
                                     <div class="bio-row">
@@ -392,7 +413,7 @@ $treatmentTypes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes;
                                     <div class="bio-row">
                                         <p>
                                             <span>ID of Concerned Appointement  </span>
-                                            <select name="concernedAppintment" id="concernedAppintment">
+                                            <select name="concernedAppointment" id="concernedAppointment">
                                                 <option>-</option>
                                                 <?php 
                                                     foreach($dAllAppointmentIds as $dAllAppointmentId => $dAllAppointmentIds) :?>
@@ -412,7 +433,7 @@ $treatmentTypes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes;
                     </form>
             </div>
             <?php
-            if ($_POST["patient"] != "-" && $_POST["treatment"] != "-" && $_POST["concernedAppintment"] != "-" &&
+            if ($_POST["patient"] != "-" && $_POST["treatment"] != "-" && $_POST["concernedAppointment"] != "-" &&
                 (!(empty($_POST["medication"]) && empty($_POST["symptoms"]) && empty($_POST["tooth"]) 
                     && empty($_POST["comments"])))) {
 
@@ -426,7 +447,7 @@ $treatmentTypes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes;
                         $patientNameInput = $_POST['patient'];
                         $patientIdFecth = pg_fetch_row(pg_query($dbconn,"SELECT P.patient_id FROM patient AS P, patient_info AS I WHERE I.patient_sin=P.sin_info AND I.name='$patientNameInput';"));
                         $patientId = $patientIdFecth[0];
-                        $appointmentIdInput = $_POST['concernedAppintment'];
+                        $appointmentIdInput = $_POST['concernedAppointment'];
 
                         $query = "INSERT INTO treatment (treatment_type,medication,symptoms,tooth,comments,patient_id,appointment_id) VALUES('$treatmentTypeInput','$medicationInput','$symptomsInput','$toothInput','$commentsInput','$patientId','$appointmentIdInput')";
                         
@@ -452,36 +473,48 @@ $treatmentTypes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes;
                         <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Procedure ID</th>
+                                    <th>Patient Name</th>
                                     <th>Appointment ID</th>
                                     <th>Date</th>
-                                    <th>Invoice ID</th>
                                     <th>Code</th>
                                     <th>Description</th>
                                     <th>Tooth</th>
-                                    <th>Amount</abbr></th>
+                                    <th><abbr title="Refers to the amount of procedure to perform">Amount</th>
                                     <th>Total Charge</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                   
-                                    <!-- TO DO -->
+                                <?php foreach($allAppointmentProceds as $allAppointmentProced => $allAppointmentProceds) :?>
+                                <tr>
+                                    <td><?php 
+                                    $pIdProced = $allAppointmentProceds['patient_id'];
+                                    $pNameProced = pg_fetch_row(pg_query($dbconn,"SELECT I.name FROM patient_info AS I, patient AS P WHERE I.patient_sin=P.sin_info AND P.patient_id=$pIdProced;"));
+                                    echo $pNameProced[0] ?></td>
+                                    <td><?php echo $allAppointmentProceds['appointment_id'] ?></td>
+                                    <td><?php echo $allAppointmentProceds['date_of_procedure'] ?></td>
+                                    <td><?php echo $allAppointmentProceds['procedure_code'] ?></td>
+                                    <td><?php echo $allAppointmentProceds['appointment_description'] ?></td>
+                                    <td><?php echo $allAppointmentProceds['tooth'] ?></td>
+                                    <td><?php echo $allAppointmentProceds['amount_of_procedure'] ?></td>
+                                    <td><?php echo $allAppointmentProceds['total_charge'] ?></td>
+                                </tr>
+                                <?php endforeach;?>
                                 </tbody>
                             </table>
                         </div>
                         <hr>
                         
-                        <!-- NEEDS TO BE COMPLETED -->
                         <form action="<?php echo "#add_appt_procedure"; ?>" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ;?>">
                             <div class="panel" id="add_appt_procedure">
                                 <div class="panel-body bio-graph-info">
                                     <h1>Add an appointment procedure for a patient</h1>
+                                    <h4>Please note that the invoice is gonna be taken care of by the receptionist.</h4>
                                     <h5><span class="error">*</span> indicates required fields </h5>
                                     <div class="row">
                                         <div class="bio-row">
                                             <p>
                                             <span>Patient Name </span>
-                                            <select name="apptPatient" id="apptNatient">
+                                            <select name="apptPatient" id="apptPatient">
                                                 <option>-</option>
                                                 <?php
                                                     $dAllPatients = pg_fetch_all(pg_query($dbconn, "SELECT DISTINCT I.name, P.patient_id FROM patient_info AS I, patient as P WHERE I.patient_sin=P.sin_info AND P.patient_id IN (SELECT DISTINCT patient_id FROM appointment WHERE dentist_id=$eID);"));
@@ -493,6 +526,66 @@ $treatmentTypes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes;
                                             </select>
                                             <span class="error">* <?php echo $apptPatientNameErr ?></span>
                                             <p>
+                                        </div>
+                                        <div class="bio-row">
+                                            <p>
+                                            <span>Tooth number </span>
+                                            <input type="number" id="apptTooth" name="apptTooth" placeholder="Enter tooth number">
+                                            <span class="error">* <?php echo $apptToothErr ?></span>  
+                                            </p>
+                                        </div>
+                                        <div class="bio-row">
+                                            <p>
+                                            <span>Procedure </span>
+                                            <select name="apptProcedure" id="apptProcedure">
+                                                <option>-</option>
+                                                <?php 
+                                                    $procedureCodes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes;"));
+                                                    foreach($procedureCodes as $procedureCode => $procedureCodes) :?>
+                                                    <option value="<?php echo $procedureCodes['procedure_code']?>">
+                                                        <?php echo $procedureCodes['procedure_code'] . " - " . $procedureCodes['procedure_name']?>
+                                                    </option>
+                                                <?php endforeach?>
+                                            </select>
+                                            <span class="error">* <?php echo $apptProcedureErr ?></span>
+                                            </p>
+                                        </div>
+                                        <div class="bio-row">
+                                            <p>
+                                            <span>Appointment Procedure Description </span>
+                                            <input type="text" id="apptDesc" name="apptDesc" placeholder="Enter description">
+                                            <span class="error">* <?php echo $apptDescErr?></span>  
+                                            </p>
+                                        </div>
+                                        <div class="bio-row">
+                                            <p>
+                                            <span>Total Charge </span>
+                                            <input type="number" id="totalCharge" name="totalCharge" placeholder="Enter total charge"> 
+                                            <span class="error">* <?php echo $totalChargeErr?></span> 
+                                        </p>
+                                        </div> 
+                                        <div class="bio-row">
+                                            <p>
+                                            <span>Amount of procedure to do </span>
+                                            <input type="number" id="amount" name="amount" placeholder="Enter number of procedure">
+                                            <span class="error">* <?php echo $amountErr?></span>  
+                                            </p>
+                                        </div>                                       
+                                        <div class="bio-row">
+                                            <p>
+                                            <span>ID of Concerned Appointement  </span>
+                                            <select name="apptId" id="apptId">
+                                                <option>-</option>
+                                                <?php 
+                                                    $dAllAppointmentIds = pg_fetch_all(pg_query($dbconn, "SELECT appointment_id FROM Appointment WHERE dentist_id=$eID ORDER BY appointment_id;"));
+                                                    foreach($dAllAppointmentIds as $dAllAppointmentId => $dAllAppointmentIds) :?>
+                                                    <option value="<?php echo $dAllAppointmentIds['appointment_id']?>">
+                                                        <?php echo $dAllAppointmentIds['appointment_id'] ?>
+                                                    </option>
+                                                <?php endforeach?>
+                                            </select>
+                                            <span class="error">* <?php echo $apptIdErr ?></span>  
+                                            </p>
                                         </div>                                                                   
                                     </div>
 
@@ -500,9 +593,46 @@ $treatmentTypes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes;
                                 </div>
                             </div> 
                         </form>
-                        <!-- END -->
 
             </div>
+            <?php
+            if ($_POST["apptPatient"] != "-" && $_POST["apptProcedure"] != "-" && $_POST["apptId"] != "-" &&
+                (!(empty($_POST["apptTooth"]) && empty($_POST["apptDesc"]) && empty($_POST["totalCharge"]) 
+                    && empty($_POST["amount"])))) {
+
+                    if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                        
+                        $apptIdInput = $_POST['apptId'];
+
+                        $apptNameInput = $_POST['apptPatient'];
+                        $apptPIDFetch = pg_fetch_row(pg_query($dbconn,"SELECT P.patient_id FROM patient AS P, patient_info AS I WHERE I.patient_sin=P.sin_info AND I.name='$apptNameInput';"));
+                        $apptPIDInput = $apptPIDFetch[0];
+
+                        $apptDateFecth = pg_fetch_row(pg_query($dbconn, "SELECT date_of_appointment FROM appointment WHERE appointment_id=$apptIdInput;"));
+                        $apptDateInput = $apptDateFecth[0];
+
+                        $apptProcedCodeInput = $_POST['apptProcedure'];
+                        $apptDescInput = $_POST['apptDesc'];
+                        $apptToothInput = $_POST['apptTooth'];
+                        $amountInput = $_POST['amount'];
+                        $totalChargeInput = $_POST['totalCharge'];
+                        
+                        $query = "INSERT INTO appointment_procedure (appointment_id,patient_id,date_of_procedure,invoice_id,procedure_code,appointment_description,tooth,amount_of_procedure,patient_charge,insurance_charge,total_charge,insurance_claim_id) 
+                                VALUES('$apptIdInput','$apptPIDInput','$apptDateInput',NULL,'$apptProcedCodeInput','$apptDescInput','$apptToothInput','$amountInput',NULL,NULL,'$totalChargeInput',NULL)";
+                        
+                        $addApptProced = pg_query($dbconn,$query);
+
+                        if (!$addApptProced) {
+                            echo preg_last_error($dbconn);
+                            echo "<h5>There was an error adding the appointment procedure</h5>";
+                        } else {
+                            echo "<h5>You've succesfully added an appointment procedure for $apptNameInput.</h5>";
+                            echo "<h5><strong style=\"color:red\">Please refresh to see the changes</strong>.<br></h5>";
+                        }
+                    }
+                }
+                          
+            ?>
 
             <div class="panel" id="viewReviews">
                     <div class="bio-graph-heading">

@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             
             <label for="pword1">Password:</label>
             <input type="password" class="form-control"
-                name="password" placeholder="ex: 1234" value="" required>
+                name="password" placeholder="ex: 123456" value="" required>
                 <span class="error"> * <?php echo $password == -1 ? 'Password is required!' : '' ?> </span><br>
             
             <label for="pword2">Verify Password:</label>
@@ -193,12 +193,12 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <span class="error"> * <?php echo $patient_fields["address"] == -1 ? "patient_sin is required!" : '' ?> </span><br>
 
             <label for="fullname">Full Name:</label>
-            <input type="text" class="form-control" id="namefield" name="fullname" placeholder="ex: Evan Marth" 
+            <input type="text" class="form-control" id="namefield" name="fullname" placeholder="ex: John Doe" 
             onkeyup="return validateName(this.value);" value="<?php echo $patient_fields["fullname"] ?>" required>
             <span class="error"> * <?php echo $patient_fields["fullname"] == -1 ? "name is required!" : '' ?> </span><br>
 
             <label for="email">Email Address:</label>
-            <input type="email" class="form-control" id="emailfield" name="email" placeholder="ex: evan.marth@gmail.com" 
+            <input type="email" class="form-control" id="emailfield" name="email" placeholder="ex: johndoe@gmail.com" 
             onkeyup="return validateEmail(this.value);" value="<?php echo $patient_fields["email"] ?>" required>
             <span class="error"> * <?php echo $patient_fields["email"] == -1 ? "email is required!" : '' ?> </span><br>
 
@@ -226,7 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <!-- Need to add JQuery code for Representative -->
             <label for="representative_name">Representative Name:</label>
             <input type="text" class="form-control" id="representative_namefield" name="representative_name" 
-            placeholder="ex: Maria LaRusso" value="<?php echo $patient_fields["representative_name"] ?>"> <br>
+            placeholder="ex: Jane Doe" value="<?php echo $patient_fields["representative_name"] ?>"> <br>
 
             <!-- Phone field is required if the patients has a representative -->
             <label for="representative_phone">Representative Phone:</label>
@@ -236,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <!-- Email field is required if the patients has a representative -->
             <label for="representative_email">Representative Email:</label>
             <input type="email" class="form-control" id="representative_emailfield" name="representative_email" 
-            placeholder="ex: maria.lar@gmail.com" value="<?php echo $patient_fields["representative_email"] ?>" > <br>
+            placeholder="ex: janedoe@gmail.com" value="<?php echo $patient_fields["representative_email"] ?>" > <br>
 
             <!-- Relationship field is required if the patients has a representative -->
             <label for="representative_rel">Representative Relationship:</label>

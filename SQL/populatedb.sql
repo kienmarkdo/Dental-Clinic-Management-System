@@ -120,10 +120,12 @@ INSERT INTO Appointment VALUES
 (DEFAULT,2,2,TO_DATE('2022 04 04', 'YYYY MM DD'),'10:00:00','11:00:00',3,'Completed',23),
 (DEFAULT,2,2,TO_DATE('2022 04 05', 'YYYY MM DD'),'11:00:00','12:00:00',4,'Completed',21),
 (DEFAULT,2,3,TO_DATE('2022 04 06', 'YYYY MM DD'),'09:00:00','10:00:00',1,'Completed',13),
-(DEFAULT,2,6,TO_DATE('2022 04 30', 'YYYY MM DD'),'14:00:00','14:30:00',2,'Booked',11),
+(DEFAULT,2,6,TO_DATE('2022 05 20', 'YYYY MM DD'),'14:00:00','14:30:00',2,'Booked',11),
+(DEFAULT,2,3,TO_DATE('2022 09 15', 'YYYY MM DD'),'10:00:00','11:00:00',8,'Booked',15),
  -- Stephie McRandom's appointments END
  -- Elmo appointment
-(DEFAULT,1,6,TO_DATE('2022 05 15', 'YYYY MM DD'),'11:00:00','13:00:00',10,'Completed',8);
+(DEFAULT,1,6,TO_DATE('2022 10 1', 'YYYY MM DD'),'11:00:00','13:00:00',10,'Completed',8),
+(DEFAULT,3,3,TO_DATE('2022 11 10', 'YYYY MM DD'),'15:00:00','16:00:00',6,'Booked',10);
 
 -- Treatment
 INSERT INTO Treatment VALUES
@@ -178,13 +180,13 @@ INSERT INTO Appointment_procedure VALUES (
   NULL,NULL,1000,NULL -- root canal - cost is $1000
 ),
 (
-  DEFAULT,6,2,TO_DATE('2022 04 06', 'YYYY MM DD'),NULL,9,'Dental Cleaning',
+  DEFAULT,6,2,TO_DATE('2022 04 06', 'YYYY MM DD'),NULL,9,'Bonding appointment',
   21,
-  9, -- 9 Bonding
+  1, -- 1 bonding to do
   NULL,NULL,500,NULL -- bonding Completed - cost is $500
 ),
 (
-  DEFAULT,7,2,TO_DATE('2022 04 07', 'YYYY MM DD'),NULL,8,'Invisalign appointment',
+  DEFAULT,7,2,TO_DATE('2022 09 15', 'YYYY MM DD'),NULL,8,'Invisalign appointment',
   999, -- code for operation that involves every tooth
   1, -- 1 Invisalign to do
   NULL,NULL,7200,NULL -- invisalign Booked
