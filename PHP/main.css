@@ -2,6 +2,16 @@
     color: #ff0000;
 }
 
+/* input validation classes */
+.goodinput {
+    background : #99FF99; 
+    border : solid 1px #99FF99;
+}
+.badinput {
+    background : #FFEDEF; 
+    border : solid 1px red;
+}
+
 /* Logout button */
 .logout-btn {
     background-color: #2B4758;
