@@ -183,17 +183,17 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             
             <label for="uname">Username:</label> <!-- the "for" attribute is supposed to math the id of the input type, if there is one -->
             <input type="text" class="form-control" value="<?php echo $username ?>"
-                name="username" placeholder="ex: firstlast123" required> 
+                name="username" placeholder="Enter username" required> 
                 <span class="error"> * <?php echo $username == "" ? 'Username is required!' : '' ?> </span><br>
             
             <label for="pword1">Password:</label>
             <input type="password" class="form-control"
-                name="password" placeholder="ex: 123456" value="" required>
+                name="password" placeholder="Enter password" value="" required>
                 <span class="error"> * <?php echo $password == "" ? 'Password is required!' : '' ?> </span><br>
             
             <label for="pword2">Verify Password:</label>
             <input type="password" class="form-control"
-                name="password_verify" placeholder="enter the same password" required>
+                name="password_verify" placeholder="Enter the same password" required>
                 <span class="error"> * <?php echo $password_verify == "" ? 'Must enter password twice!' : '' ?> </span><br>
             
             <br><br>
@@ -208,37 +208,37 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             </fieldset> <br> <br> 
             
             <label for="patient_sin">Social Insurance Number:</label>
-            <input type="text" class="form-control" id="sinfield" name="patient_sin" placeholder="ex: 123 456 789" 
+            <input type="text" class="form-control" id="sinfield" name="patient_sin" placeholder="Enter SIN" 
             onkeyup="return validateSIN(this.value);" title="16 digits" value="<?php echo $patient_fields["patient_sin"]  ?>" required>
             <span class="error"> * <?php echo $patient_fields["patient_sin"] == "" ? "patient_sin is required!" : '' ?> </span><br>
 
             <label for="address">Address:</label>
-            <input type="text" class="form-control" id="addressfield" name="address" placeholder="ex: 123 Sesame Street" 
+            <input type="text" class="form-control" id="addressfield" name="address" placeholder="Enter full home address" 
             onkeyup="return validateTextField(this);" value="<?php echo $patient_fields["address"] ?>" required>
             <span class="error"> * <?php echo $patient_fields["address"] == "" ? "patient_sin is required!" : '' ?> </span><br>
 
             <label for="fullname">Full Name:</label>
-            <input type="text" class="form-control" id="namefield" name="fullname" placeholder="ex: John Doe" 
+            <input type="text" class="form-control" id="namefield" name="fullname" placeholder="Enter full name (e.g.: Jane Doe)" 
             onkeyup="return validateTextField(this);" value="<?php echo $patient_fields["address"] ?>" required>
             <span class="error"> * <?php echo $patient_fields["fullname"] == "" ? "name is required!" : '' ?> </span><br>
 
             <label for="email">Email Address:</label>
-            <input type="email" class="form-control" id="emailfield" name="email" placeholder="ex: johndoe@gmail.com" 
+            <input type="email" class="form-control" id="emailfield" name="email" placeholder="Enter email address" 
             onkeyup="return validateEmail(this);" value="<?php echo $patient_fields["email"] ?>" required>
             <span class="error"> * <?php echo $patient_fields["email"] == "" ? "email is required!" : '' ?> </span><br>
 
             <label for="phone">Phone Number:</label>
-            <input type="tel" class="form-control" id="phonefield" name="phone" placeholder="ex: 6134083244" 
+            <input type="tel" class="form-control" id="phonefield" name="phone" maxlength="20" placeholder="Enter phone number (e.g. 555-555-5555)" 
             onkeyup="return validatePhone(this);" value="<?php echo $patient_fields["phone"] ?>" required>
             <span class="error"> * <?php echo $patient_fields["phone"] == "" ? "phone is required!" : '' ?> </span><br>
 
             <label for="dateTimeInput">Date of Birth:</label>
-            <input type="date" class="form-control" id="dobfield" value="" name="date_of_birth" placeholder="ex: 2002-05-22" 
+            <input type="date" class="form-control" id="dobfield" value="" name="date_of_birth" placeholder="Enter date of birth (mm/dd/yyyy)" 
             onkeyup="return validateDOB(this.value);" onchange="return validateDOB(this.value);" value="<?php echo $patient_fields["date_of_birth"] ?>" required>
             <span class="error"> * <?php echo $patient_fields["date_of_birth"] == "" ? "date_of_birth is required!" : '' ?> </span><br>
 
             <label for="insurance">Insurance:</label>
-            <input type="text" class="form-control" id="insurancefield" name="insurance" placeholder="ex: Insurance Inc." 
+            <input type="text" class="form-control" id="insurancefield" name="insurance" placeholder="Enter your insurance company name (if applicable)" 
             value="<?php echo $patient_fields["insurance"] ?>">
 
             <br>
@@ -250,25 +250,25 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <hr>
             <!-- Need to add JQuery code for Representative -->
             <label for="representative_name">Representative Name:</label>
-            <input type="text" class="form-control" id="representative_namefield" name="representative_name" placeholder="ex: Jane Doe" 
+            <input type="text" class="form-control" id="representative_namefield" name="representative_name" placeholder="Enter representative's full name" 
             onkeyup="return validateTextField(this);" value="<?php echo $patient_fields["representative_name"] ?>">
             <span class="error"><?php echo $patient_fields["representative_namefield"] == "" ? "* Representative name is required!" : '' ?> </span><br>
 
             <!-- Phone field is required if the patients has a representative -->
             <label for="representative_phone">Representative Phone:</label>
-            <input type="tel" class="form-control" id="representative_phonefield" name="representative_phone" placeholder="ex: 6134789654" 
+            <input type="tel" class="form-control" id="representative_phonefield" name="representative_phone" placeholder="Enter represenative's phone number" 
             onkeyup="return validatePhone(this);" value="<?php echo $patient_fields["representative_phone"] ?>" >
             <span class="error"><?php echo $patient_fields["representative_phone"] == "" ? "* Representative phone is required!" : '' ?> </span><br>
 
             <!-- Email field is required if the patients has a representative -->
             <label for="representative_email">Representative Email:</label>
             <input type="email" class="form-control" id="representative_emailfield" name="representative_email" 
-            onkeyup="return validateEmail(this);" placeholder="ex: janedoe@gmail.com" value="<?php echo $patient_fields["representative_email"] ?>" > 
+            onkeyup="return validateEmail(this);" placeholder="Enter represenative's email address" value="<?php echo $patient_fields["representative_email"] ?>" > 
             <span class="error"><?php echo $patient_fields["representative_email"] == "" ? "* Representative email is required!" : '' ?> </span><br>
             
             <!-- Relationship field is required if the patients has a representative -->
             <label for="representative_rel">Representative Relationship:</label>
-            <input type="text" class="form-control" id="representative_relfield" name="representative_rel" placeholder="Mother"
+            <input type="text" class="form-control" id="representative_relfield" name="representative_rel" placeholder="Enter representative's relationship to the patient (e.g.: Mother, Father)"
             onkeyup="return validateTextField(this);" value="<?php echo $patient_fields["representative_rel"] ?>" > 
             <span class="error"><?php echo $patient_fields["representative_rel"] == "" ? "* Representative relationship is required!" : '' ?> </span><br>
 
