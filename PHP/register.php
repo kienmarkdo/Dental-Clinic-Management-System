@@ -27,10 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     //representative fields
     //these are required if the user is < 15 years old
-    $patient_fields["representative_name"]  = check_empty_input($_POST["representative_name"]);
-    $patient_fields["representative_phone"]  = check_empty_input($_POST["representative_phone"]); 
-    $patient_fields["representative_email"]  = check_empty_input($_POST["representative_email"]); 
-    $patient_fields["representative_rel"]  = check_empty_input($_POST["representative_rel"]); 
+    if ($_POST['needs_rep'] == "true") {
+        $patient_fields["representative_name"]  = check_empty_input($_POST["representative_name"]);
+        $patient_fields["representative_phone"]  = check_empty_input($_POST["representative_phone"]); 
+        $patient_fields["representative_email"]  = check_empty_input($_POST["representative_email"]); 
+        $patient_fields["representative_rel"]  = check_empty_input($_POST["representative_rel"]); 
+    }
+
 
     //strip sin of spaces : 123 456 789 -> 123456789
     $patient_fields["patient_sin"] = str_replace(' ', '', $patient_fields["patient_sin"]);
@@ -158,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <!-- Your own script -->
-    <script src="scripts/dbms.js"></script>
+    <script type="text/javascript" src="scripts/dbms.js"></script>
 
     <!-- JQuery time picker plugin -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
@@ -247,13 +250,14 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             <h3>Representative</h3>
             <span class="error">Patients aged 14 and lower must have an adult representative, in which case these fields are required!</span>             
+            <input id="needsrep" name="needs_rep" type="text" hidden >
 
             <hr>
             <!-- Need to add JQuery code for Representative -->
             <label for="representative_name">Representative Name:</label>
             <input type="text" class="form-control" id="representative_namefield" name="representative_name" placeholder="Enter representative's full name" 
             onkeyup="return validateTextField(this);" value="<?php echo $patient_fields["representative_name"] != -1 ? $patient_fields["representative_name"] : '' ?>">
-            <span class="error"><?php echo $patient_fields["representative_namefield"] == -1 ? "* Representative name is required!" : '' ?> </span><br>
+            <span class="error"><?php echo $patient_fields["representative_name"] == -1 ? "* Representative name is required!" : '' ?> </span><br>
 
             <!-- Phone field is required if the patients has a representative -->
             <label for="representative_phone">Representative Phone:</label>
@@ -278,11 +282,16 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         </form> 
     </div>
     <br> <br>
-</body>
-<script>
-        // this if statement turns off the "Confirm Form Resubmission" and prevents multiple form submissions after a successful form submission
-        // if (window.history.replaceState) {
-        //     window.history.replaceState(null, null, window.location.href);
-        // }
+    </body>
+    <script type="text/javascript" defer>
+        this if statement turns off the "Confirm Form Resubmission" and prevents multiple form submissions after a successful form submission
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+
+        $(document).ready(function() {
+            validateDOB($("#dobfield").val())
+        });
+
     </script>
 </html>

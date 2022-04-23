@@ -65,12 +65,15 @@ function validateDOB(DOB) {
     }
     else {
         $("#dobfield").css({'background' : '#99FF99', 'border' : 'solid 1px #99FF99'});
+        let needsRepInput = $("#needsrep")[0];
         
         let disabled = false;
+        needsRepInput.value = true;     
         //if the user is > 15 years old then disable the representative field
         //15 years * 365 days in a year * 86400 seconds in a day * 1000 milliseconds in a second
         if (new Date() - Date.parse(DOB) > 15 * 365 * 86400 * 1000) {
-            disabled = true
+            disabled = true;
+            needsRepInput.value = false;   
         }
         
         //select all the representative inputs
@@ -87,4 +90,3 @@ function validateDOB(DOB) {
 
     
 }
-
