@@ -57,7 +57,10 @@ $procedureCodes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes 
 // Get all the dentists
 $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                             FROM employee AS E, employee_info AS I 
-                                            WHERE E.employee_sin = I.employee_sin AND (I.employee_type='d' OR I.employee_type='h');")) 
+                                            WHERE E.employee_sin = I.employee_sin AND (I.employee_type='d' OR I.employee_type='h');")); 
+
+// Get the procedure IDs
+$procedureIDs = pg_fetch_all(pg_query($dbconn, "SELECT * FROM appointment_procedure WHERE patient_id = '$pID[0]' AND invoice_id IS NULL;"));
 
 ?>
 
@@ -177,7 +180,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                             }
                         }
                     }elseif($_POST['addInvoice']) {
-                        $invoiceDateError = $contactError = $chargeError = $insuranceError = $discountError = $penaltyError = "";
+                        $invoiceDateError = $contactError = $chargeError = $insuranceError = $discountError = $penaltyError = $appProcError ="";
                             
                         if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -200,6 +203,9 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                             }
                              if (empty($_POST["patient_penalty"])) {
                                 $penaltyError = "Required";
+                            }
+                             if (empty($_POST["appProcID"])) {
+                                $appProcError = "Required";
                             }
                         }
                     } 
@@ -774,6 +780,8 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                         <div class="panel" id="set_invoice">
                             <div class="panel-body bio-graph-info">
                                 <h1>Set an invoice for <?php echo $pName ?></h1>
+                                <p><i class="fa fa-question-circle"></i> Note that invoices can only be added for Appointment Procedures that do not currently have one.</p>
+                                    <br>
                                 <h5><span class="error">*</span> indicates required fields </h5>
                                 <div class="row">
                                     <div class="bio-row">
@@ -784,7 +792,19 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                         </p>
                                     </div>
                                     <div class="bio-row">
-                                        
+                                        <p>
+                                        <span>Appointment Procedure ID</span>
+                                        <select name="appProcID" id="appProcID">
+                                            <option>-</option>
+                                            <?php 
+                                                foreach($procedureIDs as $oneID => $procedureIDs) :?>
+                                                <option value="<?php echo $procedureIDs['procedure_id']?>">
+                                                    <?php echo $procedureIDs['procedure_id']?>
+                                                </option>
+                                            <?php endforeach?>
+                                        </select>
+                                        <span class="error">* <?php echo $appProcError ?></span>                                           
+                                    </p>
                                     </div>
                                     <div class="bio-row">
                                         <p>
@@ -804,7 +824,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
 
                                     <div class="bio-row">
                                         <p>
-                                           <span>Insurance Charge</span>
+                                           <span>Insurance</span>
                                             <input type="number" min="0.00"step="0.01" id="insurance_charge" name="insurance_charge">
                                             <span class="error">* <?php echo $insuranceError?></span>
                                         </p>
@@ -834,7 +854,7 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                         <?php 
                         if (!(empty($_POST["date_of_issue"]) && empty($_POST["contact_info"]) &&
                             empty($_POST["patient_charge"]) && empty($_POST["patient_penalty"]) 
-                            && empty($_POST["insurance_charge"]) && empty($_POST["discount"]))) {
+                            && empty($_POST["insurance_charge"]) && empty($_POST["discount"])) && $_POST["appProcID"] != "-") {
                                 
                                 if ($_SERVER['REQUEST_METHOD'] === "POST") {
                                     $contactInput = $_POST['contact_info'];                                  
@@ -843,10 +863,23 @@ $doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                     $insuranceInput = $_POST['insurance_charge'];
                                     $discountInput = $_POST['patient_discount'];
                                     $penaltyInput = $_POST['patient_penalty'];
+                                    $procedureIDInput = $_POST['appProcID'];
 
                                     $iquery = "INSERT INTO invoice (patient_id, date_of_issue, contact_info, patient_charge, insurance_charge, discount, penalty) VALUES ('$pID[0]', '$dateIssueInput', '$contactInput', '$chargeInput', '$insuranceInput', '$discountInput', '$penaltyInput')";
                                     $addInvoice = pg_query($dbconn, $iquery);
-                                   
+
+                                    // Get new invoice ID
+                                    $invoiceIDQuery = pg_fetch_row(pg_query($dbconn, "SELECT invoice_id FROM invoice WHERE patient_id = '$pID[0]' ORDER BY invoice_id DESC;"));
+
+                                    // update Appointment Procedure
+                                    // TODO (?) : We can't set insurance_claim_id because we did not populate that table
+                                    echo "AAA";
+                                    echo $procedureIDInput; echo "BBB";
+
+                                    $updateApptProcedure =  "UPDATE appointment_procedure SET invoice_id = '$invoiceIDQuery[0]', insurance_charge = '$insuranceInput', patient_charge = '$chargeInput' WHERE (procedure_id = '$procedureIDInput');";
+
+                                    pg_query($dbconn, $updateApptProcedure);
+
                                     if (!$addInvoice) {
                                         echo "<h4>There was an error adding the invoice. Please fill in all the required fields</h4>";
                                     } else {
