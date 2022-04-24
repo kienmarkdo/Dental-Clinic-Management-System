@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
             
             <h4>Password</h4>
             <input type="password" class="form-control"
-                name="password" placeholder="Enter password" maxlength="255" value="ASDFGHJKL:123456" required>
+                name="password" placeholder="Enter password" maxlength="255" required>
                 <span class="error"> * <?php echo $password == - 1 ? 'Password is required!' : '' ?> </span><br>
 
             <fieldset>
@@ -149,43 +149,10 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
             <button class="btn btn-lg btn-primary btn-block btn-warning" type="submit" name="login">Login</button>
         </form>
 
-        <h2> No Account? <a href="register.php">Register here! </a> </h2> <br>
-
-        <button class="btn btn-lg btn-primary btn-block" id="toggle">Toggle between showing and hiding all existing accounts</button> <br>
-
-        <div class="panel" id="accounts">
-        <div class="bio-graph-heading">
-            <h3><i class="fa fa-credit-card"></i> Existing User Accounts</h3>
-        </div>
-        <div class="panel-body bio-graph-info">
-            <table id="appointments_grid" class="table" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Encrypted Password</th>
-                        <th>Type ID</th>
-                        <th>Patient ID</th>
-                        <th>Employee ID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach($userAccounts as $account => $userAccounts) :?>
-                    <tr>
-                        <td><?php echo $userAccounts['username'] ?></td>
-                        <td><?php echo $userAccounts['password'] ?></td>
-                        <td><?php echo $userAccounts['type_id'] ?></td>
-                        <td><?php echo $userAccounts['patient_id'] ?></td>
-                        <td><?php echo $userAccounts['employee_id'] ?></td>
-
-                    </tr>
-                    <?php endforeach;?>
-                </tbody>
-            </table>
-        </div>
-
+        <h2> No Account? <a href="register.php">Register here! </a> </h2> <br>  
     </div>
 
-    </div>
+</div>
 
 
         
