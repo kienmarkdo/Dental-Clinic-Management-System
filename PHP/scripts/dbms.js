@@ -47,7 +47,7 @@ function validatePhone(input) {
     let phone = input.value;
     phone = phone.replace(/[^0-9]/g,'');
     input.value = phone;
-    if(phone == ' ' || !phone.match(/^[0-9]{10}$/)) {
+    if(phone.length < 10) {
         input.className = "form-control badinput";
         return false;
     }
