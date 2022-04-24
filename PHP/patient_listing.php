@@ -873,9 +873,7 @@ $procedureIDs = pg_fetch_all(pg_query($dbconn, "SELECT * FROM appointment_proced
 
                                     // update Appointment Procedure
                                     // TODO (?) : We can't set insurance_claim_id because we did not populate that table
-                                    echo "AAA";
-                                    echo $procedureIDInput; echo "BBB";
-
+                                    
                                     $updateApptProcedure =  "UPDATE appointment_procedure SET invoice_id = '$invoiceIDQuery[0]', insurance_charge = '$insuranceInput', patient_charge = '$chargeInput' WHERE (procedure_id = '$procedureIDInput');";
 
                                     pg_query($dbconn, $updateApptProcedure);
