@@ -87,7 +87,7 @@ $allAppointmentProceds = pg_fetch_all(pg_query($dbconn,"SELECT * FROM appointmen
                     </div>
                     <ul class="nav nav-pills nav-stacked">
                         <!-- Font awesome fonts version 4: https://fontawesome.com/v4/icons/ -->
-                        <li class="active">
+                        <li>
                             <a href="#myInfo"> <i class="fa fa-user"></i> My Information</a>
                         </li>
                         <li>

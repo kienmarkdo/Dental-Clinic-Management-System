@@ -285,7 +285,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <option value="apptSort6">Type</option>
                                 <option value="apptSort7">Status</option> -->
                             </select>
-                            <input class="" type="submit" value="Submit"/><br>
+                            <input class="btn btn-primary" type="submit" value="Submit" style="padding: 2px"/><br>
                         </form>
                         <div class="panel-body bio-graph-info">
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
