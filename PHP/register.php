@@ -209,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             
             <label for="patient_sin">Social Insurance Number:</label>
             <input type="text" class="form-control" id="sinfield" name="patient_sin" placeholder="Enter SIN" 
-            onkeyup="return validateSIN(this.value);" title="16 digits" value="<?php echo $patient_fields["patient_sin"] != -1 ? $patient_fields["patient_sin"] : ''  ?>" required>
+            onkeyup="return validateSIN(this.value);" title="9 digits" value="<?php echo $patient_fields["patient_sin"] != -1 ? $patient_fields["patient_sin"] : ''  ?>" required>
             <span class="error"> * <?php echo $patient_fields["patient_sin"] == -1 ? "patient_sin is required!" : '' ?> </span><br>
 
             <label for="address">Address:</label>
