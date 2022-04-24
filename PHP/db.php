@@ -1,4 +1,5 @@
 <?php 
-// Configure the postgres parameters to your own settings - DO NOT COMMIT AND PUSH THIS FILE
-$dbconn=pg_connect("host=localhost port=5432 dbname=dcms user=postgres password=password"); 
+// Configure the postgres parameters here to your own settings when running locally
+// Do not overwrite this when pushing to git
+$dbconn=pg_connect(getenv("DATABASE_URL")); 
 ?>
