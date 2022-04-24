@@ -31,10 +31,10 @@ INSERT INTO Patient VALUES
 -- Patient records
 INSERT INTO Patient_records VALUES
 (DEFAULT, 'Patient is going lose their teeth in 2 years if they do not book another appointment with us.', 1),
-(DEFAULT,'Stephie current has healthy teeth. Only requires annual cleaning.', 2),
-(DEFAULT,'Paul Sr. had an annual teeth cleaning last year', 3),
+(DEFAULT,'Stephie current has healthy teeth. Only requires annual cleaning. Her last cleaning was 1 year ago.', 2),
+(DEFAULT,'Paul Sr. had an annual teeth cleaning last year.', 3),
 (DEFAULT,'Brooke needs invisalign because her teeth is crooked.',4),
-(DEFAULT,'John needs extractions on her teeth.',5);
+(DEFAULT,'John needs cleaning. Last cleaning was last year. We also did teeth whitening with him recently.',5);
 
 
 -- Employee Info 
@@ -125,17 +125,25 @@ INSERT INTO Appointment VALUES
  -- Stephie McRandom's appointments END
  -- Elmo appointment
 (DEFAULT,1,6,TO_DATE('2022 10 1', 'YYYY MM DD'),'11:00:00','13:00:00',10,'Completed',8),
-(DEFAULT,3,3,TO_DATE('2022 11 10', 'YYYY MM DD'),'15:00:00','16:00:00',6,'Booked',10);
+-- Paul's appointment
+(DEFAULT,3,3,TO_DATE('2022 11 10', 'YYYY MM DD'),'15:00:00','16:00:00',6,'Booked',10),
+-- Brooke's appointment
+(DEFAULT,4,4,TO_DATE('2022 06 10', 'YYYY MM DD'),'14:00:00','15:00:00',8,'Booked',8),
+-- John's appointment
+(DEFAULT,5,4,TO_DATE('2022 04 15', 'YYYY MM DD'),'10:00:00','11:00:00',2,'Completed',3),
+(DEFAULT,5,4,TO_DATE('2022 07 21', 'YYYY MM DD'),'10:00:00','11:00:00',1,'Booked',2);
 
 -- Treatment
 INSERT INTO Treatment VALUES
-(DEFAULT, 'Tooth removal', 'Midazolam', 'Tooth ache', 23, 'Do not eat food 24 hours before the procedure', 1, 1),
+(DEFAULT, 'Extractions', 'Midazolam', 'Tooth ache', 23, 'Do not eat food 24 hours before the procedure.', 1, 1),
 -- Stephie McRandom's treatments START
-(DEFAULT, 'Tooth cleaning', 'No medications administered', 'No symptoms', 999, 'No comments', 2, 2),
+(DEFAULT, 'Teeth Whitening', 'No medications administered', 'No symptoms', 999, 'No comments', 2, 2),
 (DEFAULT, 'Root Canal', 'Anesthesia', 'Dysarthria (Temporary speech impairment)', 33, 'Do not eat food 24 hours before the procedure. Cannot drive after the treatment.', 2, 3),
 (DEFAULT, 'Bonding', 'No medications administered', 'No symptoms', 21, 'No comments', 2, 5),
-(DEFAULT, 'Invisalign', 'No medications administered', 'No symptoms', 999, 'Await further instructions from the orthodonist', 2, 7)
--- Stephie McRandom's treatments START
+(DEFAULT, 'Braces/invisalign', 'No medications administered', 'No symptoms', 999, 'Await further instructions from the orthodonist.', 2, 7),
+-- Stephie McRandom's treatments END
+-- John Li's treatment
+(DEFAULT, 'Teeth Whitening', 'No medication administered', 'No symptoms',999,'Use the toothpaste recommended by the hygienist.', 5,12)
 ;
 
 -- Appointment Procedure
@@ -190,8 +198,15 @@ INSERT INTO Appointment_procedure VALUES (
   999, -- code for operation that involves every tooth
   1, -- 1 Invisalign to do
   NULL,NULL,7200,NULL -- invisalign Booked
-)
+),
 -- Stephie McRandom's procedures END
+-- John Li's appointment procedure
+(
+  DEFAULT, 12, 5,TO_DATE('2022 04 15', 'YYYY MM DD'),NULL,2,'Teeth whitening appointment',
+  999, -- means all teeth
+  1, -- 1 whitening to do
+  NULL,NULL,200,NULL -- cost of whitening
+)
 ;
 
 
@@ -205,9 +220,11 @@ INSERT INTO Fee_charge VALUES
 (DEFAULT, 4, 100,100), -- dental cleaning code 100 charge 100
 (DEFAULT, 5, 107,800), -- root canal cost
 (DEFAULT, 5, 125,200), -- root canal anesthesia cost
-(DEFAULT, 6, 109,500) -- bonding cost
+(DEFAULT, 6, 109,500), -- bonding cost
 -- (DEFAULT, 7, 108,7200) -- invisalign cost
 -- Stephie McRandom's appointment procedure fee charges END
+-- John's fee charge
+(DEFAULT, 8, 3423, 200) -- 3223 is code for whitening
 ;
 
 
@@ -223,7 +240,7 @@ INSERT INTO Invoice VALUES
   ',
   500,0,0,0,1 -- Elmo does not have insurance
 ),
-  -- Random's invoices START
+  -- Stephie's invoices START
 (
   DEFAULT,TO_DATE('2022 04 02', 'YYYY MM DD'), -- cancelled
   'The Downtown Dental Clinic
@@ -263,7 +280,7 @@ INSERT INTO Invoice VALUES
   (613) 234-0792
   ',
   300,200,0,0,2
-)
+),
 -- (
 --   DEFAULT,TO_DATE('2022 04 07', 'YYYY MM DD'), -- invisalign Completed
 --   'The Downtown Dental Clinic
@@ -272,7 +289,16 @@ INSERT INTO Invoice VALUES
 --   ',
 --   7200,0,0,0,2
 -- )
-  -- Random's invoices END
+  -- Stephie's invoices END
+  -- John's invoice
+(
+  DEFAULT,TO_DATE('2022 04 15', 'YYYY MM DD'), -- extractions Completed
+  'Regional Dental Clinic
+  Ottawa ON K1N 3M7
+  (613) 985-1853
+  ',
+  200,000,0,0,5
+)
 ;
 
 -- Insurance_claim
@@ -293,19 +319,19 @@ invoice_id = 1,
 patient_charge = 500
 WHERE (procedure_id = 1);
 
-UPDATE Appointment_procedure -- Random has insurance; Cancelled
+UPDATE Appointment_procedure -- Stephie has insurance; Cancelled
 SET 
 invoice_id = 2,
 patient_charge = 0
 WHERE (procedure_id = 2);
 
-UPDATE Appointment_procedure -- Random has insurance; No show
+UPDATE Appointment_procedure -- Stephie has insurance; No show
 SET 
 invoice_id = 3,
 patient_charge = 14
 WHERE (procedure_id = 3);
 
-UPDATE Appointment_procedure -- Random has insurance; Completed
+UPDATE Appointment_procedure -- Stephie has insurance; Completed
 SET 
 invoice_id = 4,
 insurance_charge = 80,
@@ -313,7 +339,7 @@ patient_charge = 20,
 insurance_claim_id = 2
 WHERE (procedure_id = 4);
 
-UPDATE Appointment_procedure -- Random has insurance; Completed Root Canal
+UPDATE Appointment_procedure -- Stephie has insurance; Completed Root Canal
 SET 
 invoice_id = 5,
 insurance_charge = 900,
@@ -321,7 +347,7 @@ patient_charge = 100,
 insurance_claim_id = 3
 WHERE (procedure_id = 5);
 
-UPDATE Appointment_procedure -- Random has insurance; Completed Bonding
+UPDATE Appointment_procedure -- Stephie has insurance; Completed Bonding
 SET 
 invoice_id = 6,
 insurance_charge = 200,
@@ -329,22 +355,31 @@ patient_charge = 300,
 insurance_claim_id = 4
 WHERE (procedure_id = 6);
 
--- UPDATE Appointment_procedure -- Random has insurance; Completed invisalign
+-- UPDATE Appointment_procedure -- Stephie has insurance; Completed invisalign
 -- SET 
 -- invoice_id = 7,
 -- patient_charge = 7200
 -- WHERE (procedure_id = 7);
 
+UPDATE Appointment_procedure -- John has no insurance; Extractions completed
+SET 
+invoice_id = 8,
+patient_charge = 200
+WHERE (procedure_id = 8); 
+
 
 
 -- Patient Billing
 INSERT INTO Patient_billing VALUES
+-- Stephie's bill
 (DEFAULT,1,300,200,500,'Visa'),
 (DEFAULT,2,14,0,14,'Cash/Debit'),
 (DEFAULT,2,20,80,100,'Visa'),
 (DEFAULT,2,100,900,1000,'Mastercard'),
-(DEFAULT,2,300,200,500,'Mastercard')
+(DEFAULT,2,300,200,500,'Mastercard'),
 -- (DEFAULT,2,7200,0,7200,'Visa')
+-- John's Bill
+(DEFAULT, 5, 200,0,200,'Amex')
 ;
 
 
@@ -381,7 +416,17 @@ INSERT INTO Review VALUES (
   'I could not believe the service I received for this appointment. Absolutely horrible. You will be hearing about me on Yelp!!!',
   1,
   1,
-  1,
+  2,
   TO_DATE('2022 04 10', 'YYYY MM DD'),
   2
+),
+(
+DEFAULT,
+  'Amy Kkiti',
+  'Amy is a very gentle and kind hygienist. The best out there! I definitely recommend taking an appointment with her!',
+  5,
+  5,
+  4,
+  TO_DATE('2022 04 24', 'YYYY MM DD'),
+  1
 );
