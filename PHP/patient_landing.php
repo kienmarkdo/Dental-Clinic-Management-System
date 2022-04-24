@@ -38,7 +38,7 @@ dinfo.employee_sin IN (
 );
 "));
 
-//Get all dentist names associated with dentist ids
+//Get all dentist names (dentist/hygienist) associated with dentist ids
 $dentist_names_results = pg_fetch_all(pg_query($dbconn, "SELECT DISTINCT a.dentist_id, e_info.name AS dentist_name FROM appointment a JOIN Employee e ON a.dentist_id = e.employee_id JOIN Employee_info e_info ON e.employee_sin = e_info.employee_sin;"));
 
 $d_id_to_name = array(); //array that associates dentist IDs to dentist names
@@ -54,6 +54,9 @@ $apptProcedures = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Appointment_proc
 
 // Invoice query - all of patient's invoice
 $patientInvoice = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Invoice WHERE patient_id='$pID[0]' ORDER BY invoice_id DESC;")); // assume that latest review ID means latest date_of_issue
+
+// Patient billing query (view all patient billing)
+$patientBilling = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Patient_billing WHERE patient_id ='$pID[0]' ORDER BY bill_id DESC;"));
 
 // Review query (all reviews on the website)
 $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY review_id DESC;"));
@@ -114,7 +117,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <a href="#patient_appointment_procedures"> <i class="fa fa-book"></i> Appointment Procedures</a>
                             </li>
                             <li>
-                                <a href="#patient_invoices"> <i class="fa fa-credit-card"></i> Invoices</a>
+                                <a href="#patient_invoices"> <i class="fa fa-file-text"></i> Invoices</a>
+                            </li>
+                            <li>
+                                <a href="#patient_make_payment"> <i class="fa fa-credit-card"></i> Make a Payment</a>
+                            </li>
+                            <li>
+                                <a href="#patient_billing"> <i class="fa fa-th-large"></i> Patient Billing</a>
                             </li>
                             <li>
                                 <a href="#patient_reviews"> <i class="fa fa-comments-o"></i> Reviews</a>
@@ -258,7 +267,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <select name="sorting" id="sorting">
                                 <?php 
                                 // This $apptOptionArr and the foreach loop below dynamic populates the Sort By dropdown menu. The purpose is to retain the sort option selected by the user
-                                $apptOptionArr = array("Appointment ID (High to Low)" => "apptSort1", "Appointment ID (Low to High)" => "apptSort2", "Dentist Name" => "apptSort3", "Date (Latest)" => "apptSort4", "Date (Oldest)" => "apptSort5", "Type" => "apptSort6", "Status" => "apptSort7");
+                                $apptOptionArr = array("Appointment ID (High to Low)" => "apptSort1", "Appointment ID (Low to High)" => "apptSort2", "Doctor Name" => "apptSort3", "Date (Latest)" => "apptSort4", "Date (Oldest)" => "apptSort5", "Type" => "apptSort6", "Status" => "apptSort7");
                                 foreach($apptOptionArr as $key => $value){
                                     $isSelected = "";
                                     if($_POST["sorting"] == $value){
@@ -283,7 +292,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <thead>
                                     <tr>
                                         <th>Appointment ID</th>
-                                        <th>Dentist Name</th>
+                                        <th>Doctor Name</th>
                                         <th>Date</th>
                                         <th>Start Time</th>
                                         <th>End Time</th>
@@ -394,7 +403,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <th>Code</th>
                                         <th>Description</th>
                                         <th>Tooth</th>
-                                        <th><abbr title="This is actually the Procedure Code (1: Teeth Cleanings, 2: Teeth Whitening, 3: Extractions, 4: Veneers, 5: Fillings, 6: Crowns, 7: Root Canal, 8: Braces/Invisalign, 9: Bonding, 10: Dentures)">Amount</abbr></th>
+                                        <th><abbr title="Refers to the amount of procedure to perform">Amount</abbr></th>
                                         <th>Total Charge</th>
                                     </tr>
                                 </thead>
@@ -425,6 +434,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <h3><i class="fa fa-credit-card"></i> Invoices</h3>
                         </div>
                         <div class="panel-body bio-graph-info">
+                            <p><i class="fa fa-question-circle"></i> Invoices are created after an Appointment Procedure is completed</p>
                             <table id="appointments_grid" class="table" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
@@ -454,6 +464,72 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                     </div>
                     <!-- Patient Invoice END -->
+                    <!-- ==================================================================== -->
+                    <!-- Patient Make a Payment START -->
+                    <?php
+                    $payment_type = $_POST['payment_method'];
+                    if ($_SERVER['REQUEST_METHOD'] === "POST" && $payment_type == "yespayment")
+                    {
+                        $_SESSION['pusername'] = $patientUsername; //send username via session
+                        header('Location:make_payment.php');
+                    }
+                    ?>
+
+                    <div class="panel" id="patient_make_payment">
+                        <div class="bio-graph-heading">
+                            <h3><i class="fa fa-credit-card"></i> Make a Payment</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <h1>Select payment method</h1>
+                            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                                <fieldset>
+                                    <!-- <input type="radio" name="payment_method" value="no_payment" checked="true"> No Payment<br> -->
+                                    <input type="radio" name="payment_method" value="nopayment" checked="true"> No Payment<br>
+                                    <input type="radio" name="payment_method" value="yespayment"> Make a Payment<br>
+                                </fieldset>
+                                <br><br>
+                                <button class="btn btn-lg btn-primary btn-block btn-warning" type="submit" name="login">Proceed to payment</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Patient Make a Payment END -->
+
+                    <!-- ==================================================================== -->
+                    <!-- Patient Billing START -->
+
+                    <div class="panel" id="patient_billing">
+                        <div class="bio-graph-heading">
+                            <h3><i class="fa fa-th-large"></i> Patient Billing</h3>
+                        </div>
+                        <div class="panel-body bio-graph-info">
+                            <p><i class="fa fa-question-circle"></i> Bills are created after a payment is made</p>
+                            <table id="appointments_grid" class="table" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Bill ID</th>
+                                        <th>Patient ID</th>
+                                        <th>Patient Amount</th>
+                                        <th>Insurance Amount</th>
+                                        <th>Total Amount</th>
+                                        <th>Payment Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($patientBilling as $patientBill => $patientBilling) :?>
+                                    <tr>
+                                        <td><?php echo $patientBilling['bill_id'] ?></td>
+                                        <td><?php echo $patientBilling['patient_id'] ?></td>
+                                        <td><?php echo $patientBilling['patient_amount'] ?></td>
+                                        <td><?php echo $patientBilling['insurance_amount'] ?></td>
+                                        <td><?php echo $patientBilling['total_amount'] ?></td>
+                                        <td><?php echo $patientBilling['payment_type'] ?></td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Patient Billing END -->
 
                     <!-- ==================================================================== -->
                     <!-- Patient Reviews START -->
@@ -469,7 +545,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <thead>
                                     <tr>
                                         <th>Review ID</th>
-                                        <th>Dentist Name</th>
+                                        <th>Doctor Name</th>
                                         <th>Description</th>
                                         <th>Professionalism</th>
                                         <th>Communication</th>
@@ -560,7 +636,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <ul> <!-- This makes it look nicer, but it covers a bit of the Submit button... style="position:relative; right:40px; top:8px; z-index: 1" -->
                                     <!-- <li> -->
                                         <!-- Dentist Name Working -->
-                                        <label for="dentistName">Dentist:<span class="error">* <?php echo $dentistNameErr;?></span></label>
+                                        <label for="dentistName">Doctor:<span class="error">* <?php echo $dentistNameErr;?></span></label>
                                         <select name="dentistName" id="dentistName">
                                             <option value="">-</option>
                                             <!-- Populate dropdown menu with DENTIST NAMES WHO ARE IN THE PATIENT'S APPOINTMENT TABLE from Postgres -->
@@ -643,7 +719,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         echo "Your comment: " . $comment;
                         echo "<br>";
                         if(isset($_POST['dentistName'])) {
-                            echo "Selected Dentist: ". htmlspecialchars($_POST['dentistName'])."<br>";
+                            echo "Selected Doctor: ". htmlspecialchars($_POST['dentistName'])."<br>";
                         }
                         if(isset($_POST['professionalism'])) {
                             echo "Professionalism: ".htmlspecialchars($_POST['professionalism'])."<br>";
@@ -682,6 +758,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             if (!$insertReviewResult) {
                                 echo pg_last_error($dbconn);
+                                echo "<h5>There was an error adding the review</h5>";
                             } else {
                                 echo "Review Added Successfully!<br><br>";
                                 echo "Your response was submitted on " . date("Y-m-d",time()) . "<br><br><br><br>";

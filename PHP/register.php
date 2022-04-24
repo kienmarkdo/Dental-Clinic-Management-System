@@ -1,6 +1,6 @@
 <?php
-
 ob_start();
+session_start();
 
 include 'functions.php';
 error_reporting(0);
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     //patient fields
     $patient_fields["patient_sin"] = $_POST["patient_sin"]; //SIN is validated below
     $patient_fields["address"] = check_empty_input($_POST["address"]);
-    $patient_fields["name"]  = check_empty_input($_POST["name"]); 
+    $patient_fields["fullname"]  = check_empty_input($_POST["fullname"]); 
     $patient_fields["gender"]  = check_empty_input($_POST["gender"]);
     $patient_fields["email"]  = check_empty_input($_POST["email"]);
     $patient_fields["phone"]  = check_empty_input($_POST["phone"]);
@@ -26,55 +26,91 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $patient_fields["insurance"]  = sanitize_input($_POST["insurance"]); //insurance not required
 
     //representative fields
-    $patient_fields["representative_name"]  = sanitize_input($_POST["representative_name"]); //representative_name not required
-    $patient_fields["representative_phone"]  = sanitize_input($_POST["representative_phone"]); //representative_phone not required
-    $patient_fields["representative_email"]  = sanitize_input($_POST["representative_email"]); //representative_email not required
-    $patient_fields["representative_relationship"]  = sanitize_input($_POST["representative_rrelationship"]); //representative_relationship not required
+    //these are required if the user is < 15 years old
+    if ($_POST['needs_rep'] == "true") {
+        $patient_fields["representative_name"]  = check_empty_input($_POST["representative_name"]);
+        $patient_fields["representative_phone"]  = check_empty_input($_POST["representative_phone"]); 
+        $patient_fields["representative_email"]  = check_empty_input($_POST["representative_email"]); 
+        $patient_fields["representative_rel"]  = check_empty_input($_POST["representative_rel"]); 
+    }
+
+
+    //strip sin of spaces : 123 456 789 -> 123456789
+    $patient_fields["patient_sin"] = str_replace(' ', '', $patient_fields["patient_sin"]);
 
     if ( !is_numeric($patient_fields["patient_sin"]) || $patient_fields["patient_sin"] < 100000000 || $patient_fields["patient_sin"] > 999999999) {
         $err = "SIN is invalid";
+        $patient_fields["patient_sin"] = "";
     } else if ($password != $password_verify) {
         $err = "Given passwords don't match";
-    } else if (!check_alpha_spaces($_POST['name'])) {
+    } else if (!check_alpha_spaces($_POST["fullname"])) {
         $err = "Name contains special characters";
+        $patient_fields['fullname'] = "";
     } else if ($username != -1
-        && $password != -1
-        && $password_verify != -1
-        && $patient_fields["patient_sin"] != -1
-        && $patient_fields["address"]  != -1
-        && $patient_fields["name"]  != -1
-        && $patient_fields["gender"]  != -1
-        && $patient_fields["email"]  != -1
-        && $patient_fields["phone"]  != -1
-        && $patient_fields["date_of_birth"]  != -1) { //register user in db
+    && $password != -1
+    && $password_verify != -1
+    && $patient_fields["patient_sin"] != -1
+    && $patient_fields["address"]  != -1
+    && $patient_fields["fullname"]  != -1
+    && $patient_fields["gender"]  != -1
+    && $patient_fields["email"]  != -1
+    && $patient_fields["phone"]  != -1
+    && $patient_fields["date_of_birth"]  != -1) { //register user in db
  
         echo "Registering user <br>";
 
+        //arguments for patient_info query
+        $patient_info_arr = array( $patient_fields["patient_sin"], //1
+            $patient_fields["address"], //2
+            $patient_fields["fullname"], //3
+            $patient_fields["gender"], //4
+            $patient_fields["email"], //5
+            $patient_fields["phone"], //6
+            hyphen_to_space($patient_fields["date_of_birth"]), //7, spaces need to be eliminated to store it
+            $patient_fields["insurance"], //8
+        );
+
+        //if there's a representative to insert, modify queries and args to accomodate the added rep
+        $rep_value = "";
+        $rep_args = "";
+        if ($patient_fields["representative_name"] != -1
+        && $patient_fields["representative_phone"]  != -1
+        && $patient_fields["representative_email"]  != -1
+        && $patient_fields["representative_rel"]  != -1) {            
+            
+            $rep_value = ", rep";
+            $rep_args = ", ROW($9, $10, $11, $12)";    
+            array_push($patient_info_arr, 
+                $patient_fields["representative_name"], 
+                $patient_fields["representative_phone"],
+                $patient_fields["representative_email"],
+                $patient_fields["representative_rel"]
+            );
+        }
+
+        //SQL Queries with params
+        $patient_info_query = 
+        "INSERT INTO Patient_info (patient_sin, address, name, gender, email, phone, date_of_birth, insurance$rep_value ) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8$rep_args);";
+        $patient_and_user_account_query = 
+        "WITH P AS (
+            INSERT INTO Patient (sin_info) 
+            VALUES ($1) RETURNING patient_id
+        ),
+        PR AS (
+            INSERT INTO Patient_records (patient_details, patient_id) 
+            VALUES ('No information available', (SELECT patient_id FROM P))
+        )
+        INSERT INTO User_account (username, password, type_id, patient_id) 
+        VALUES ($2, $3, 0, (SELECT patient_id FROM P));";
+
         pg_query($dbconn, 'BEGIN'); // begins transaction
         $patient_info_result = pg_query_params($dbconn, 
-            "INSERT INTO Patient_info (patient_sin, address, name, gender, email, phone, date_of_birth, insurance) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8);",
-            array( $patient_fields["patient_sin"], //1
-                $patient_fields["address"], //2
-                $patient_fields["name"], //3
-                $patient_fields["gender"], //4
-                $patient_fields["email"], //5
-                $patient_fields["phone"], //6
-                hyphen_to_space($patient_fields["date_of_birth"]), //7, spaces need to be eliminated to store it
-                $patient_fields["insurance"], //8
-            )
+            $patient_info_query,
+            $patient_info_arr
         );
         $patient_and_user_account_result = pg_query_params($dbconn,
-            "WITH P AS (
-                INSERT INTO Patient (sin_info) 
-                VALUES ($1) RETURNING patient_id
-            ),
-            PR AS (
-                INSERT INTO Patient_records (patient_details, patient_id) 
-                VALUES ('No information available', (SELECT patient_id FROM P))
-            )
-            INSERT INTO User_account (username, password, type_id, patient_id) 
-            VALUES ($2, $3, 0, (SELECT patient_id FROM P));", 
+            $patient_and_user_account_query, 
             array( $patient_fields["patient_sin"], //1
                 $username, //2
                 password_hash($password, PASSWORD_DEFAULT) //3
@@ -83,20 +119,27 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         if ($patient_info_result && $patient_and_user_account_result) {
             pg_query($dbconn, 'COMMIT');
+
+            //redirect to patient page
+            $_SESSION['valid'] = true;
+            $_SESSION['timeout'] = time();
+            $_SESSION['patientUsername'] = $username; //send username via session
+            header('Location:patient_landing.php');
         } else {
             pg_query($dbconn, 'ROLLBACK');
-            $err = "Failed to do database transaction";
+            $err = "Failed to do database transaction. Causes of this include: Duplicate SIN or Username";
         }
 
     } else {
         $err = "Not all fields were filled in correctly";
     }
-    
-    echo $username . " ". $password . " " . $password_verify; 
-    foreach ($patient_fields as $p) {
-        echo '<br>';
-        echo $p;
-    }
+
+    // Shows all form input that was supplied for debugging
+    // echo $username . " ". $password . " " . $password_verify; 
+    // foreach ($patient_fields as $p) {
+    //     echo '<br>';
+    //     echo $p;
+    // }
 }
 
 ?>
@@ -118,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <!-- Your own script -->
-    <script src="scripts/dbms.js"></script>
+    <script type="text/javascript" src="scripts/dbms.js"></script>
 
     <!-- JQuery time picker plugin -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
@@ -128,8 +171,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <!-- Your own additional style sheet -->
 </head>
 <body>
-  
-
     <div class="container">
         <div class="logout-btn">
             <a href="logout.php" class="logout-btn-text">Return</a>
@@ -144,18 +185,18 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <h3>Login Information</h3>
             
             <label for="uname">Username:</label> <!-- the "for" attribute is supposed to math the id of the input type, if there is one -->
-            <input type="text" class="form-control" value="<?php echo ($username == -1 ? "" : $username) ?>"
-                name="username" placeholder="ex: firstlast123" required> 
+            <input type="text" class="form-control" value="<?php echo $username != -1 ? $username : '' ?>"
+                name="username" placeholder="Enter username" required> 
                 <span class="error"> * <?php echo $username == -1 ? 'Username is required!' : '' ?> </span><br>
             
             <label for="pword1">Password:</label>
             <input type="password" class="form-control"
-                name="password" placeholder="ex: 1234" value="" required>
+                name="password" placeholder="Enter password" value="" required>
                 <span class="error"> * <?php echo $password == -1 ? 'Password is required!' : '' ?> </span><br>
             
             <label for="pword2">Verify Password:</label>
             <input type="password" class="form-control"
-                name="password_verify" placeholder="enter the same password" required>
+                name="password_verify" placeholder="Enter the same password" required>
                 <span class="error"> * <?php echo $password_verify == -1 ? 'Must enter password twice!' : '' ?> </span><br>
             
             <br><br>
@@ -167,85 +208,90 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 <input type="radio" name="gender" value="M">Male<br>
                 <input type="radio" name="gender" value="F">Female<br>
                 <input type="radio" name="gender" value="X" checked>Other/Prefer not to say<br>
-            </fieldset> <br>
-            <?php /*
-                $fields = array();
-                //format: type, name, placeholder, required
-                array_push($fields, array("number", "patient_sin", "patient_sin = 123456789", true) );
-                array_push($fields, array("text", "address", "address = 123 Sesame Street", true) );
-                array_push($fields, array("text", "name", "name = First Last", true) );
-                array_push($fields, array("email", "email", "email = flast@gmail.com", true) );
-                array_push($fields, array("tel", "phone", "phone = 123-456-7890", true) );
-                array_push($fields, array("date", "date_of_birth", "date_of_birth = 2000 01 01", true) );
-                array_push($fields, array("text", "insurance", "insurance = Insurance Inc.", false) );
-                foreach ($fields as $field) { ?>
-                    <input type="<?php echo $field[0]; ?>" class="form-control" value="<?php echo ($patient_fields[$field[1]] == -1 ? "" : $patient_fields[$field[1]]); ?>"
-                    name="<?php echo $field[1]; ?>" placeholder="<?php echo $field[2]; ?>" <?php echo ($field[3] ? 'required' : ''); ?> >
-                    <?php if ($field[3]) { ?> 
-                    <span class="error"> * <?php echo $patient_fields[$field[1]] == -1 ? "$field[1] is required!" : '' ?> </span><br>
-                <?php } }
-
-            */?> 
-            <br> 
+            </fieldset> <br> <br> 
             
-            <!-- SAMY ORIGINAL CODE -->
-            <!-- <h1 style="text-align:center">SAMY CODE</h1> -->
             <label for="patient_sin">Social Insurance Number:</label>
-            <input type="text" class="form-control" id="sinfield" name="patient_sin" placeholder="ex: 123 456 789" onkeyup="return validateSIN(this.value);" title="16 digits" required>
+            <input type="text" class="form-control" id="sinfield" name="patient_sin" placeholder="Enter SIN" 
+            onkeyup="return validateSIN(this.value);" title="9 digits" value="<?php echo $patient_fields["patient_sin"] != -1 ? $patient_fields["patient_sin"] : ''  ?>" required>
             <span class="error"> * <?php echo $patient_fields["patient_sin"] == -1 ? "patient_sin is required!" : '' ?> </span><br>
 
             <label for="address">Address:</label>
-            <input type="text" class="form-control" id="addressfield" name="address" placeholder="ex: 123 Sesame Street" onkeyup="return validateAddress(this.value);" required>
+            <input type="text" class="form-control" id="addressfield" name="address" placeholder="Enter full home address, city, province, country (e.g.: 123 Street Road, Ottawa, Ontario, Canada)" 
+            onkeyup="return validateTextField(this);" value="<?php echo $patient_fields["address"] != -1 ? $patient_fields["address"] : '' ?>" required>
             <span class="error"> * <?php echo $patient_fields["address"] == -1 ? "patient_sin is required!" : '' ?> </span><br>
 
             <label for="fullname">Full Name:</label>
-            <input type="text" class="form-control" id="namefield" name="fullname" placeholder="ex: Evan Marth" onkeyup="return validateName(this.value);" required>
-            <span class="error"> * <?php echo $patient_fields["name"] == -1 ? "name is required!" : '' ?> </span><br>
+            <input type="text" class="form-control" id="namefield" name="fullname" placeholder="Enter full name (e.g.: Jane Doe)" 
+            onkeyup="return validateTextField(this);" value="<?php echo $patient_fields["fullname"] != -1 ? $patient_fields["fullname"] : '' ?>" required>
+            <span class="error"> * <?php echo $patient_fields["fullname"] == -1 ? "name is required!" : '' ?> </span><br>
 
             <label for="email">Email Address:</label>
-            <input type="email" class="form-control" id="emailfield" name="email" placeholder="ex: evan.marth@gmail.com" onkeyup="return validateEmail(this.value);" required>
+            <input type="email" class="form-control" id="emailfield" name="email" placeholder="Enter email address" 
+            onkeyup="return validateEmail(this);" value="<?php echo $patient_fields["email"] != -1 ? $patient_fields["email"] : '' ?>" required>
             <span class="error"> * <?php echo $patient_fields["email"] == -1 ? "email is required!" : '' ?> </span><br>
 
             <label for="phone">Phone Number:</label>
-            <input type="tel" class="form-control" id="phonefield" name="phone" placeholder="ex: 6134083244" onkeyup="return validatePhone(this.value);" required>
+            <input type="tel" class="form-control" id="phonefield" name="phone" maxlength="20" placeholder="Enter phone number (e.g. 555-555-5555)" 
+            onkeyup="return validatePhone(this);" value="<?php echo $patient_fields["phone"] != -1 ? $patient_fields["phone"] : '' ?>" required>
             <span class="error"> * <?php echo $patient_fields["phone"] == -1 ? "phone is required!" : '' ?> </span><br>
 
             <label for="dateTimeInput">Date of Birth:</label>
-            <input type="date" class="form-control" id="dobfield" value="" name="date_of_birth" placeholder="ex: 2002-05-22" onkeyup="return validateDOB(this.value);" onchange="return validateDOB(this.value);" required>
-            <span class="error"> * <?php echo $patient_fields["date_of_birth"] == -1 ? "date_of_birth is required!" : '' ?> </span><br>
+            <input type="date" class="form-control" id="dobfield" name="date_of_birth" placeholder="Enter date of birth (mm/dd/yyyy)" 
+            onkeyup="return validateDOB(this.value);" onchange="return validateDOB(this.value);" 
+            value="<?php echo $patient_fields["date_of_birth"] != -1 ? $patient_fields["date_of_birth"] : '' ?>" required>
+            <span class="error"> * <?php echo $patient_fields["date_of_birth"] == -1 ? "Date of birth is required!" : '' ?> </span><br>
 
             <label for="insurance">Insurance:</label>
-            <input type="text" class="form-control" id="insurancefield" name="insurance" placeholder="ex: Insurance Inc." onkeyup="return validateInsurance(this.value);">
+            <input type="text" class="form-control" id="insurancefield" name="insurance" placeholder="Enter your insurance company name (if applicable)" 
+            value="<?php echo $patient_fields["insurance"] != -1 ? $patient_fields["insurance"] : '' ?>">
 
             <br>
 
 
             <h3>Representative</h3>
-            <h5>Patients aged 14 and lower must have an adult representative </h5>
+            <span class="error">Patients aged 14 and lower must have an adult representative, in which case these fields are required!</span>             
+            <input id="needsrep" name="needs_rep" type="text" hidden >
 
             <hr>
             <!-- Need to add JQuery code for Representative -->
             <label for="representative_name">Representative Name:</label>
-            <input type="text" class="form-control" id="representative_namefield" name="representative_name" placeholder="ex: Maria LaRusso"> <br>
+            <input type="text" class="form-control" id="representative_namefield" name="representative_name" placeholder="Enter representative's full name" 
+            onkeyup="return validateTextField(this);" value="<?php echo $patient_fields["representative_name"] != -1 ? $patient_fields["representative_name"] : '' ?>">
+            <span class="error"><?php echo $patient_fields["representative_name"] == -1 ? "* Representative name is required!" : '' ?> </span><br>
 
             <!-- Phone field is required if the patients has a representative -->
             <label for="representative_phone">Representative Phone:</label>
-            <input type="tel" class="form-control" id="representative_phonefield" name="representative_phone" placeholder="ex: 6134789654" > <br>
+            <input type="tel" class="form-control" id="representative_phonefield" name="representative_phone" placeholder="Enter represenative's phone number" 
+            onkeyup="return validatePhone(this);" value="<?php echo $patient_fields["representative_phone"] != -1 ? $patient_fields["representative_phone"] : '' ?>" >
+            <span class="error"><?php echo $patient_fields["representative_phone"] == -1 ? "* Representative phone is required!" : '' ?> </span><br>
 
             <!-- Email field is required if the patients has a representative -->
             <label for="representative_email">Representative Email:</label>
-            <input type="email" class="form-control" id="representative_emailfield" name="representative_email" placeholder="ex: maria.lar@gmail.com" > <br>
-
+            <input type="email" class="form-control" id="representative_emailfield" name="representative_email" 
+            onkeyup="return validateEmail(this);" placeholder="Enter represenative's email address" value="<?php echo $patient_fields["representative_email"] != -1 ? $patient_fields["representative_email"] : '' ?>" > 
+            <span class="error"><?php echo $patient_fields["representative_email"] == -1 ? "* Representative email is required!" : '' ?> </span><br>
+            
             <!-- Relationship field is required if the patients has a representative -->
             <label for="representative_rel">Representative Relationship:</label>
-            <input type="text" class="form-control" id="representative_relfield" name="representative_rel" placeholder="Mother" > <br>
+            <input type="text" class="form-control" id="representative_relfield" name="representative_rel" placeholder="Enter representative's relationship to the patient (e.g.: Mother, Father)"
+            onkeyup="return validateTextField(this);" value="<?php echo $patient_fields["representative_rel"] != -1 ? $patient_fields["representative_rel"] : '' ?>" > 
+            <span class="error"><?php echo $patient_fields["representative_rel"] == -1 ? "* Representative relationship is required!" : '' ?> </span><br>
 
             <button class="btn btn-lg btn-primary btn-block" type="submit" 
                 name="login">Register</button>
-        </form>
-
-        <br> <br>
-
+        </form> 
     </div>
-</body>
+    <br> <br>
+    </body>
+    <script type="text/javascript" defer>
+        // this if statement turns off the "Confirm Form Resubmission" and prevents multiple form submissions after a successful form submission
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+
+        $(document).ready(function() {
+            validateDOB($("#dobfield").val())
+        });
+
+    </script>
 </html>

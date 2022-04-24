@@ -10,9 +10,7 @@ error_reporting(0);
 // get variable from submit button
 $pID =  $_SESSION['patientID'];
 $pSin = pg_fetch_row(pg_query($dbconn, "SELECT sin_info FROM Patient WHERE patient_id = '$pID[0]';"));
-
 $pNameFetch = pg_fetch_row(pg_query($dbconn, "SELECT name FROM Patient_info WHERE patient_sin='$pSin[0]';"));
-
 $pName = $pNameFetch[0];
 
 // Patient ID and patient info details
@@ -57,9 +55,12 @@ $reviews = pg_fetch_all(pg_query($dbconn, "SELECT * FROM Review ORDER BY date_of
 $procedureCodes = pg_fetch_all(pg_query($dbconn, "SELECT * FROM procedure_codes ORDER BY procedure_code;"));
 
 // Get all the dentists
-$dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
+$doctors = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                             FROM employee AS E, employee_info AS I 
-                                            WHERE E.employee_sin = I.employee_sin AND I.employee_type='d'; ")) 
+                                            WHERE E.employee_sin = I.employee_sin AND (I.employee_type='d' OR I.employee_type='h');")); 
+
+// Get the procedure IDs
+$procedureIDs = pg_fetch_all(pg_query($dbconn, "SELECT * FROM appointment_procedure WHERE patient_id = '$pID[0]' AND invoice_id IS NULL;"));
 
 ?>
 
@@ -153,7 +154,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                             }
                         }
                     } elseif($_POST['add']) {
-                        $dateError = $dentistError = $procedureError = $startTimeError = $endTimeError = $roomError = "";
+                        $dateError = $doctorError = $procedureError = $startTimeError = $endTimeError = $roomError = "";
                             
                         if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -168,8 +169,8 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                             if (empty($_POST["end_time"])) {
                                 $endTimeError = "Required";
                             }
-                            if ($_POST["dentistName"] == "-") {
-                                $dentistError = "Required";
+                            if ($_POST["doctorName"] == "-") {
+                                $doctorError = "Required";
                             }
                             if ($_POST["procedure"] == "-") {
                                 $procedureError = "Required";
@@ -178,7 +179,38 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                 $roomError = "Required";
                             }
                         }
-                    }
+                    }elseif($_POST['addInvoice']) {
+                        $invoiceDateError = $contactError = $chargeError = $insuranceError = $discountError = $penaltyError = $appProcError ="";
+                            
+                        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+                            // checks if all the required fields are empty or not
+
+                            if (empty($_POST["date_of_issue"])) {
+                                 $invoiceDateError = "Required";
+                            }
+                            if (empty($_POST["contact_info"])) {
+                                $contactError = "Required";
+                            }
+                             if (empty($_POST["patient_charge"])) {
+                                $chargeError = "Required";
+                            }
+                             if (empty($_POST["insurance_charge"])) {
+                                $insuranceError = "Required";
+                            }
+                             if (empty($_POST["patient_discount"])) {
+                                $discountError = "Required";
+                            }
+                             if (empty($_POST["patient_penalty"])) {
+                                $penaltyError = "Required";
+                            }
+                             if (empty($_POST["appProcID"])) {
+                                $appProcError = "Required";
+                            }
+                        }
+                    } 
+                    
+                    
                     ?>
 
                     <form  action = "" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
@@ -302,7 +334,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
 
                                         </p>
                                     </div>
-                                </div><input type="submit" name="edit"> 
+                                </div><input type="submit" class= "btn btn-primary" name="edit" value="Edit information"> 
                             </div>
                         </div>
 
@@ -367,6 +399,26 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                         } // end if ($_SERVER['REQUEST_METHOD'] === "POST")
 
                     } // end if (if response was submitted successfully)
+
+                    elseif($_POST['edit_status']){
+                        $updateStatus = "
+                        UPDATE appointment
+                        SET appointment_status = $1 
+                        WHERE appointment_id= $2; 
+                        ";
+                        $statusInput = $_POST['cars'];
+                        $aptId = $_POST['apt_id'];
+                        
+                        $updatePatientInfoResult = pg_query_params($dbconn, $updateStatus, array($statusInput,$aptId)); // insert data into database
+
+                        if(!$updatePatientInfoResult) {
+                            echo preg_last_error($dbconn);
+                            echo "<h5>There was an error updating the status</h5>";
+                        } else {
+                            echo "<h5>You've sucessfully updated the status of appointment with ID $aptId!<h5>";
+                            echo "<h5><strong style=\"color:red\">Please refresh the page to view the changes</strong></h5>". "<br><br>";
+                        }
+                    }
                     
                         
                     ?>
@@ -416,28 +468,80 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                 <thead>
                                     <tr>
                                         <th>Appointment ID</th>
-                                        <th>Dentist ID</th>
+                                        <th>Doctor Name</th>
                                         <th>Date</th>
                                         <th>Start Time</th>
                                         <th>End Time</th>
                                         <th>Type</th>
-                                        <th>Status</th>
                                         <th>Room</th>
+                                        <th>Status</th>
+                                        <th>Editable Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach($patientAppointments as $patientAppointment => $patientAppointments) :?>
-                                    <tr>
-                                        <td><?php echo $patientAppointments['appointment_id'] ?></td>
-                                        <td><?php echo $patientAppointments['dentist_id'] ?></td>
-                                        <!-- <td><?php //echo pg_fetch_result(pg_query($dbconn, "SELECT e_info.name FROM Employee_info AS e_info WHERE e_info.employee_sin in (SELECT e.employee_sin FROM Employee AS e WHERE e.employee_id='$patientAppointments['employee_id']');")); ?></td> -->
-                                        <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
-                                        <td><?php echo $patientAppointments['start_time'] ?></td>
-                                        <td><?php echo $patientAppointments['end_time'] ?></td>
-                                        <td><?php echo $patientAppointments['appointment_type'] ?></td>
-                                        <td><?php echo $patientAppointments['appointment_status'] ?></td>
-                                        <td><?php echo $patientAppointments['room'] ?></td>
-                                    </tr>
+                                    <form action="<?php echo "#patient_appointments" ?>" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+                                        <input name="apt_id" type="text" hidden value="<?php echo $patientAppointments['appointment_id'] ?>">
+                                        <tr>
+                                            <td><?php echo $patientAppointments['appointment_id'] ?></td>
+                                            <td><?php 
+                                                $doctorId = $patientAppointments['dentist_id'];
+                                                $doctorSin = pg_fetch_row(pg_query($dbconn,"SELECT employee_sin FROM employee WHERE employee_id=$doctorId;"));
+                                                $doctorName = pg_fetch_row(pg_query($dbconn, "SELECT name FROM employee_info WHERE employee_sin='$doctorSin[0]';"));
+                                                echo $doctorName[0] ?></td>
+                                            <!-- <td><?php //echo pg_fetch_result(pg_query($dbconn, "SELECT e_info.name FROM Employee_info AS e_info WHERE e_info.employee_sin in (SELECT e.employee_sin FROM Employee AS e WHERE e.employee_id='$patientAppointments['employee_id']');")); ?></td> -->
+                                            <td><?php echo $patientAppointments['date_of_appointment'] ?></td>
+                                            <td><?php echo $patientAppointments['start_time'] ?></td>
+                                            <td><?php echo $patientAppointments['end_time'] ?></td>
+                                            <td><?php echo $patientAppointments['appointment_type'] ?></td>
+                                            <td><?php echo $patientAppointments['room'] ?></td>
+                                            <td><?php echo $patientAppointments['appointment_status'] ?></td>
+                                            <td>
+                                            
+                                                <?php 
+                                                $status = $patientAppointments['appointment_status'];
+                                                if ($status == 'Booked'){
+                                                    echo "<select id='cars' name='cars'>
+                                                        <option value='Booked' selected>Booked</option>
+                                                        <option value='Completed'>Completed</option>
+                                                        <option value='Cancelled'>Cancelled</option>
+                                                        <option value='No Show'>No Show</option>
+                                                    </select>";
+                                                }
+
+                                                elseif ($status == 'Completed'){
+                                                    echo "<select id='cars' name='cars'>
+                                                        <option value='Booked'>Booked</option>
+                                                        <option value='Completed' selected>Completed</option>
+                                                        <option value='Cancelled'>Cancelled</option>
+                                                        <option value='No Show'>No Show</option>
+                                                    </select>";
+                                                }
+
+                                                elseif ($status == 'Cancelled'){
+                                                    echo "<select id='cars' name='cars'>
+                                                        <option value='Booked'>Booked</option>
+                                                        <option value='Completed'>Completed</option>
+                                                        <option value='Cancelled' selected>Cancelled</option>
+                                                        <option value='No Show'>No Show</option>
+                                                    </select>";
+                                                }
+                                                elseif ($status == 'No Show'){
+                                                    echo "<select id='cars' name='cars'>
+                                                        <option value='Booked'>Booked</option>
+                                                        <option value='Completed'>Completed</option>
+                                                        <option value='Cancelled'>Cancelled</option>
+                                                        <option value='No Show' selected>No Show</option>
+                                                    </select>";
+                                                } ?>
+
+                                                <input type="submit" class= "btn btn-primary" style="padding:1px" name="edit_status" value="Save"> 
+                                                
+
+                                            </td>
+                                        </tr>
+                                    </form>
+
                                     <?php endforeach;?>
                                 </tbody>
                             </table>
@@ -466,17 +570,29 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                     </div>
                                     <div class="bio-row">
                                         <p>
-                                            <span>Dentist </span>
-                                            <select name="dentistName" id="dentistName">
+                                            <span>Dentist/Hygienist </span>
+                                            <select name="doctorName" id="doctorName">
                                                 <option>-</option>
                                                 <?php 
-                                                    foreach($dentists as $dentist => $dentists) :?>
-                                                    <option value="<?php echo $dentists['name']?>">
-                                                        <?php echo $dentists['name'] ?>
+                                                    foreach($doctors as $doctor => $doctors) :?>
+                                                    <option value="<?php echo $doctors['name']?>">
+                                                        <?php 
+
+                                                        $doctorName = $doctors['name'];
+
+                                                        $eLetterType = pg_fetch_row(pg_query($dbconn, "SELECT employee_type FROM employee_info WHERE name='$doctorName';"));
+
+                                                        if($eLetterType[0] == 'd'){
+                                                            $eType = "Dentist";
+                                                        } 
+                                                        elseif($eLetterType[0] == 'h'){
+                                                            $eType = "Hygienist";
+                                                        }
+                                                        echo $doctors['name']. " - " . $eType ?>
                                                     </option>
                                                 <?php endforeach?>
                                             </select>
-                                            <span class="error">* <?php echo $dentistError?></span>
+                                            <span class="error">* <?php echo $doctorError?></span>
                                         </p>
                                     </div>
                                     <div class="bio-row">
@@ -509,19 +625,19 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                         </p>
                                     </div>                                   
                                 </div>
-                                <input type="submit" name="add"> 
+                                <input class="btn btn-primary"type="submit" name="add" value="Set appointment"> 
                             </div>
                         </div> 
                         </form>
                     </div>
                     <?php 
                         if (!(empty($_POST["date_of_appointment"]) && empty($_POST["start_time"]) &&
-                            empty($_POST["end_time"]) && empty($_POST["room"])) && $_POST["dentistName"] != "-" &&
+                            empty($_POST["end_time"]) && empty($_POST["room"])) && $_POST["doctorName"] != "-" &&
                             $_POST["procedure"] != "-") {
         
                                 if ($_SERVER['REQUEST_METHOD'] === "POST") {
-                                    $dentistNameInput = $_POST['dentistName'];
-                                    $dId = pg_fetch_row(pg_query($dbconn, "SELECT E.employee_id FROM employee AS E, employee_info AS I WHERE I.employee_sin=E.employee_sin AND name='$dentistNameInput';"));
+                                    $doctorNameInput = $_POST['doctorName'];
+                                    $dId = pg_fetch_row(pg_query($dbconn, "SELECT E.employee_id FROM employee AS E, employee_info AS I WHERE I.employee_sin=E.employee_sin AND name='$doctorNameInput';"));
                                     $dateInput = $_POST['date_of_appointment'];
                                     $startTimeInput = $_POST['start_time'] . ":00";
                                     $endTimeInput = $_POST['end_time'] . ":00";
@@ -533,7 +649,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                    
                                     if (!$addAppointment) {
                                         echo pg_last_error($dbconn);
-                                        echo "<h1>ERROR</h1>";
+                                        echo "<h5>There was an error when setting the appointment</h5>";
                                     } else {
                                         $time = $_POST['start_time'];
                                         echo "<h5>You've succesfully set an appointment for $pName on $dateInput at $time. </h5>";
@@ -598,7 +714,7 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                                         <th>Code</th>
                                         <th>Description</th>
                                         <th>Tooth</th>
-                                        <th><abbr title="This is actually the Procedure Code (1: Teeth Cleanings, 2: Teeth Whitening, 3: Extractions, 4: Veneers, 5: Fillings, 6: Crowns, 7: Root Canal, 8: Braces/Invisalign, 9: Bonding, 10: Dentures)">Amount</abbr></th>
+                                        <th><abbr title="Refers to the amount of procedure to perform">Amount</abbr></th>
                                         <th>Total Charge</th>
                                     </tr>
                                 </thead>
@@ -659,6 +775,123 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
                     </div>
                     <!-- Patient Invoice END -->
 
+                    <!-- Edit patient invoice START -->
+                    <form action="<?php echo "#set_invoice"; ?>" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ;?>">
+                        <div class="panel" id="set_invoice">
+                            <div class="panel-body bio-graph-info">
+                                <h1>Set an invoice for <?php echo $pName ?></h1>
+                                <p><i class="fa fa-question-circle"></i> Note that invoices can only be added for Appointment Procedures that do not currently have one.</p>
+                                    <br>
+                                <h5><span class="error">*</span> indicates required fields </h5>
+                                <div class="row">
+                                    <div class="bio-row">
+                                        <p>
+                                            <span>Date of Issue</span>
+                                            <input type="date" id="date_of_issue" name="date_of_issue">
+                                            <span class="error">* <?php echo $invoiceDateError?></span>
+                                        </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                        <span>Appointment Procedure ID</span>
+                                        <select name="appProcID" id="appProcID">
+                                            <option>-</option>
+                                            <?php 
+                                                foreach($procedureIDs as $oneID => $procedureIDs) :?>
+                                                <option value="<?php echo $procedureIDs['procedure_id']?>">
+                                                    <?php echo $procedureIDs['procedure_id']?>
+                                                </option>
+                                            <?php endforeach?>
+                                        </select>
+                                        <span class="error">* <?php echo $appProcError ?></span>                                           
+                                    </p>
+                                    </div>
+                                    <div class="bio-row">
+                                        <p>
+                                           <span>Contact Info</span>
+                                            <input type="text" id="contact_info" name="contact_info" maxlength="255">
+                                            <span class="error">* <?php echo $contactError ?></span>      
+                                        </p>
+                                    </div>
+
+                                    <div class="bio-row">
+                                        <p>
+                                           <span>Patient Charge</span>
+                                            <input type="number" min="0.00"step="0.01" id="patient_charge" name="patient_charge">
+                                            <span class="error">* <?php echo $chargeError?></span>
+                                        </p>
+                                    </div>
+
+                                    <div class="bio-row">
+                                        <p>
+                                           <span>Insurance</span>
+                                            <input type="number" min="0.00"step="0.01" id="insurance_charge" name="insurance_charge">
+                                            <span class="error">* <?php echo $insuranceError?></span>
+                                        </p>
+                                    </div>
+
+                                    <div class="bio-row">
+                                        <p>
+                                           <span>Discount</span>
+                                            <input type="number" min="0.00"step="0.01" id="patient_discount" name="patient_discount">
+                                            <span class="error">* <?php echo $discountError?></span>
+                                        </p>
+                                    </div>
+
+                                     <div class="bio-row">
+                                        <p>
+                                           <span>Penalty Fee</span>
+                                            <input type="number" min="0.00"step="0.01" id="patient_penalty" name="patient_penalty">
+                                            <span class="error">* <?php echo $penaltyError?></span>
+                                        </p>
+                                    </div>
+                                                                       
+                                </div>
+                                <input class="btn btn-primary"type="submit" name="addInvoice" value="Add Invoice"> 
+                            </div>
+                        </div> 
+                        </form>
+                        <?php 
+                        if (!(empty($_POST["date_of_issue"]) && empty($_POST["contact_info"]) &&
+                            empty($_POST["patient_charge"]) && empty($_POST["patient_penalty"]) 
+                            && empty($_POST["insurance_charge"]) && empty($_POST["discount"])) && $_POST["appProcID"] != "-") {
+                                
+                                if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                                    $contactInput = $_POST['contact_info'];                                  
+                                    $dateIssueInput = $_POST['date_of_issue'];
+                                    $chargeInput = $_POST['patient_charge'];
+                                    $insuranceInput = $_POST['insurance_charge'];
+                                    $discountInput = $_POST['patient_discount'];
+                                    $penaltyInput = $_POST['patient_penalty'];
+                                    $procedureIDInput = $_POST['appProcID'];
+
+                                    $iquery = "INSERT INTO invoice (patient_id, date_of_issue, contact_info, patient_charge, insurance_charge, discount, penalty) VALUES ('$pID[0]', '$dateIssueInput', '$contactInput', '$chargeInput', '$insuranceInput', '$discountInput', '$penaltyInput')";
+                                    $addInvoice = pg_query($dbconn, $iquery);
+
+                                    // Get new invoice ID
+                                    $invoiceIDQuery = pg_fetch_row(pg_query($dbconn, "SELECT invoice_id FROM invoice WHERE patient_id = '$pID[0]' ORDER BY invoice_id DESC;"));
+
+                                    // update Appointment Procedure
+                                    // TODO (?) : We can't set insurance_claim_id because we did not populate that table
+                                    
+                                    $updateApptProcedure =  "UPDATE appointment_procedure SET invoice_id = '$invoiceIDQuery[0]', insurance_charge = '$insuranceInput', patient_charge = '$chargeInput' WHERE (procedure_id = '$procedureIDInput');";
+
+                                    pg_query($dbconn, $updateApptProcedure);
+
+                                    if (!$addInvoice) {
+                                        echo "<h4>There was an error adding the invoice. Please fill in all the required fields</h4>";
+                                    } else {
+                                        echo "<h5>You've succesfully set invoice for $pName.</h5>";
+                                        echo "<h5><strong style=\"color:red\">Please refresh to see the changes</strong>.<br></h5>";
+                                    }
+                                }
+                        }
+                    ?>
+                    </div>
+                    
+
+                    <!-- edit patient Invoice END-->
+
                     
                 </div>
                 <!-- Page Column END -->
@@ -669,7 +902,10 @@ $dentists = pg_fetch_all(pg_query($dbconn, "SELECT E.employee_id, I.name
             <!-- Inner container -->
         </div>
         <!-- CSS container END https://www.bootdey.com/snippets/view/user-profile-bio-graph-and-total-sales -->
-        
+        <br>
+        <br>
+        <br>
+        <br>             
     </body>
     <script>
         // this if statement turns off the "Confirm Form Resubmission" and prevents multiple form submissions after a successful form submission
