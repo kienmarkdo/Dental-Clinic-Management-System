@@ -290,7 +290,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         }
 
         $(document).ready(function() {
-            validateDOB($("#dobfield").val())
+            disableRepFields();
         });
 
     </script>
