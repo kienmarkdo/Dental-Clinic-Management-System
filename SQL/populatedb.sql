@@ -48,14 +48,14 @@ INSERT INTO Employee_info VALUES (
 (141286236,'d','Tisham Islam', '123 Postgres Street, Ottawa, ON, Canada', 75000.50), -- dentist at branch id 1
 (158453648,'d','Céline Wan', '123 Postgres Street, Ottawa, ON, Canada', 75000.50), -- dentist at branch id 1
 (198523644,'h','Amy Kkiti', '123 Postgres Street, Ottawa, ON, Canada', 65000.50), -- hygenist at branch id 1
-(165984846,'b','Bruno Bale', '523 Sesame Street, Ottawa, ON, Canada', 83000.50), -- manager at branch id 1
+(165984846,'b','Kien Do', '523 Sesame Street, Ottawa, ON, Canada', 83000.50), -- manager at branch id 1
 
 (388498874,'d','John Li', '1225 Imaginary Street, Toronto, ON, Canada', 70000.50), -- dentist at branch id 2, ALSO A PATIENT
 (432364646,'d','Samy Touabi', '5346 Postgres Avenue, Toronto, ON, Canada', 70000.50), -- dentist at branch id 2
 (665946369,'r','Oliva Mars', '355 MySQL Road, Toronto, ON, Canada', 55000.50), -- receptionist at branch id 2
 (135941655,'r','Christopher Castillo', '885 NoSQL Drive, Toronto, ON, Canada', 55000.50), -- receptionist at branch id 2
 (256356565,'h','Nakul Lover', '5243 MariaDB Crossing, Toronto, ON, Canada', 60000.50), -- hygienist at branch id 2
-(956233565,'b','Kien Do', '420 Oracle Street, Toronto, ON, Canada', 83000.50); -- manager at branch id 2
+(956233565,'b','Bruno Bale', '420 Oracle Street, Toronto, ON, Canada', 83000.50); -- manager at branch id 2
 
 -- Branch
 INSERT INTO Branch VALUES 
@@ -393,7 +393,7 @@ INSERT INTO user_account VALUES ('tisla2714', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2o
 INSERT INTO user_account VALUES ('cwmk3565', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 3);
 INSERT INTO user_account VALUES ('akiti7935', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 4);
 INSERT INTO user_account VALUES ('stoua0809', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 7);
-INSERT INTO user_account VALUES ('kdo2342', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 11);
+INSERT INTO user_account VALUES ('kdo2342', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 5);
 INSERT INTO user_account VALUES ('johnli255', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 2, 5, 6);
 INSERT INTO user_account VALUES ('bobmley1', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 1); --receptionist
 INSERT INTO user_account VALUES ('olvMar8', '$2y$10$1q472H5E5tmeYWmKnSeuWOic2ooLuTLbU6gjSBrrwJEsp/Tq8uvpu', 1, NULL, 8); --receptionist
