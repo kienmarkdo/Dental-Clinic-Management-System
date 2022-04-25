@@ -75,8 +75,9 @@ function validateDOB(DOB) {
 
 function disableRepFields() {
     let needsRepInput = $("#needsrep")[0];
-        
+    let DOB = $("#dobfield").val();    
     let disabled = false;
+    
     needsRepInput.value = true;     
     //if the user is > 15 years old then disable the representative field
     //15 years * 365 days in a year * 86400 seconds in a day * 1000 milliseconds in a second
