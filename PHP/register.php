@@ -205,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <!-- Patient details here, needs patient_sin, address, name, gender, email, phone, date_of_birth, insurance -->
             <h3>Patient Details</h3>
             <fieldset>
-            <label for="select_gender">Gender:</label>
+            <legend>What's your gender?</legend>
                 <input type="radio" name="gender" value="M">Male<br>
                 <input type="radio" name="gender" value="F">Female<br>
                 <input type="radio" name="gender" value="X" checked>Other/Prefer not to say<br>
