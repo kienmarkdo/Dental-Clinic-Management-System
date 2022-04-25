@@ -363,7 +363,7 @@ WHERE (procedure_id = 6);
 
 UPDATE Appointment_procedure -- John has no insurance; Extractions completed
 SET 
-invoice_id = 8,
+invoice_id = 7,
 patient_charge = 200
 WHERE (procedure_id = 8); 
 
