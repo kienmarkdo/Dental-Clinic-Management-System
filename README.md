@@ -1,10 +1,12 @@
 # Overview
 
+Link to Dental Clinic website: https://dental-clinic-mgmt-service.herokuapp.com/index.php
+
 This Dental Clinic Management System (DCMS) provides an efficient and fast way to manage appointments and related activities for a dental center with clinics in major cities across Canada. In addition, this DCMS will enable the dental center practitioners to track records, minimize data loss, provide privacy & security of records, enable quick report generation, implement updates, eliminate redundant paper work, and save time.
 
 # Implementation
 
-All components of this application are implemented from scratch which includes the ER model, the relational schema, populated relations, database queries, as well as the user interface.
+All components of this application are implemented from scratch which includes the ER model, the relational schema, populated relations, database queries, as well as the user interface. The DCMS is hosted on Heroku.
 
 
 
