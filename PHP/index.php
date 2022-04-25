@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCMS - Login</title>
-    <link rel="icon" type="image/x-icon" href="images/login.png">
+    <link rel="icon" type="image/x-icon" href="images/login2.png">
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="patient_landing_style.css" />
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
       
     <div class="container bootstrap snippets bootdey">
     <br>
-    <h1 class="bio-graph-heading" style="text-align:center; font-style: normal; padding: 40px; font-size: 30px; font-weight: 600; border-radius: 4px 4px 4px 4px;">Dental Clinic Management System</h1>
+    <h1 class="bio-graph-heading dcms-header" style="font-size: 30px;">Dental Clinic Management System</h1>
     <br>
     <!-- <h1 style="text-align:center">Login page</h1> -->
     <h2>Enter Login Details</h2>
@@ -150,12 +150,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST")
         </form>
 
         <h2> No Account? <a href="register.php">Register here! </a> </h2> <br>  
+
     </div>
 
+
 </div>
-
-
-        
     
 </body>
     <script>

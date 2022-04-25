@@ -156,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/excite-bike/jquery-ui.css" rel="stylesheet" type="text/css">
     <link rel='stylesheet' href='main.css' type="text/css">
+    <link rel="stylesheet" href="patient_landing_style.css" />
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -174,9 +175,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <div class="container">
         <div class="logout-btn">
             <a href="logout.php" class="logout-btn-text">Return</a>
-        </div>
+        </div> <br>
 
-        <h1 style="text-align:center">DCMS - Registration Page</h1>
+        <h1 class="bio-graph-heading dcms-header" style="font-size: 30px;">DCMS - Registration Page</h1>
         <h2>Enter Registration Details</h2>
         <h3 class="error"><?php echo $err ?></h3>
         <span class="error"> * indicates a field is required </span> 
@@ -277,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             onkeyup="return validateTextField(this);" value="<?php echo $patient_fields["representative_rel"] != -1 ? $patient_fields["representative_rel"] : '' ?>" > 
             <span class="error"><?php echo $patient_fields["representative_rel"] == -1 ? "* Representative relationship is required!" : '' ?> </span><br>
 
-            <button class="btn btn-lg btn-primary btn-block" type="submit" 
+            <button class="btn btn-lg btn-warning btn-block" type="submit" 
                 name="login">Register</button>
         </form> 
     </div>
@@ -290,7 +291,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         }
 
         $(document).ready(function() {
-            validateDOB($("#dobfield").val())
+            disableRepFields();
         });
 
     </script>

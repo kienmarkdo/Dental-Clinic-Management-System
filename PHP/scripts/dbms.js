@@ -47,7 +47,7 @@ function validatePhone(input) {
     let phone = input.value;
     phone = phone.replace(/[^0-9]/g,'');
     input.value = phone;
-    if(phone == ' ' || !phone.match(/^[0-9]{10}$/)) {
+    if(phone.length < 10) {
         input.className = "form-control badinput";
         return false;
     }
@@ -65,28 +65,32 @@ function validateDOB(DOB) {
     }
     else {
         $("#dobfield").css({'background' : '#99FF99', 'border' : 'solid 1px #99FF99'});
-        let needsRepInput = $("#needsrep")[0];
-        
-        let disabled = false;
-        needsRepInput.value = true;     
-        //if the user is > 15 years old then disable the representative field
-        //15 years * 365 days in a year * 86400 seconds in a day * 1000 milliseconds in a second
-        if (new Date() - Date.parse(DOB) > 15 * 365 * 86400 * 1000) {
-            disabled = true;
-            needsRepInput.value = false;   
-        }
-        
-        //select all the representative inputs
-        let repInputs = $("input[id^='representative']");
-        for (let i = 0; i < repInputs.length; i++) {
-            //if user < 15 years, then the rep inputs are required
-            //i.e. if not disabled, then it is also required
-            repInputs[i].disabled = disabled;
-            repInputs[i].required = !disabled;
-        }
+        disableRepFields();
 
         return true
     }
 
     
+}
+
+function disableRepFields() {
+    let needsRepInput = $("#needsrep")[0];
+        
+    let disabled = false;
+    needsRepInput.value = true;     
+    //if the user is > 15 years old then disable the representative field
+    //15 years * 365 days in a year * 86400 seconds in a day * 1000 milliseconds in a second
+    if (new Date() - Date.parse(DOB) > 15 * 365 * 86400 * 1000) {
+        disabled = true;
+        needsRepInput.value = false;   
+    }
+        
+    //select all the representative inputs
+    let repInputs = $("input[id^='representative']");
+    for (let i = 0; i < repInputs.length; i++) {
+        //if user < 15 years, then the rep inputs are required
+        //i.e. if not disabled, then it is also required
+        repInputs[i].disabled = disabled;
+        repInputs[i].required = !disabled;
+    }
 }
