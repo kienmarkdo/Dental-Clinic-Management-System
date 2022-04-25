@@ -76,7 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         if ($patient_fields["representative_name"] != -1
         && $patient_fields["representative_phone"]  != -1
         && $patient_fields["representative_email"]  != -1
-        && $patient_fields["representative_rel"]  != -1) {            
+        && $patient_fields["representative_rel"]  != -1
+        && $_POST['needs_rep'] == "true") {            
             
             $rep_value = ", rep";
             $rep_args = ", ROW($9, $10, $11, $12)";    
@@ -103,6 +104,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         )
         INSERT INTO User_account (username, password, type_id, patient_id) 
         VALUES ($2, $3, 0, (SELECT patient_id FROM P));";
+        echo "query text";
+        echo $patient_info_query;
+        echo $patient_and_user_account_query;
 
         pg_query($dbconn, 'BEGIN'); // begins transaction
         $patient_info_result = pg_query_params($dbconn, 
@@ -135,11 +139,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     }
 
     // Shows all form input that was supplied for debugging
-    // echo $username . " ". $password . " " . $password_verify; 
-    // foreach ($patient_fields as $p) {
-    //     echo '<br>';
-    //     echo $p;
-    // }
+    echo $username . " ". $password . " " . $password_verify; 
+    foreach ($patient_fields as $p) {
+        echo '<br>';
+        echo $p;
+    }
 }
 
 ?>
@@ -286,9 +290,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     </body>
     <script type="text/javascript" defer>
         // this if statement turns off the "Confirm Form Resubmission" and prevents multiple form submissions after a successful form submission
-        if (window.history.replaceState) {
-            window.history.replaceState(null, null, window.location.href);
-        }
+        // if (window.history.replaceState) {
+        //     window.history.replaceState(null, null, window.location.href);
+        // }
 
         $(document).ready(function() {
             disableRepFields();
