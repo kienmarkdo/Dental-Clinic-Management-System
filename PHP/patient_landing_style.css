@@ -25,15 +25,6 @@ body {
     text-align: center;
 }
 
-.dcms-header {
-    text-align:center; 
-    font-style: normal; 
-    padding: 40px; 
-    font-size: 30px; 
-    font-weight: 600; 
-    border-radius: 4px 4px 4px 4px;
-}
-
 .profile-nav .user-heading.round a  {
     border-radius: 50%;
     -webkit-border-radius: 50%;
@@ -129,6 +120,15 @@ body {
     -webkit-border-radius: 4px 4px 0 0;
     font-size: 16px;
     font-weight: 300;
+}
+
+.dcms-header {
+    text-align:center; 
+    font-style: normal; 
+    padding: 40px; 
+    font-size: 30px; 
+    font-weight: 600; 
+    border-radius: 4px 4px 4px 4px;
 }
 
 .bio-graph-info {
