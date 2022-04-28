@@ -4,6 +4,7 @@ This Dental Clinic Management System (DCMS) provides an efficient and fast way t
 
 - Dental Clinic website: https://dental-clinic-mgmt-service.herokuapp.com/index.php
 - Original repository: https://github.com/CSI2532-Databases-I-Group-8/Dental-Clinic-Management-System
+- Demo video (en français): https://www.youtube.com/watch?v=8031YFqOKfg
 
 # Implementation
 
