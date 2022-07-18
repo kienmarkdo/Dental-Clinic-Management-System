@@ -2,9 +2,19 @@
 
 This Dental Clinic Management System (DCMS) provides an efficient and fast way to manage appointments and related activities for a dental center with clinics in major cities across Canada. In addition, this DCMS will enable the dental center practitioners to track records, minimize data loss, provide privacy & security of records, enable quick report generation, implement updates, eliminate redundant paper work, and save time.
 
-- Dental clinic website: https://dental-clinic-mgmt-service.herokuapp.com/index.php
-- Demo video (en français): https://www.youtube.com/watch?v=8031YFqOKfg
-- Original repository: https://github.com/CSI2532-Databases-I-Group-8/Dental-Clinic-Management-System
+- Login ID: 
+  - Hygienist: akiti7935
+  - Dentist: cwmk3565
+  - Patient: randommd5
+  - Receptionist: bobmley1
+
+- Password for all existing accounts above:
+  - ASDFGHJKL:123456
+
+- Demos:
+  - Dental clinic website: https://dental-clinic-mgmt-service.herokuapp.com/index.php
+  - Demo video (en français): https://www.youtube.com/watch?v=8031YFqOKfg
+  - Original repository: https://github.com/CSI2532-Databases-I-Group-8/Dental-Clinic-Management-System
 
 # Implementation
 
